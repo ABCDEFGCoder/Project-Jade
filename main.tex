@@ -1,0 +1,952 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\1}{\mathbf{1}}
+
+\title{\textbf{Equal-Sum Partitions into a Fixed Number of Consecutive Group Counts}}
+\author{Zixuan Ye \and GPT-6 Astra \and GPT-5.6 Sol}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Fix an integer $r\ge 3$.  For a positive integer $m$, let $f_r(m)$ be the least length of a finite indexed family of positive real numbers of total sum $1$ that admits equal-sum partitions into $m,m+1,\ldots,m+r-1$ nonempty groups.  Writing $d=r-1$, we prove that
+\[
+  f_r(m)=2m+\Theta_r\!\left(m^{\frac{r-2}{r-1}}\right)
+  =2m+\Theta_d\!\left(m^{\frac{d-1}{d}}\right)
+  \qquad (m\to\infty).
+\]
+The upper bound is obtained from a $d$-dimensional pairing lattice: each lattice site carries two atoms, while the $d$ coordinate directions realize the $d$ nontrivial target pair sums exactly.  A simultaneous completion lemma repairs the boundary in $O_d(m^{(d-1)/d})$ atoms.  For the lower bound, a near-minimal configuration forces its weight-multiplicity function to be almost invariant under the $d$ translations
+\[
+  h_k=\frac1m-\frac1{m+k}=\frac{k}{m(m+k)},\qquad 1\le k\le d.
+\]
+These translations have no nontrivial integer relation of length $O_d(m)$.  Combining this local arithmetic freeness with a self-contained minimal-growth argument yields a $d$-dimensional discrete isoperimetric inequality, which forces the excess above $2m$ to be $\Omega_d(m^{(d-1)/d})$.  We also recover, with a separate sharper two-dimensional argument, the bounds
+\[
+  2m+1+\sqrt{\frac{m}{54}}\le f_3(m)\le 2m+3\lceil\sqrt m\rceil
+\]
+for the three-target problem (the upper bound for $m\ge16$ and the lower bound for $m\ge3$).
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords.} Equal-sum partitions; extremal combinatorics; additive structure; translation defect; discrete isoperimetry; lattice construction.
+
+\section{Introduction and main results}
+
+A \emph{weight system} is a finite indexed family
+\[
+  w_1,\ldots,w_N>0,\qquad \sum_{i=1}^N w_i=1.
+\]
+The indices are the atoms of the problem: two atoms of the same numerical weight are still distinct atoms.  If $q\ge1$, we say that the system admits a \emph{$q$-equal-sum partition} if its index set can be partitioned into $q$ nonempty groups, each of total weight $1/q$.
+
+Fix $r\ge3$.  For $m\ge1$, define $f_r(m)$ to be the least $N$ for which one weight system admits, possibly in different ways, $q$-equal-sum partitions for every
+\[
+  q\in\{m,m+1,\ldots,m+r-1\}.
+\]
+The quantity $f_r(m)$ is finite.  Indeed, subdivide $[0,1]$ simultaneously at all points $j/(m+k)$ with $0\le k\le r-1$ and $0\le j\le m+k$; the positive lengths in the common refinement form a feasible weight system.
+
+Set
+\[
+  d=r-1\ge2,\qquad \alpha_d=\frac{d-1}{d}.
+\]
+Our main theorem proves the fixed-$r$ asymptotic conjecture.
+
+\begin{theorem}[General fixed-width asymptotic]\label{thm:main}
+For every fixed integer $d\ge2$, there exist constants $M_d\in\N$ and $c_d>0$ such that for all $m\ge M_d$,
+\begin{equation}\label{eq:main-precise}
+  2m+c_d m^{\alpha_d}
+  \le f_{d+1}(m)
+  \le 2m+(2d-1)\lceil m^{1/d}\rceil^{d-1}
+       +\frac{(d-1)(d-2)}2,
+\end{equation}
+where one may take
+\begin{equation}\label{eq:cd}
+  c_d=\frac{2^{\alpha_d}}
+  {12(d+4)(e\,d!)^{1/d}}.
+\end{equation}
+Consequently, for every fixed $r\ge3$,
+\[
+  f_r(m)=2m+\Theta_r\!\left(m^{\frac{r-2}{r-1}}\right),
+  \qquad
+  \lim_{m\to\infty}\frac{f_r(m)}m=2.
+\]
+\end{theorem}
+
+For complete explicitness, the proof works with
+\begin{align}
+ M_d^{\rm up}
+ &:=\max\!\left\{
+      2^{d(d-1)},\,3d,\,
+      \left\lfloor[d(d+1)]^{d/(d-1)}\right\rfloor+1
+     \right\},\label{eq:Mup}\\
+ M_d^{\rm iso}
+ &:=\max\!\left\{
+      4d!,\,
+      \left\lfloor
+      \bigl(3e\,4^d(d!)^{d+1}\bigr)^{1/(d-1)}
+      \right\rfloor+1
+     \right\},\label{eq:Miso}
+\end{align}
+and one may take $M_d=\max\{M_d^{\rm up},M_d^{\rm iso}\}$.
+
+The case $d=2$ admits a stronger lower constant and a better explicit upper threshold.
+
+\begin{theorem}[Three consecutive group counts]\label{thm:three}
+For every integer $m\ge16$,
+\[
+  2m+1+\sqrt{\frac{m}{54}}
+  \le f_3(m)
+  \le 2m+3\lceil\sqrt m\rceil.
+\]
+The lower bound holds for every $m\ge3$.
+\end{theorem}
+
+The proofs of Theorems~\ref{thm:main} and~\ref{thm:three} are entirely contained below.
+
+\section{Notation and a simultaneous completion lemma}
+
+Fix $d\ge2$ and a feasible system for the target group counts
+\[
+  m,m+1,\ldots,m+d.
+\]
+Let $P_k$ denote the partition into $m+k$ groups, and set
+\begin{equation}\label{eq:tk}
+  t_k:=\frac1{m+k}\qquad(0\le k\le d).
+\end{equation}
+Thus every group of $P_k$ has total weight $t_k$.
+
+Every atom has weight at most $t_d$, because it belongs to a $P_d$-group of total weight $t_d$.  Hence, for every $k<d$, no group of $P_k$ can be a singleton, since $t_k>t_d$.  In particular,
+\begin{equation}\label{eq:elementary-lower}
+  N\ge 2(m+d-1).
+\end{equation}
+It is convenient to write
+\begin{equation}\label{eq:E}
+  N=2m+E.
+\end{equation}
+Then $E\ge2d-2$.
+
+We shall repeatedly use the following completion device.
+
+\begin{lemma}[Simultaneous completion]\label{lem:completion}
+Suppose a finite collection of positive-weight atoms has total mass $\sigma<1$.  For each $k=0,\ldots,d$, suppose these atoms have already been assigned to prescribed groups of a prospective $P_k$ so that:
+\begin{enumerate}[label=\textup{(\roman*)}]
+  \item every existing atom is assigned to exactly one group in each $P_k$;
+  \item no prescribed group exceeds its target weight $t_k$;
+  \item the total target capacity of all groups of $P_k$ is $1$.
+\end{enumerate}
+Let $g_k$ be the number of groups of $P_k$ that are not yet full.  Then one can add at most
+\begin{equation}\label{eq:completion-count}
+  \sum_{k=0}^d g_k-d
+\end{equation}
+new positive-weight atoms so that every group in every $P_k$ becomes exactly full.  If all existing weights and all $t_k$ are rational, then the new weights may be chosen rational.
+\end{lemma}
+
+\begin{proof}
+Let $\rho=1-\sigma>0$.  Necessarily $g_k\ge1$ for every $k$, since otherwise all groups of $P_k$ would already be full and the existing atoms would have total mass $1$.  For a fixed $k$, list the positive residual capacities of the $g_k$ unfilled groups in any order.  They sum to $\rho$, so they determine a partition of $[0,\rho]$ into $g_k$ consecutive positive intervals.  Take the common refinement of the $d+1$ interval partitions obtained in this way.  Altogether they contribute at most
+\[
+  \sum_{k=0}^d(g_k-1)
+\]
+distinct internal endpoints, so the common refinement has at most
+\[
+  1+\sum_{k=0}^d(g_k-1)=\sum_{k=0}^d g_k-d
+\]
+positive subintervals.  Use the lengths of these subintervals as the new atom weights.  In partition $P_k$, assign each new atom to the unique residual-capacity interval containing the corresponding common-refinement subinterval.  Every residual interval is thereby filled exactly, and each new atom is used once in each partition.  If the residual capacities are rational, then every refinement endpoint, and hence every new atom weight, is rational.
+\end{proof}
+
+\section{The upper bound: a $d$-dimensional pairing lattice}
+
+Throughout this section assume $m\ge M_d^{\rm up}$, with $M_d^{\rm up}$ defined in \eqref{eq:Mup}.  Set
+\begin{equation}\label{eq:s-b-K}
+  s:=\lceil m^{1/d}\rceil,
+  \qquad b:=s^{d-1},
+  \qquad K:=m-b+1.
+\end{equation}
+The choice $m\ge2^{d(d-1)}$ implies $b\le m$: indeed,
+\[
+  s\le m^{1/d}+1\le2m^{1/d},
+\]
+so
+\[
+  b\le2^{d-1}m^{(d-1)/d}\le m.
+\]
+Thus $K\ge1$.  Also $b\ge2$, hence $K<m$, and $K\le m\le s^d$.
+
+\subsection{A compressed box}
+
+Let
+\[
+  Q:=\{0,1,\ldots,s-1\}^d.
+\]
+For $a=(a_1,\ldots,a_d)\in Q$, define its base-$s$ index
+\[
+  \iota(a):=a_1+a_2s+\cdots+a_ds^{d-1}.
+\]
+Take
+\begin{equation}\label{eq:L}
+  L:=\{a\in Q:\iota(a)<K\}.
+\end{equation}
+Then $|L|=K$.  For each coordinate direction $e_k$, the intersection of $L$ with any line parallel to $e_k$ is either empty or an initial consecutive segment of that lattice line, because after all other coordinates are fixed the condition $\iota(a)<K$ is a strict upper bound on $a_k$.
+
+Let $H_k$ be the number of nonempty $e_k$-parallel lattice lines meeting $L$.  Since such a line is determined by the other $d-1$ coordinates,
+\begin{equation}\label{eq:Hk-bound}
+  H_k\le s^{d-1}=b.
+\end{equation}
+If a nonempty line contains $\ell$ points of $L$, it contributes $\ell-1$ adjacent pairs in direction $e_k$.  Summing over the $H_k$ nonempty lines gives exactly
+\begin{equation}\label{eq:adjacent-count}
+  K-H_k
+\end{equation}
+adjacent pairs in direction $e_k$.
+
+\subsection{Two atoms per lattice site}
+
+For $1\le k\le d$, define
+\begin{equation}\label{eq:Delta-k}
+  \Delta_k:=t_0-t_k
+  =\frac{k}{m(m+k)}.
+\end{equation}
+For $a=(a_1,\ldots,a_d)\in L$, put
+\begin{equation}\label{eq:za-W}
+  z_a:=\sum_{k=1}^d a_k\Delta_k,
+  \qquad
+  W:=\max_{a\in L}z_a.
+\end{equation}
+At every $a\in L$, introduce two distinct atoms $U_a,V_a$ of weights
+\begin{equation}\label{eq:uv}
+  u_a:=\frac{t_0-W}{2}+z_a,
+  \qquad
+  v_a:=t_0-u_a.
+\end{equation}
+We verify that these are positive and, in fact, strictly smaller than $t_d$.
+Since $s-1<m^{1/d}$ and $\Delta_k\le k/m^2$,
+\begin{equation}\label{eq:W-bound}
+  0\le W
+  \le(s-1)\sum_{k=1}^d\Delta_k
+  <\frac{d(d+1)}2\,m^{-2+1/d}.
+\end{equation}
+Because $m\ge3d$,
+\[
+  2t_d-t_0
+  =\frac{m-d}{m(m+d)}
+  \ge\frac1{2m}.
+\]
+The definition of $M_d^{\rm up}$ also gives
+\[
+  m^{(d-1)/d}>d(d+1),
+\]
+so the right-hand side of \eqref{eq:W-bound} is $<1/(2m)$.  Consequently,
+\begin{equation}\label{eq:W-positive}
+  W<2t_d-t_0.
+\end{equation}
+Since $0\le z_a\le W$,
+\[
+  u_a,v_a\in
+  \left[\frac{t_0-W}{2},\frac{t_0+W}{2}\right]
+  \subset(0,t_d).
+\]
+
+\subsection{Exact pairings in all $d+1$ partitions}
+
+For every $a\in L$,
+\begin{equation}\label{eq:P0pair}
+  u_a+v_a=t_0.
+\end{equation}
+Moreover, whenever $a,a+e_k\in L$,
+\[
+  z_{a+e_k}-z_a=\Delta_k,
+\]
+and hence
+\begin{equation}\label{eq:Pkpair}
+  u_a+v_{a+e_k}=t_0-\Delta_k=t_k.
+\end{equation}
+Thus $P_0$ uses the $K$ disjoint pairs $\{U_a,V_a\}$.
+For $1\le k\le d$, along each nonempty $e_k$-line, use every adjacent pair
+\[
+  \{U_a,V_{a+e_k}\}.
+\]
+These pairs are disjoint: on a line of length $\ell$, they use $U$ at positions $0,\ldots,\ell-2$ and $V$ at positions $1,\ldots,\ell-1$.  Exactly two atoms, namely the initial $V$ and the terminal $U$, remain unpaired on that line.  Therefore $P_k$ contains $K-H_k$ full binary groups and exactly $2H_k$ unpaired existing atoms.
+
+\subsection{Boundary bookkeeping and completion}
+
+In $P_0$, keep the $K$ full binary groups and introduce $m-K=b-1$ empty groups.  Hence
+\begin{equation}\label{eq:g0}
+  g_0=b-1.
+\end{equation}
+For $1\le k\le d$, put each of the $2H_k$ unpaired atoms alone into a temporarily unfilled group.  The number of currently occupied groups is
+\[
+  (K-H_k)+2H_k=K+H_k\le m+1\le m+k,
+\]
+using \eqref{eq:Hk-bound}.  We may therefore add
+\[
+  m+k-K-H_k=b-1+k-H_k\ge0
+\]
+empty groups.  The total number of unfilled groups in $P_k$ is then
+\begin{equation}\label{eq:gk}
+  g_k=2H_k+b-1+k-H_k=b-1+k+H_k.
+\end{equation}
+
+The $2K$ existing atoms have total mass $Kt_0=K/m<1$.  Every singleton group has positive residual capacity because each existing atom has weight $<t_d\le t_k$.  Lemma~\ref{lem:completion} therefore adds at most $\sum_{k=0}^d g_k-d$ atoms.  The final number of atoms is at most
+\begin{align*}
+  2K+\sum_{k=0}^d g_k-d
+  &=2m+(d-1)b+\sum_{k=1}^d H_k
+      +\frac{(d-1)(d-2)}2\\
+  &\le2m+(2d-1)b+\frac{(d-1)(d-2)}2.
+\end{align*}
+We have proved the following proposition.
+
+\begin{proposition}[General upper bound]\label{prop:upper}
+For every fixed $d\ge2$ and every $m\ge M_d^{\rm up}$,
+\[
+  f_{d+1}(m)
+  \le2m+(2d-1)\lceil m^{1/d}\rceil^{d-1}
+       +\frac{(d-1)(d-2)}2.
+\]
+The constructed weights may all be chosen rational.
+\end{proposition}
+
+\section{Binary defects and approximate translation invariance}
+
+We now prove the lower bound.  Fix a feasible weight system of $N=2m+E$ atoms.
+For each $k$, let $I_k$ denote the number of atoms lying in nonbinary groups of $P_k$; here ``nonbinary'' means a singleton or a group of size at least three.
+
+\subsection{The partitions $P_k$ with $k<d$}
+
+For $k<d$, there are no singleton groups.  Let $a_k$ be the number of groups of $P_k$ of size at least three.  Since $P_k$ has $m+k$ groups,
+\begin{equation}\label{eq:deviation-k}
+  \sum_{G\in P_k}(|G|-2)
+  =N-2(m+k)=E-2k.
+\end{equation}
+Every summand is nonnegative, so $a_k\le E-2k$.  Moreover,
+\begin{equation}\label{eq:Ik-small}
+  I_k
+  =\sum_{\substack{G\in P_k\\|G|\ge3}}|G|
+  =(E-2k)+2a_k
+  \le3(E-2k)\le3E.
+\end{equation}
+
+\subsection{Singletons in the final partition}
+
+We need a separate estimate for $P_d$, which may contain singletons.  Construct a graph $\mathcal H$ on the atoms by joining the two atoms in every binary group of $P_0$ by a color-$0$ edge and the two atoms in every binary group of $P_1$ by a color-$1$ edge.  Every vertex has degree at most one in each color, so each connected component has maximum degree at most two and every nontrivial component is alternating.
+
+There are no alternating cycles.  Indeed, traversing a color-$k$ edge replaces a weight $x$ by $t_k-x$.  Thus a color-$0$ step followed by a color-$1$ step sends
+\[
+  x\longmapsto t_1-(t_0-x)=x-(t_0-t_1),
+\]
+whereas the opposite order sends $x$ to $x+(t_0-t_1)$.  A nontrivial alternating cycle would therefore return its starting weight after adding a nonzero integer multiple of $t_0-t_1$, impossible.  Hence $\mathcal H$ is a forest of paths, isolated vertices included.
+
+The numbers of binary groups in $P_0$ and $P_1$ are $m-a_0$ and $m+1-a_1$, respectively.  Thus the number $\tau$ of path components is
+\begin{align}
+  \tau
+  &=N-\bigl[(m-a_0)+(m+1-a_1)\bigr]\notag\\
+  &=E-1+a_0+a_1
+  \le3E-3.\label{eq:tau}
+\end{align}
+Let $\ell$ be the number of singleton groups of $P_d$.  Equivalently, $\ell$ is the number of atoms of weight $t_d$.
+
+\begin{lemma}\label{lem:two-final-singletons}
+Every path component of $\mathcal H$ contains at most two atoms of weight $t_d$.  Consequently,
+\begin{equation}\label{eq:ell-general}
+  \ell\le2\tau\le6E-6.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Split the vertices of a path into its two parity classes according to graph distance from one endpoint.  If two distinct vertices in the same parity class are $2q$ edges apart, then repeated application of the two-step rule above shows that their weights differ by $\pm q(t_0-t_1)\ne0$.  Hence each parity class contains at most one vertex of weight $t_d$, and the whole path contains at most two.
+\end{proof}
+
+For $P_d$, summing $|G|-2$ over all groups gives $E-2d$.  A singleton contributes $-1$, so
+\begin{equation}\label{eq:high-final-deviation}
+  \sum_{\substack{G\in P_d\\|G|\ge3}}(|G|-2)
+  =E-2d+\ell.
+\end{equation}
+For every integer $q\ge3$, $q\le3(q-2)$.  Hence, using \eqref{eq:ell-general},
+\begin{align}
+  I_d
+  &\le \ell+3(E-2d+\ell)\notag\\
+  &\le 27E.\label{eq:Id-bound}
+\end{align}
+
+\subsection{Multiplicity functions and translation defects}
+
+Define the finitely supported multiplicity function
+\begin{equation}\label{eq:mu}
+  \mu(x):=\#\{i:w_i=x\},\qquad x\in\R.
+\end{equation}
+For finitely supported functions $\nu_1,\nu_2:\R\to\R$, define
+\begin{equation}\label{eq:V}
+  V(\nu_1,\nu_2):=\frac12\sum_{x\in\R}|\nu_1(x)-\nu_2(x)|.
+\end{equation}
+For $h,a\in\R$, define
+\begin{equation}\label{eq:operators}
+  (T_h\nu)(x):=\nu(x-h),
+  \qquad
+  (R_a\nu)(x):=\nu(a-x).
+\end{equation}
+Finally put
+\begin{equation}\label{eq:Bh}
+  B_h(\mu):=V(\mu,T_h\mu).
+\end{equation}
+
+Write $\mu=\mu_k^{\mathrm{bin}}+\eta_k$, where $\mu_k^{\mathrm{bin}}$ is the multiplicity function of atoms lying in binary groups of $P_k$ and $\eta_k$ is that of the remaining atoms.  Every binary group consists of weights $x$ and $t_k-x$, so
+\[
+  R_{t_k}\mu_k^{\mathrm{bin}}=\mu_k^{\mathrm{bin}}.
+\]
+Also $\sum_x\eta_k(x)=I_k$.  Therefore
+\begin{align}
+  V(\mu,R_{t_k}\mu)
+  &=V(\eta_k,R_{t_k}\eta_k)\notag\
+  &\le\frac12\left(\sum_x\eta_k(x)+\sum_x(R_{t_k}\eta_k)(x)\right)
+  =I_k.\label{eq:reflection-defect}
+\end{align}
+Also $R_aR_b=T_{a-b}$.  Since reflections preserve $V$, the triangle inequality yields
+\begin{equation}\label{eq:translation-from-reflections}
+  B_{t_0-t_k}(\mu)
+  \le V(\mu,R_{t_0}\mu)+V(\mu,R_{t_k}\mu)
+  \le I_0+I_k.
+\end{equation}
+Define
+\begin{equation}\label{eq:hk}
+  h_k:=t_0-t_k=\frac{k}{m(m+k)},\qquad 1\le k\le d.
+\end{equation}
+By \eqref{eq:Ik-small}, \eqref{eq:Id-bound}, and \eqref{eq:translation-from-reflections},
+\begin{equation}\label{eq:sum-defect-upper}
+  \sum_{k=1}^d B_{h_k}(\mu)
+  \le 6(d+4)E.
+\end{equation}
+Indeed, $B_{h_k}(\mu)\le6E$ for $1\le k<d$, while $B_{h_d}(\mu)\le30E$.
+
+\section{Local arithmetic freeness of the translation steps}
+
+The special translations \eqref{eq:hk} behave, up to length $O_d(m)$, like $d$ independent generators.
+
+\begin{lemma}[No short integer relation]\label{lem:no-short-relation}
+Let $z_1,\ldots,z_d\in\Z$.  If
+\begin{equation}\label{eq:relation}
+  \sum_{k=1}^d z_kh_k=0
+\end{equation}
+and
+\begin{equation}\label{eq:shortness}
+  |z_k|d!<m+1\qquad(1\le k\le d),
+\end{equation}
+then $z_1=\cdots=z_d=0$.
+\end{lemma}
+
+\begin{proof}
+Using \eqref{eq:hk}, cancel the common factor $1/m$ in \eqref{eq:relation} to obtain
+\[
+  \sum_{k=1}^d\frac{z_kk}{m+k}=0.
+\]
+Multiply by
+\[
+  P:=\prod_{j=1}^d(m+j).
+\]
+For a fixed $k$, reduce the resulting integer identity modulo $m+k$.  Every term except the $k$th is divisible by $m+k$, so
+\[
+  m+k\mid z_kk\prod_{j\ne k}(m+j).
+\]
+Modulo $m+k$, the product on the right is congruent to
+\[
+  z_kk\prod_{j\ne k}(j-k).
+\]
+Its absolute value is
+\[
+  |z_k|\,k!(d-k)!\le |z_k|d!<m+1\le m+k.
+\]
+The only integer of absolute value $<m+k$ divisible by $m+k$ is $0$.  Since $k\prod_{j\ne k}(j-k)\ne0$, we get $z_k=0$.  This holds for every $k$.
+\end{proof}
+
+Let
+\begin{equation}\label{eq:S}
+  S:=\{0,h_1,\ldots,h_d\}.
+\end{equation}
+For a positive integer $n$, write $nS$ for the $n$-fold sumset $S+\cdots+S$.
+
+\begin{corollary}[Simplex growth]\label{cor:simplex-growth}
+If
+\begin{equation}\label{eq:n-range}
+  n\le\left\lfloor\frac{m}{2d!}\right\rfloor,
+\end{equation}
+then all sums
+\[
+  \sum_{k=1}^d \alpha_kh_k,
+  \qquad
+  \alpha_k\in\Z_{\ge0},\quad
+  \sum_{k=1}^d\alpha_k\le n,
+\]
+are distinct.  Consequently,
+\begin{equation}\label{eq:nS-count}
+  |nS|=\binom{n+d}{d}\ge\frac{n^d}{d!}.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+If two displayed sums were equal, their coefficient difference $z_k$ would satisfy $|z_k|\le n$, and hence
+\[
+  |z_k|d!\le nd!\le\frac m2<m+1.
+\]
+Lemma~\ref{lem:no-short-relation} would force all coefficient differences to vanish.  The number of $d$-tuples of nonnegative integers with total at most $n$ is $\binom{n+d}{d}$.  Finally,
+\[
+  \binom{n+d}{d}=\prod_{j=1}^d\frac{n+j}{j}\ge\frac{n^d}{d!}.
+\]
+\end{proof}
+
+\section{A minimal-growth lemma and discrete isoperimetry}
+
+For a finite set $F\subset\R$ and $h\ne0$, define
+\begin{equation}\label{eq:ch}
+  c_h(F):=|F\setminus(F+h)|.
+\end{equation}
+Since $|F|=|F+h|$,
+\begin{equation}\label{eq:ch-other}
+  c_h(F)=|(F+h)\setminus F|
+  =\frac12\sum_{x\in\R}|\1_F(x)-\1_F(x-h)|.
+\end{equation}
+Equivalently, if points of $F$ differing by $h$ are connected, $c_h(F)$ is the number of resulting finite $h$-chains.
+
+The next lemma is the only sumset-growth input we need, and we include its proof.
+
+\begin{lemma}[Minimal-growth iteration]\label{lem:minimal-growth}
+Let $A,B$ be finite nonempty subsets of an abelian group.  Choose a nonempty $X\subseteq A$ for which
+\[
+  K:=\frac{|X+B|}{|X|}
+\]
+is minimal among all nonempty subsets of $A$.  Then for every finite set $C$,
+\begin{equation}\label{eq:minimal-growth-one}
+  |X+B+C|\le K|X+C|.
+\end{equation}
+Consequently, for every integer $n\ge1$,
+\begin{equation}\label{eq:minimal-growth-iterate}
+  |X+nB|\le K^n|X|.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We prove \eqref{eq:minimal-growth-one} by induction on $|C|$.  The empty case is trivial, and the one-point case is just translation invariance of cardinality.  Suppose the assertion holds for a finite set $C'$ and let $c\notin C'$, $C=C'\cup\{c\}$.  Define
+\[
+  D:=\{x\in X:x+c\in X+C'\}.
+\]
+Then
+\begin{equation}\label{eq:X-C-increment}
+  |X+C|=|X+C'|+|X|-|D|.
+\end{equation}
+Moreover,
+\[
+  D+B+c\subseteq X+B+C'.
+\]
+Hence the number of new elements contributed by $X+B+c$ beyond $X+B+C'$ is at most
+\[
+  |X+B|-|D+B|.
+\]
+If $D\ne\varnothing$, the minimality of $X$ gives $|D+B|\ge K|D|$; if $D=\varnothing$, the same inequality is trivially true.  Therefore, using the induction hypothesis and \eqref{eq:X-C-increment},
+\begin{align*}
+  |X+B+C|
+  &\le |X+B+C'|+K(|X|-|D|)\\
+  &\le K|X+C'|+K(|X|-|D|)\\
+  &=K|X+C|.
+\end{align*}
+This proves \eqref{eq:minimal-growth-one}.  Applying it successively with $C=(n-1)B,(n-2)B,\ldots,B$ gives \eqref{eq:minimal-growth-iterate}.
+\end{proof}
+
+We can now prove the required isoperimetric estimate.
+
+\begin{lemma}[Local $d$-dimensional isoperimetry]\label{lem:isoperimetry}
+Fix $d\ge2$, and assume $m\ge M_d^{\rm iso}$, where $M_d^{\rm iso}$ is defined in \eqref{eq:Miso}.  Let $h_k$ be as in \eqref{eq:hk}.  Then every nonempty finite $F\subset\R$ with $|F|\le3m$ satisfies
+\begin{equation}\label{eq:isoperimetry}
+  \sum_{k=1}^d c_{h_k}(F)
+  \ge \kappa_d |F|^{(d-1)/d},
+  \qquad
+  \kappa_d:=\frac1{2(e\,d!)^{1/d}}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+  M:=|F|,
+  \qquad
+  C:=\sum_{k=1}^d c_{h_k}(F).
+\]
+Each $h_k$ is nonzero and $F$ is finite and nonempty, so $C>0$.  By \eqref{eq:S} and \eqref{eq:ch-other},
+\begin{equation}\label{eq:FplusS}
+  |F+S|
+  \le M+C.
+\end{equation}
+Apply Lemma~\ref{lem:minimal-growth} with $A=F$ and $B=S$, and choose the minimizing nonempty $X\subseteq F$.  Then
+\begin{equation}\label{eq:K-bound}
+  K=\frac{|X+S|}{|X|}
+  \le\frac{|F+S|}{|F|}
+  \le1+\frac CM.
+\end{equation}
+
+If $C\ge M/2$, then, since $M\ge1$ and $\kappa_d\le1/2$,
+\[
+  C\ge\frac12M\ge\kappa_d M^{(d-1)/d},
+\]
+and we are done.  Assume henceforth that $C<M/2$, so $M/C>2$.
+
+Put
+\begin{equation}\label{eq:L-n}
+  L:=\left\lfloor\frac{m}{2d!}\right\rfloor,
+  \qquad
+  n:=\min\left\{\left\lfloor\frac MC\right\rfloor,L\right\}.
+\end{equation}
+Then $nC/M\le1$.  Lemma~\ref{lem:minimal-growth}, \eqref{eq:K-bound}, and $1+x\le e^x$ give
+\begin{equation}\label{eq:upper-XnS}
+  |X+nS|
+  \le K^n|X|
+  \le\exp\!\left(\frac{nC}{M}\right)M
+  \le eM.
+\end{equation}
+Since $X$ is nonempty, any fixed $x_0\in X$ gives $x_0+nS\subseteq X+nS$, and therefore
+\begin{equation}\label{eq:lower-XnS}
+  |X+nS|\ge|nS|.
+\end{equation}
+
+We claim that $n\ne L$.  Because $m\ge4d!$,
+\[
+  L\ge\frac{m}{4d!}.
+\]
+If $n=L$, Corollary~\ref{cor:simplex-growth}, \eqref{eq:upper-XnS}, and $M\le3m$ would imply
+\[
+  \frac{m^d}{4^d(d!)^{d+1}}
+  \le\frac{L^d}{d!}
+  \le |nS|
+  \le eM
+  \le3em.
+\]
+But the definition of $M_d^{\rm iso}$ makes the first and last expressions satisfy the strict reverse inequality, namely
+\[
+  m^{d-1}>3e\,4^d(d!)^{d+1}.
+\]
+This contradiction proves $n\ne L$.  Hence
+\[
+  n=\left\lfloor\frac MC\right\rfloor.
+\]
+Since $M/C>2$,
+\begin{equation}\label{eq:n-lower}
+  n\ge\frac{M}{2C}.
+\end{equation}
+Combining Corollary~\ref{cor:simplex-growth}, \eqref{eq:upper-XnS}, \eqref{eq:lower-XnS}, and \eqref{eq:n-lower}, we obtain
+\[
+  \frac1{d!}\left(\frac{M}{2C}\right)^d
+  \le\frac{n^d}{d!}
+  \le|nS|
+  \le eM.
+\]
+Rearranging gives
+\[
+  C\ge\frac1{2(e\,d!)^{1/d}}M^{(d-1)/d},
+\]
+as required.
+\end{proof}
+
+\section{The general lower bound}
+
+We lift Lemma~\ref{lem:isoperimetry} from sets to the multiplicity function $\mu$.  For every integer $q\ge1$, define the level set
+\begin{equation}\label{eq:Fq}
+  F_q:=\{x\in\R:\mu(x)\ge q\}.
+\end{equation}
+Only finitely many $F_q$ are nonempty, and
+\begin{equation}\label{eq:layer-mass}
+  \sum_{q\ge1}|F_q|=\sum_x\mu(x)=N.
+\end{equation}
+The pointwise identity
+\[
+  |u-v|=\sum_{q\ge1}\left|\1_{\{u\ge q\}}-\1_{\{v\ge q\}}\right|
+  \qquad(u,v\in\Z_{\ge0})
+\]
+and \eqref{eq:ch-other} imply
+\begin{equation}\label{eq:layer-defect}
+  B_h(\mu)=\sum_{q\ge1}c_h(F_q).
+\end{equation}
+
+\begin{proposition}[General lower bound]\label{prop:lower}
+For every fixed $d\ge2$ and every $m\ge M_d^{\rm iso}$,
+\[
+  f_{d+1}(m)\ge2m+c_dm^{(d-1)/d},
+\]
+where $c_d$ is given by \eqref{eq:cd}.
+\end{proposition}
+
+\begin{proof}
+Let a feasible system have $N=2m+E$ atoms.  If $E\ge m$, then, because $0<c_d<1$ and $m\ge1$,
+\[
+  E\ge m\ge c_dm^{(d-1)/d},
+\]
+so there is nothing to prove.  Assume $E<m$.  Then
+\[
+  N=2m+E<3m,
+\]
+and every nonempty level set $F_q$ satisfies $|F_q|\le N<3m$.  Lemma~\ref{lem:isoperimetry} and \eqref{eq:layer-defect} give
+\begin{align}
+  \sum_{k=1}^d B_{h_k}(\mu)
+  &=\sum_{q\ge1}\sum_{k=1}^d c_{h_k}(F_q)\notag\\
+  &\ge\kappa_d\sum_{q\ge1}|F_q|^{\alpha_d}.\label{eq:layer-iso}
+\end{align}
+For $0<\alpha_d<1$, the function $x\mapsto x^{\alpha_d}$ is subadditive on $[0,\infty)$, so
+\begin{equation}\label{eq:concave-layer}
+  \sum_{q\ge1}|F_q|^{\alpha_d}
+  \ge\left(\sum_{q\ge1}|F_q|\right)^{\alpha_d}
+  =N^{\alpha_d}.
+\end{equation}
+Combining \eqref{eq:sum-defect-upper}, \eqref{eq:layer-iso}, and \eqref{eq:concave-layer},
+\[
+  6(d+4)E
+  \ge\kappa_dN^{\alpha_d}
+  \ge\kappa_d(2m)^{\alpha_d}.
+\]
+Hence
+\[
+  E\ge\frac{2^{\alpha_d}\kappa_d}{6(d+4)}m^{\alpha_d}
+  =c_dm^{\alpha_d},
+\]
+which proves the proposition.
+\end{proof}
+
+Propositions~\ref{prop:upper} and~\ref{prop:lower}, with $M_d=\max\{M_d^{\rm up},M_d^{\rm iso}\}$, prove Theorem~\ref{thm:main}.
+
+\section{Sharper bounds for three consecutive group counts}
+
+We now prove Theorem~\ref{thm:three}.  This section is logically independent of the general lower-bound machinery in Sections 5--7 except for the basic defect notation, and it gives a substantially better constant when $d=2$.
+
+Write $P_0,P_1,P_2$ for the partitions into $m,m+1,m+2$ groups, and put
+\[
+  t_0=\frac1m,
+  \qquad
+  t_1=\frac1{m+1},
+  \qquad
+  t_2=\frac1{m+2}.
+\]
+Again write $N=2m+E$.
+
+\subsection{The upper bound for $m\ge16$}
+
+Set $s=\lceil\sqrt m\rceil$ and $K=m-s+1$.  Use the two-dimensional construction of Section 3 with
+\[
+  \Delta_1=t_0-t_1,
+  \qquad
+  \Delta_2=t_0-t_2.
+\]
+For $d=2$, the quantity $W$ in \eqref{eq:za-W} satisfies the sharper estimate
+\begin{equation}\label{eq:W-d2}
+  W\le(s-1)(\Delta_1+\Delta_2)
+  =(s-1)\frac{3m+4}{m(m+1)(m+2)}.
+\end{equation}
+For $m\ge16$, $s-1<\sqrt m\le m/4$, and
+\[
+  (m-2)(m+1)-\frac{m(3m+4)}4
+  =\frac{m(m-8)}4-2>0.
+\]
+Therefore \eqref{eq:W-d2} gives
+\[
+  W<\frac{(m-2)(m+1)}{m(m+1)(m+2)}
+  =2t_2-t_0,
+\]
+so all constructed atoms lie in $(0,t_2)$ exactly as in Section 3.  The boundary formula of Proposition~\ref{prop:upper} specializes to
+\[
+  f_3(m)\le2m+3s=2m+3\lceil\sqrt m\rceil.
+\]
+
+\subsection{Sharper defect bounds}
+
+For $k=0,1$, let $a_k$ be the number of groups of size at least three in $P_k$, and let $I_k$ be the number of atoms in nonbinary groups.  From \eqref{eq:deviation-k},
+\begin{equation}\label{eq:d2-I01}
+  I_0\le3E,
+  \qquad
+  I_1\le3E-6.
+\end{equation}
+The alternating $P_0$--$P_1$ graph from Section 4 is a path forest with
+\begin{equation}\label{eq:d2-tau}
+  \tau=E-1+a_0+a_1\le3E-3
+\end{equation}
+components.
+
+\begin{lemma}\label{lem:d2-one-singleton}
+Assume $m\ge3$.  Every component of the alternating $P_0$--$P_1$ graph contains at most one atom of weight $t_2$.  Hence the number $\ell$ of singleton groups of $P_2$ satisfies
+\begin{equation}\label{eq:d2-ell}
+  \ell\le3E-3.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Two vertices at a positive even distance $2q$ have weights differing by $\pm q(t_0-t_1)$, so they cannot both have weight $t_2$.
+
+Suppose instead that two vertices of weight $t_2$ are at odd distance.  An odd alternating composition of the reflections $x\mapsto t_0-x$ and $x\mapsto t_1-x$ has the form
+\[
+  x\longmapsto t_0+j(t_0-t_1)-x
+\]
+for some $j\in\Z$.  Thus
+\begin{equation}\label{eq:d2-odd-relation}
+  2t_2=t_0+j(t_0-t_1).
+\end{equation}
+Let
+\[
+  D:=m(m+1)(m+2).
+\]
+Multiplying \eqref{eq:d2-odd-relation} by $D$ gives
+\[
+  2m(m+1)=(m+1)(m+2)+j(m+2).
+\]
+The right-hand side is divisible by $m+2$, whereas
+\[
+  2m(m+1)\equiv4\pmod{m+2}.
+\]
+Since $m+2\ge5$, this is impossible.  Therefore each path contains at most one $t_2$-atom.  Equation \eqref{eq:d2-ell} follows from \eqref{eq:d2-tau}.
+\end{proof}
+
+For $P_2$,
+\[
+  \sum_{\substack{G\in P_2\\|G|\ge3}}(|G|-2)=E-4+\ell.
+\]
+Using $q\le3(q-2)$ for $q\ge3$ and Lemma~\ref{lem:d2-one-singleton},
+\begin{equation}\label{eq:d2-I2}
+  I_2
+  \le\ell+3(E-4+\ell)
+  \le15E-24.
+\end{equation}
+Define
+\begin{equation}\label{eq:d2-deltas}
+  \delta_{01}:=t_0-t_1=\frac1{m(m+1)},
+  \qquad
+  \delta_{12}:=t_1-t_2=\frac1{(m+1)(m+2)}.
+\end{equation}
+The reflection argument \eqref{eq:translation-from-reflections}, now applied to $(P_0,P_1)$ and $(P_1,P_2)$, gives
+\begin{align}
+  B_{\delta_{01}}(\mu)&\le I_0+I_1\le6E-6,\label{eq:d2-B01}\\
+  B_{\delta_{12}}(\mu)&\le I_1+I_2\le18E-30.\label{eq:d2-B12}
+\end{align}
+
+\subsection{A two-chain intersection inequality}
+
+\begin{lemma}[Chain-intersection bound]\label{lem:chain-intersection}
+Let $p,q$ be coprime positive integers, let $\varepsilon>0$, and let $\mu:\R\to\Z_{\ge0}$ be finitely supported.  If
+\[
+  B_{p\varepsilon}(\mu)<p,
+\]
+then
+\begin{equation}\label{eq:chain-mu}
+  \sum_x\mu(x)
+  \le B_{p\varepsilon}(\mu)B_{q\varepsilon}(\mu).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+We first prove the set version.  For finite $F\subset\R$, $c_h(F)$ is the number of $h$-chains in $F$.  Assume
+\[
+  c_{p\varepsilon}(F)<p.
+\]
+Any $p\varepsilon$-chain and any $q\varepsilon$-chain meet in at most one point.  Indeed, if $x<y$ were two common points, then
+\[
+  y-x=ap\varepsilon=bq\varepsilon
+\]
+for positive integers $a,b$.  Since $\gcd(p,q)=1$, $y-x$ is a positive multiple of $pq\varepsilon$.  The common $q\varepsilon$-chain therefore contains
+\[
+  x,x+q\varepsilon,\ldots,x+(p-1)q\varepsilon.
+\]
+These $p$ points lie in pairwise distinct $p\varepsilon$-chains: otherwise $rq\varepsilon$ would be an integer multiple of $p\varepsilon$ for some $1\le r\le p-1$, forcing $p\mid r$.  This contradicts $c_{p\varepsilon}(F)<p$.
+
+Thus each point of $F$ is uniquely determined by the ordered pair consisting of its $p\varepsilon$-chain and its $q\varepsilon$-chain.  Hence
+\begin{equation}\label{eq:chain-set}
+  |F|\le c_{p\varepsilon}(F)c_{q\varepsilon}(F).
+\end{equation}
+
+Now define the level sets $F_j=\{x:\mu(x)\ge j\}$.  By \eqref{eq:layer-mass} and \eqref{eq:layer-defect},
+\[
+  \sum_x\mu(x)=\sum_{j\ge1}|F_j|,
+  \qquad
+  B_h(\mu)=\sum_{j\ge1}c_h(F_j).
+\]
+The hypothesis $B_{p\varepsilon}(\mu)<p$ implies $c_{p\varepsilon}(F_j)<p$ for every nonempty level set.  Applying \eqref{eq:chain-set} level by level and then using nonnegativity,
+\begin{align*}
+  \sum_x\mu(x)
+  &\le\sum_{j\ge1}c_{p\varepsilon}(F_j)c_{q\varepsilon}(F_j)\\
+  &\le\left(\sum_{j\ge1}c_{p\varepsilon}(F_j)\right)
+       \left(\sum_{j\ge1}c_{q\varepsilon}(F_j)\right)\\
+  &=B_{p\varepsilon}(\mu)B_{q\varepsilon}(\mu).
+\end{align*}
+\end{proof}
+
+\subsection{Proof of the sharp two-dimensional lower bound}
+
+Let
+\begin{equation}\label{eq:d2-pqe}
+  g:=\gcd(m,2),
+  \qquad
+  p:=\frac{m+2}{g},
+  \qquad
+  q:=\frac{m}{g},
+  \qquad
+  \varepsilon:=\frac{g}{m(m+1)(m+2)}.
+\end{equation}
+Then $\gcd(p,q)=1$ and
+\[
+  \delta_{01}=p\varepsilon,
+  \qquad
+  \delta_{12}=q\varepsilon.
+\]
+We split into two cases.
+
+If
+\begin{equation}\label{eq:d2-case1}
+  6(E-1)<p,
+\end{equation}
+then \eqref{eq:d2-B01} gives $B_{p\varepsilon}(\mu)<p$.  Lemma~\ref{lem:chain-intersection} and \eqref{eq:d2-B01}--\eqref{eq:d2-B12} imply
+\[
+  N\le(6E-6)(18E-30)\le108(E-1)^2.
+\]
+Since $N\ge2m$,
+\begin{equation}\label{eq:d2-lower-case1}
+  E\ge1+\sqrt{\frac{m}{54}}.
+\end{equation}
+
+If instead $6(E-1)\ge p$, then $g\le2$ gives
+\[
+  E-1\ge\frac p6
+  =\frac{m+2}{6g}
+  \ge\frac{m+2}{12}
+  \ge\frac m{12}.
+\]
+For $m\ge3$,
+\[
+  \frac m{12}\ge\sqrt{\frac m{54}},
+\]
+so \eqref{eq:d2-lower-case1} again holds.  Therefore every feasible system with $m\ge3$ satisfies
+\[
+  N=2m+E\ge2m+1+\sqrt{\frac m{54}}.
+\]
+Together with the upper bound already proved for $m\ge16$, this completes the proof of Theorem~\ref{thm:three}.
+
+\section{Structural interpretation and further questions}
+
+The exponent $(d-1)/d$ arises from the same geometry on both sides of the argument.  In the construction, the $d$ independent target differences $t_0-t_k$ are realized as the $d$ coordinate directions of a lattice box; its boundary has order $m^{(d-1)/d}$.  In the lower bound, any system with excess $E$ has only $O_d(E)$ total defect under those same $d$ translations.  Their absence of short integer relations forces $d$-dimensional simplex growth up to scale $O_d(m)$, and the minimal-growth argument turns that growth into a discrete isoperimetric lower bound of the same exponent.
+
+Several natural problems remain.
+\begin{enumerate}[label=\arabic*.]
+  \item Determine the optimal constants in the second-order term.  In particular, decide whether
+  \[
+    \frac{f_r(m)-2m}{m^{(r-2)/(r-1)}}
+  \]
+  converges for fixed $r\ge3$.
+  \item Prove a stability theorem describing all configurations with
+  \[
+    f_r(m)=2m+O_r\!\left(m^{(r-2)/(r-1)}\right).
+  \]
+  The upper construction suggests a compressed lattice description of near-extremizers.
+  \item Study the regime $r=r(m)\to\infty$.  The present method is not uniform in $r$, because its local-freeness radius deteriorates through the factor $d!$.
+\end{enumerate}
+
+\end{document}
