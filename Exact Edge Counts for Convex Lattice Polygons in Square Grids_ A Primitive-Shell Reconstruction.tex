@@ -1,0 +1,1274 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\HH}{\mathcal H}
+\newcommand{\LL}{\mathcal L}
+\newcommand{\E}{\mathsf E}
+\newcommand{\one}{\mathbf 1}
+\newcommand{\ph}{\varphi}
+
+\title{\textbf{Exact Edge Counts for Convex Lattice Polygons in Square Grids:\\
+A Primitive-Shell Reconstruction}}
+\author{Zixuan Ye \and GPT-5.6 Sol}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For \(n\ge2\), let \(m(n)\) be the maximum number of edges of a strictly convex lattice polygon whose vertices lie in the \(n\times n\) grid \([n]^2\).  The corresponding minimum-diameter problem was solved exactly in a sequence of papers in digital geometry during the 1990s.  The purpose of the present paper is not to claim priority for the extremal value, but to give a new, self-contained reconstruction in the language of primitive \(\ell_1\)-shells, bounded shell surgery, and edge-length compensation, and to record a compact direct formula for the inverse extremal function \(m(n)\).
+
+Put
+\[
+A(t)=4\sum_{j=1}^t\ph(j),\qquad
+S(t)=\sum_{j=1}^t j\ph(j),
+\]
+with \(A(0)=S(0)=0\).  Given \(N=n-1\), let \(\ell\) be the unique positive integer for which
+\(S(\ell-1)\le N<S(\ell)\), and set
+\[
+x=N-S(\ell-1),\qquad
+r=\left\lfloor\frac{4x}{\ell}\right\rfloor,\qquad
+d=4x-r\ell,\qquad
+K=A(\ell-1)+r.
+\]
+We prove
+\[
+m(n)=K-\one_{\{d\le3\}}\E(\ell,r),
+\]
+where \(\E(\ell,r)\) is the indicator of six explicitly listed exceptional families.  Equivalently, if \(D(k)\) denotes the least coordinate span of a square containing a convex lattice \(k\)-gon and \(k=A(\ell-1)+r\), then
+\[
+D(k)=S(\ell-1)+\left\lceil\frac{r\ell}{4}\right\rceil+\E(\ell,r).
+\]
+All infinite families are treated analytically.  The only computer-assisted step is the finite exceptional configuration \((\ell,r)=(6,5)\); an exact integer-arithmetic verifier is supplied with the paper.
+\end{abstract}
+
+\section{Introduction and historical position}
+
+The extremal geometry of lattice points on convex curves goes back at least to Jarník's 1926 work on lattice points on convex curves \cite{Jarnik1926}.  In the digital-geometry setting, Voss and Klette studied the maximal number of edges of a convex digital polygon in a square grid \cite{VossKlette1982}.  Acketa and Žunić subsequently developed the minimum-diameter formulation, proved the exact even-edge theorem \cite{AcketaZunic1993}, gave a simple construction within one unit of the optimum for arbitrary edge number \cite{AcketaZunic1994}, and studied the inverse maximal-edge function \cite{AcketaZunic1995}.  Matić-Kekić and Acketa constructed the optimal odd polygons using perfect basic \(b\)-tuples \cite{MaticKekicAcketa1995}.  Matić-Kekić, Acketa and Žunić then gave an exact construction for arbitrary edge number \cite{MaticKekicAcketaZunic1996}, while the remaining non-greedy optimality statements were completed by Acketa and Matić-Kekić \cite{AcketaMaticKekic1997}.
+
+Accordingly, the exact extremal value proved below is classical.  Our contribution is a different proof architecture.  We organize primitive directions by their \(\ell_1\)-length, derive the greedy bound directly from shell cost, isolate a defect
+\[
+\delta=4\left\lceil\frac{r\ell}{4}\right\rceil-r\ell\in\{0,1,2,3\},
+\]
+and close every residue class by fixed-size local exchanges between neighboring shells.  A parity lemma explains why odd cases necessarily require cross-shell surgery.  A second mechanism, which we call \emph{axis multiplicity compensation}, changes only the integer lengths of the four unit-axis edges and pays the final defect without changing the number of edge directions.  The resulting proof separates the six genuine non-greedy families from all greedy-attaining cases in a transparent way.
+
+The paper is self-contained as a proof of the exact formula.  The cited papers are used for historical attribution and comparison, not as logical inputs.  One finite statement, the exceptional case \((\ell,r)=(6,5)\), is verified by an accompanying exact program; the analytic reduction proving that its search space is exhaustive is included in Section~\ref{sec:exception}.
+
+\section{Primitive directions and convex lattice polygons}
+
+Throughout, a \emph{convex lattice polygon} means a nondegenerate polygon with vertices in \(\Z^2\) and all interior angles strictly less than \(\pi\).  Let \(D(k)\) be the least integer \(N\) for which such a \(k\)-gon can be translated into
+\[
+\{0,1,\ldots,N\}^2.
+\]
+Thus, for \(n\ge2\),
+\begin{equation}\label{eq:inverse}
+m(n)=\max\{k:D(k)\le n-1\}.
+\end{equation}
+
+A nonzero vector \(u=(u_1,u_2)\in\Z^2\) is \emph{primitive} if
+\(\gcd(|u_1|,|u_2|)=1\).  For \(\ell\ge1\), define the primitive shell
+\[
+\HH_\ell=\{u\in\Z^2:u\text{ primitive and }\|u\|_1=\ell\}.
+\]
+Let \(R(x,y)=(-y,x)\) be rotation through \(90^\circ\), and write
+\[
+\mathcal O(u)=\{u,Ru,-u,-Ru\}.
+\]
+
+\begin{lemma}[Edge-direction model]\label{lem:model}
+Let \(u_1,\ldots,u_k\) be distinct primitive oriented directions and let
+\(\lambda_1,\ldots,\lambda_k\) be positive integers.  If
+\[
+\sum_{i=1}^k\lambda_i u_i=0,
+\]
+then, after ordering the vectors \(\lambda_i u_i\) by polar angle and taking successive partial sums, one obtains a convex lattice \(k\)-gon.  Conversely, every convex lattice \(k\)-gon has such a representation.
+
+If \(W,H\) are the horizontal and vertical coordinate spans of the polygon, then
+\begin{equation}\label{eq:WH}
+2W=\sum_i\lambda_i|u_{i,1}|,\qquad
+2H=\sum_i\lambda_i|u_{i,2}|.
+\end{equation}
+Consequently
+\begin{equation}\label{eq:l1cost}
+2(W+H)=\sum_i\lambda_i\|u_i\|_1.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Every lattice edge vector is a positive integral multiple of a unique primitive direction, and strict convexity makes the oriented primitive directions distinct.  Closure gives the displayed zero-sum relation.
+
+Conversely, a positive zero-sum relation among distinct directions cannot be contained in an open half-plane.  Hence, after cyclic angular ordering, consecutive turning angles are in \((0,\pi)\); the partial sums therefore form a strictly convex closed polygon.  They are lattice points because all edge vectors are integral.
+
+For a closed polygon, the sum of the positive \(x\)-increments equals the absolute value of the sum of the negative \(x\)-increments and equals the horizontal span.  This gives the first identity in \eqref{eq:WH}; the second is identical.  Summing them gives \eqref{eq:l1cost}.
+\end{proof}
+
+\begin{lemma}[Shell arithmetic]\label{lem:shell}
+For every \(\ell\ge1\),
+\[
+|\HH_\ell|=4\ph(\ell).
+\]
+The shell decomposes into exactly \(\ph(\ell)\) disjoint \(90^\circ\)-rotation orbits.  Moreover
+\[
+\sum_{u\in\HH_\ell}u=0,
+\]
+and
+\[
+\sum_{u\in\HH_\ell}|u_1|
+=
+\sum_{u\in\HH_\ell}|u_2|
+=
+2\ell\ph(\ell).
+\]
+Thus the polygon obtained from the whole shell \(\HH_\ell\) with unit multiplicities contributes \(\ell\ph(\ell)\) to each coordinate span.
+\end{lemma}
+
+\begin{proof}
+In one quarter-turn of the shell, primitive pairs with coordinate sum \(\ell\) are parametrized by reduced residues modulo \(\ell\), giving \(4\ph(\ell)\) oriented vectors in total.  Rotation by \(90^\circ\) acts freely, so there are \(\ph(\ell)\) orbits.  Central symmetry gives zero vector sum.  Since every vector has \(\ell_1\)-length \(\ell\), the total of \(|u_1|+|u_2|\) over the shell is \(4\ell\ph(\ell)\); quarter-turn symmetry splits this equally between the two coordinates.
+\end{proof}
+
+Define
+\begin{equation}\label{eq:AS}
+A(t):=4\sum_{j=1}^t\ph(j),\qquad
+S(t):=\sum_{j=1}^t j\ph(j),
+\end{equation}
+with \(A(0)=S(0)=0\), and let
+\[
+\LL_t:=\HH_1\cup\cdots\cup\HH_t.
+\]
+By Lemma~\ref{lem:shell}, \(\LL_t\) has \(A(t)\) directions and, with unit multiplicities, gives a square polygon of side \(S(t)\).
+
+\section{The greedy lower bound}
+
+Fix \(k\ge3\).  There are unique integers \(\ell\ge1\) and
+\(0\le r<4\ph(\ell)\) such that
+\begin{equation}\label{eq:kr}
+k=A(\ell-1)+r.
+\end{equation}
+Set
+\begin{equation}\label{eq:G}
+G(k):=S(\ell-1)+\left\lceil\frac{r\ell}{4}\right\rceil.
+\end{equation}
+
+\begin{theorem}[Greedy lower bound]\label{thm:greedy}
+For every \(k\ge3\),
+\[
+D(k)\ge G(k).
+\]
+\end{theorem}
+
+\begin{proof}
+Among \(k\) distinct primitive oriented directions, the minimum possible sum of primitive \(\ell_1\)-lengths is obtained by taking all directions in
+\(\HH_1,\ldots,\HH_{\ell-1}\) and then \(r\) directions from \(\HH_\ell\).  Hence
+\[
+\sum_{i=1}^k\|u_i\|_1\ge 4S(\ell-1)+r\ell.
+\]
+Positive integer edge multiplicities can only increase the left-hand side.  If the polygon fits in an \(N\times N\) coordinate square, Lemma~\ref{lem:model} gives
+\[
+4N\ge2(W+H)=\sum_i\lambda_i\|u_i\|_1
+\ge4S(\ell-1)+r\ell.
+\]
+Taking the least integer \(N\) proves the claim.
+\end{proof}
+
+It is useful to isolate the rounding defect
+\begin{equation}\label{eq:defect}
+\delta(\ell,r)
+=
+4\left\lceil\frac{r\ell}{4}\right\rceil-r\ell
+\in\{0,1,2,3\}.
+\end{equation}
+The total \(\ell_1\)-cost budget above the greedy support is exactly \(\delta\) when a polygon attains \(G(k)\).
+
+\section{Shell surgery: three structural lemmas}
+
+We repeatedly modify the balanced system \(\LL_{\ell-1}\).  If a collection of directions is inserted, another collection is deleted, and some already present directions have their multiplicities increased, define the \emph{net variation}
+\[
+\Delta_x
+=
+\sum_{\rm add}|u_1|
+-\sum_{\rm del}|u_1|
++\sum_{\rm mult}c_u|u_1|,
+\]
+and similarly \(\Delta_y\).  Here \(c_u\) is the multiplicity increment of an already present direction.
+
+\begin{lemma}[Surgery criterion]\label{lem:surgery}
+Suppose a modification of a closed direction system has net vector sum zero and changes the number of distinct directions by \(q\).  If
+\[
+\Delta_x=\Delta_y=2t,
+\]
+then it changes each coordinate span by \(t\).  In particular, if the starting polygon is square of side \(B\), the modified polygon is square of side \(B+t\).
+\end{lemma}
+
+\begin{proof}
+This is immediate from \eqref{eq:WH}.
+\end{proof}
+
+A complete orbit \(\mathcal O(u)\subset\HH_\ell\) has zero vector sum and
+\[
+\Delta_x=\Delta_y=2\ell,
+\]
+so adjoining one unused complete orbit adds four edge directions and increases the square side by exactly \(\ell\).
+
+\begin{lemma}[Shell parity]\label{lem:parity}
+An odd number of vectors from a single shell \(\HH_\ell\) can never have vector sum zero.
+\end{lemma}
+
+\begin{proof}
+If \(\ell\) is even, a primitive vector \(u=(x,y)\in\HH_\ell\) has \(x,y\) both odd; otherwise they would both be even.  Thus every shell vector is congruent to \((1,1)\pmod2\), and an odd sum is nonzero modulo \(2\).
+
+If \(\ell\) is odd, exactly one coordinate of each shell vector is odd.  In a zero sum, the number of vectors with odd first coordinate and the number with odd second coordinate must both be even.  Their sum is the total number of vectors, which is therefore even.
+\end{proof}
+
+The next identity explains why the local gadgets below have bounded support.
+
+\begin{lemma}[Defect budget for unit shell surgery]\label{lem:defbudget}
+Start from \(\LL_{\ell-1}\).  Delete \(q\) unit-multiplicity directions from shells
+\(\ell-1-\alpha_j\), \(\alpha_j\ge0\), and add \(p\) unit-multiplicity directions from shells
+\(\ell+\beta_i\), \(\beta_i\ge0\).  Suppose the net number of directions is \(r=p-q\) and the construction attains the greedy bound.  Then
+\begin{equation}\label{eq:defbudget}
+q+\sum_i\beta_i+\sum_j\alpha_j=\delta(\ell,r).
+\end{equation}
+In particular \(q\le\delta(\ell,r)\).
+\end{lemma}
+
+\begin{proof}
+The net increase in total primitive \(\ell_1\)-cost is
+\[
+\sum_i(\ell+\beta_i)-\sum_j(\ell-1-\alpha_j)
+=
+r\ell+q+\sum_i\beta_i+\sum_j\alpha_j.
+\]
+At the greedy bound the available total increase is
+\(4\lceil r\ell/4\rceil=r\ell+\delta(\ell,r)\).
+\end{proof}
+
+Unit shell surgery is not the whole story.  The four axis directions in \(\HH_1\) are always available once \(\ell\ge2\).
+
+\begin{lemma}[Axis multiplicity compensation]\label{lem:axis}
+Let \(b=(b_x,b_y)\in\Z^2\) and \(c_x,c_y\ge0\).  By increasing only the multiplicities of
+\((\pm1,0)\) and \((0,\pm1)\), one can add total vector \(b\) and total absolute-coordinate variations \(c_x,c_y\) if and only if
+\[
+|b_x|\le c_x,\quad |b_y|\le c_y,\qquad
+b_x\equiv c_x\pmod2,\quad b_y\equiv c_y\pmod2.
+\]
+\end{lemma}
+
+\begin{proof}
+If the positive and negative \(x\)-axis multiplicity increments are \(\alpha_+,\alpha_-\), then
+\[
+\alpha_+-\alpha_-=b_x,\qquad
+\alpha_++\alpha_-=c_x,
+\]
+so
+\[
+\alpha_\pm=\frac{c_x\pm b_x}{2}.
+\]
+These are nonnegative integers exactly under the stated conditions.  The \(y\)-axis argument is identical.
+\end{proof}
+
+\section{Greedy-attaining constructions}\label{sec:construct}
+
+Write
+\[
+h_\ell:=|\HH_\ell|=4\ph(\ell).
+\]
+In this section we prove that every pair \((\ell,r)\), except the six families isolated in Section~\ref{sec:exception}, attains the greedy bound.  The repeated device is to construct one residue-class seed and then add unused complete \(90^\circ\)-orbits.
+
+\subsection{Even \(r\)}
+
+\begin{proposition}[All nonexceptional even cases]\label{prop:even}
+Let \(r\) be even.  Then \(D(A(\ell-1)+r)=G(A(\ell-1)+r)\), except when
+\[
+\ell\ge4\text{ is even and }r\in\{2,h_\ell-2\}.
+\]
+\end{proposition}
+
+\begin{proof}
+If \(r=4q\), take \(q\) complete orbits from \(\HH_\ell\).
+
+Assume \(r=4q+2\) and \(\ell=2b+1\) is odd.  Insert the opposite pair
+\[
+\pm(b,b+1)\in\HH_\ell.
+\]
+It is primitive, closed, and increases the two spans by \(b\) and \(b+1\), respectively, so the required square increment is
+\[
+b+1=\left\lceil\frac{\ell}{2}\right\rceil.
+\]
+The pair occupies one shell orbit, leaving \(\ph(\ell)-1\) complete orbits, exactly enough to add \(4q\) further directions for every admissible \(q\).
+
+Now let \(\ell\) be even.  The two endpoint residues \(2\) and \(h_\ell-2\) are deferred to Section~\ref{sec:exception}.  It remains to treat
+\[
+6\le r\le h_\ell-6,\qquad r\equiv2\pmod4.
+\]
+
+First suppose \(\ell=2u\equiv2\pmod4\), so \(u\) is odd.  For the only nontrivial range we have \(u\ge5\).  The six directions
+\begin{equation}\label{eq:even6mod2}
+\pm(u-4,u+4),\qquad
+\pm(u+2,u-2),\qquad
+\pm(u+2,-(u-2))
+\end{equation}
+belong to \(\HH_\ell\), are primitive, and form three opposite pairs.  Their horizontal and vertical span contributions are both
+\[
+(u-4)+(u+2)+(u+2)=3u=\frac{3\ell}{2}.
+\]
+They occupy three rotation orbits.  Thus \eqref{eq:even6mod2} realizes \(r=6\), and the remaining \(\ph(\ell)-3\) orbits extend it through \(r=h_\ell-6\).  Primitivity follows from
+\[
+\gcd(u-4,u+4)=\gcd(u-4,8)=1,\qquad
+\gcd(u+2,u-2)=\gcd(u-2,4)=1,
+\]
+because \(u\) is odd.
+
+Next suppose \(\ell=4w\ge8\).  The six directions
+\begin{equation}\label{eq:even6mod0}
+\begin{split}
+&(-(\ell-1),-1),\quad (-(2w-1),\,2w+1),\quad (-1,\ell-1),\\
+&(-1,-(\ell-1)),\quad (2w+1,-(2w-1)),\quad (\ell-1,-1)
+\end{split}
+\end{equation}
+sum to zero, are primitive, and have total absolute variation
+\[
+\sum|x|=\sum|y|=3\ell.
+\]
+Hence they realize \(r=6\) with span increment \(3\ell/2\).  A direct rotation check shows that they occupy four shell orbits, so complete unused orbits extend the construction through \(r=h_\ell-10\).  The remaining value \(r=h_\ell-6\) is obtained by starting from the complete shell \(\HH_\ell\) and deleting precisely the six-vector closed set \eqref{eq:even6mod0}; this decreases each span by \(3\ell/2\), exactly the greedy amount.
+
+The small shells \(\ell=2,4,6\) contain no omitted intermediate case.  For \(\ell=2,r=2\), the pair \(\pm(1,1)\) is exact.
+\end{proof}
+
+\subsection{Odd \(r\) with defect \(\delta=1\)}
+
+For odd \(r\), the condition \(\delta=1\) is equivalent to either
+\[
+\ell\equiv1\pmod4,\ r\equiv3\pmod4,
+\qquad\text{or}\qquad
+\ell\equiv3\pmod4,\ r\equiv1\pmod4.
+\]
+
+\begin{proposition}[\(\delta=1\)]\label{prop:delta1}
+All \(\delta=1\) pairs attain the greedy bound except
+\[
+\ell\equiv3\pmod4,\ \ell\ge7,\ r=1,
+\]
+and
+\[
+\ell\equiv1\pmod4,\ \ell\ge5,\ r=h_\ell-1.
+\]
+\end{proposition}
+
+\begin{proof}
+First let \(\ell=4a+1\), \(a\ge1\), and start with \(\LL_{\ell-1}\).  Delete
+\[
+w=(-(2a+1),-(2a-1))\in\HH_{\ell-1}
+\]
+and insert
+\[
+u=(3a+1,a),\quad -u,\quad
+v=(-2a,2a+1),\quad z=(-1,-4a),
+\]
+all in \(\HH_\ell\).  Since \(v+z=w\), closure is preserved.  The number of directions increases by \(3\), and the net absolute variations are
+\[
+\Delta_x=\Delta_y=6a+2.
+\]
+Thus the two spans increase by
+\[
+3a+1=\left\lceil\frac{3\ell}{4}\right\rceil.
+\]
+The inserted shell directions use at most three rotation orbits, so complete unused orbits cover
+\[
+r=3,7,\ldots,h_\ell-9.
+\]
+
+For the next value \(r=h_\ell-5\), start from the complete system \(\LL_\ell\).  Define
+\[
+u=(3a+1,a),\qquad s=(2a,-(2a+1)),
+\]
+\[
+v_0=(2a,2a+1),\qquad w_0=(2a+1,-2a),
+\qquad z_0=(4a+1,1).
+\]
+Delete
+\[
+u,-u,s,-s,v_0,w_0\in\HH_\ell
+\]
+and insert \(z_0\in\HH_{\ell+1}\).  The deleted vector sum equals \(z_0\); the direction count drops by \(5\); and each absolute-coordinate total drops by \(10a+2\).  Hence each span drops by \(5a+1=\lfloor5\ell/4\rfloor\), which is exactly the greedy value for \(h_\ell-5\).  Only \(h_\ell-1\) remains.
+
+Now let \(\ell=4a+3\), \(a\ge1\).  Insert
+\[
+p=(2a+2,2a+1),\quad
+q=(a+1,-(3a+2)),\quad
+s=(2a+1,-(2a+2)),
+\]
+\[
+-q=(-a-1,3a+2),\qquad
+t=(-4a-3,1)\in\HH_{\ell+1},
+\]
+where the first four vectors lie in \(\HH_\ell\).  We have
+\(q+(-q)=0\) and \(p+s+t=0\).  The absolute-coordinate totals are both
+\(10a+8\), so this five-direction closed system has span
+\[
+5a+4=\left\lceil\frac{5\ell}{4}\right\rceil.
+\]
+The four \(\HH_\ell\)-directions occupy exactly two rotation orbits, and unused complete orbits extend the construction from \(r=5\) through \(r=h_\ell-3\).  Thus only \(r=1\) remains.
+
+For \(\ell=3\), the two values \(r=1,5\) are both exact.  For \(r=1\), remove
+\((1,-1)\in\HH_2\) from \(\LL_2\) and insert
+\((2,1),(-1,-2)\in\HH_3\); the two inserted vectors sum to the removed one and increase each span by \(1\).  For \(r=5\), start from \(\LL_3\) and delete the closed triple
+\[
+(-1,1),\quad(-1,-2),\quad(2,1),
+\]
+whose horizontal and vertical absolute-coordinate totals are both \(4\); this leaves \(13=A(2)+5\) directions in a square of side \(9-2=7\), which equals the greedy bound.
+\end{proof}
+
+\subsection{Odd \(r\) with defect \(\delta=2\)}
+
+Here \(\ell=4a+2\), and every odd \(r\) has defect \(2\).
+
+\begin{proposition}[\(\delta=2\)]\label{prop:delta2}
+Every \(\delta=2\) pair attains the greedy bound except
+\[
+(\ell,r)=(6,5).
+\]
+\end{proposition}
+
+\begin{proof}
+We give four seeds, according to the parity of \(a\) and the residue of \(r\).
+
+\smallskip
+\noindent\emph{(i) \(a\) even, \(r\equiv1\pmod4\).}
+Delete
+\[
+w=(-(2a+1),2a)\in\HH_{\ell-1}
+\]
+and insert
+\[
+u=(a+1,3a+1)\in\HH_\ell,\qquad
+v=(-(3a+2),-(a+1))\in\HH_{\ell+1}.
+\]
+Since \(u+v=w\), closure holds.  The net absolute variations are
+\[
+\Delta_x=\Delta_y=2a+2,
+\]
+so this realizes \(r=1\).  It uses one \(\HH_\ell\)-orbit and therefore extends, by complete orbits, to every \(r\equiv1\pmod4\).  Primitivity of \(u\) follows from
+\(\gcd(a+1,3a+1)=\gcd(a+1,2)=1\), because \(a\) is even.
+
+\smallskip
+\noindent\emph{(ii) \(a\) odd, \(r\equiv3\pmod4\).}
+Use the three zero-sum directions
+\[
+u=(-(3a+2),a)\in\HH_\ell,\qquad
+v=(2a+1,2a+2),\quad
+w=(a+1,-(3a+2))\in\HH_{\ell+1}.
+\]
+Their two absolute-coordinate totals are \(6a+4\), so they realize \(r=3\).  Only one \(\HH_\ell\)-orbit is occupied, and all \(r\equiv3\pmod4\) follow by complete-orbit addition.
+
+\smallskip
+\noindent\emph{(iii) \(a\) odd, \(r\equiv1\pmod4\).}
+Delete
+\[
+w_1=(-(3a+1),-a),\qquad
+w_2=(2a+1,-2a)
+\]
+from \(\HH_{\ell-1}\), and insert
+\[
+u_1=(-(4a+1),1),\quad
+u_2=(-1,-(4a+1)),\quad
+u_3=(3a+2,a)
+\]
+from \(\HH_\ell\).  The inserted vector sum equals \(w_1+w_2\), and
+\[
+\Delta_x=\Delta_y=2a+2.
+\]
+Thus \(r=1\) is exact.  The seed occupies two \(\HH_\ell\)-orbits, so it extends through \(r=h_\ell-7\).
+
+For the highest residue \(r=h_\ell-3\), when \(a\ge3\), start from \(\LL_\ell\), delete
+\[
+d_1=(-(4a+1),-1),\quad
+d_2=(-(3a+2),-a),\quad
+d_3=(a,3a+2)\in\HH_\ell,
+\]
+\[
+d_4=(2a+1,-2a)\in\HH_{\ell-1},
+\]
+and insert
+\[
+z=(-(4a+2),1)\in\HH_{\ell+1}.
+\]
+The deleted sum is \(z\); the direction count drops by \(3\); and the absolute-coordinate totals decrease by \(6a+2\) in both coordinates.  Hence each span drops by
+\(3a+1=\lfloor3\ell/4\rfloor\), as required.
+
+When \(a=1\), this terminal construction degenerates and gives precisely the exceptional pair \((6,5)\).
+
+\smallskip
+\noindent\emph{(iv) \(a\) even, \(r\equiv3\pmod4\), \(a\ge2\).}
+Insert
+\[
+u_1=(-(4a+1),-1),\quad
+u_2=(-(a+1),-(3a+1)),\quad
+u_3=(-1,4a+1)\in\HH_\ell,
+\]
+\[
+p=(3a+2,a+1)\in\HH_{\ell+1},
+\]
+and delete
+\[
+w=(-(2a+1),2a)\in\HH_{\ell-1}.
+\]
+The four inserted vectors sum to \(w\), and
+\[
+\Delta_x=\Delta_y=6a+4.
+\]
+This realizes \(r=3\), uses two \(\HH_\ell\)-orbits, and extends through \(r=h_\ell-5\).
+
+For \(r=h_\ell-1\), start from \(\LL_\ell\), delete
+\[
+d_1=(-(4a+1),1),\quad
+d_2=(-(a+1),3a+1),\quad
+d_3=(3a+1,-(a+1))
+\]
+from \(\HH_\ell\), and insert
+\[
+p=(-(4a+2),-1),\qquad
+q=(2a+1,2a+2)
+\]
+from \(\HH_{\ell+1}\).  The deleted and inserted vector sums agree, the direction count drops by one, and each absolute-coordinate total drops by \(2a\).  Hence each span drops by \(a=\lfloor\ell/4\rfloor\).
+
+Finally, \(\ell=2\) is small.  The cases \(r=1,2\) are given respectively by the seed in (i) with \(a=0\) and by the pair \(\pm(1,1)\).  For \(r=3\), adjoining
+\[
+(-1,1)\in\HH_2,\qquad
+(-1,-2),(2,1)\in\HH_3
+\]
+to \(\LL_1\) gives a zero-sum three-direction system whose two absolute-coordinate totals are both \(4\), hence the exact side increment is \(2\).
+\end{proof}
+
+\subsection{Odd \(r\) with defect \(\delta=3\)}
+
+The remaining greedy odd cases are
+\[
+\ell\equiv1\pmod4,\ r\equiv1\pmod4,
+\qquad\text{or}\qquad
+\ell\equiv3\pmod4,\ r\equiv3\pmod4.
+\]
+
+\begin{proposition}[\(\delta=3\)]\label{prop:delta3}
+Every \(\delta=3\) pair attains the greedy bound.
+\end{proposition}
+
+\begin{proof}
+Let first \(\ell=4a+1\), \(a\ge1\).
+
+If \(a\not\equiv2\pmod3\), insert
+\[
+u=(-3a,a+1)\in\HH_\ell,\qquad
+v=(a+1,-(3a+2))\in\HH_{\ell+2},
+\]
+and delete
+\[
+w=(-(2a-1),-(2a+1))\in\HH_{\ell-1}.
+\]
+We have \(u+v=w\), and the net absolute variations are both \(2a+2\).  The only nontrivial primitive check is
+\[
+\gcd(3a,a+1)=\gcd(3,a+1)=1.
+\]
+Thus \(r=1\) is exact, and because only one \(\HH_\ell\)-orbit is occupied, complete orbits extend the construction through \(r=h_\ell-3\).
+
+Assume now \(a\equiv2\pmod3\).  If \(a\) is even, insert
+\[
+(-4a,1),\quad (-(3a+1),a)\in\HH_\ell,\qquad
+(a+1,-(3a+1))\in\HH_{\ell+1},
+\]
+and delete
+\[
+(-(4a-1),-1),\quad (-(2a+1),-(2a-1))
+\]
+from \(\HH_{\ell-1}\).
+If \(a\) is odd, insert
+\[
+(-4a,1),\quad (-a,3a+1)\in\HH_\ell,\qquad
+(3a,-(a+2))\in\HH_{\ell+1},
+\]
+and delete
+\[
+(-(4a-1),-1),\quad (2a-1,2a+1)
+\]
+from \(\HH_{\ell-1}\).
+In each case the inserted sum equals the deleted sum and
+\[
+\Delta_x=\Delta_y=2a+2.
+\]
+The primitive conditions reduce respectively to
+\[
+\gcd(a+1,3a+1)=1
+\]
+for even \(a\), and
+\[
+\gcd(3a,a+2)=\gcd(a+2,6)=1
+\]
+for odd \(a\equiv2\pmod3\).  Each seed occupies two \(\HH_\ell\)-orbits and therefore covers all \(r\equiv1\pmod4\) through \(h_\ell-7\).
+
+It remains, in the latter congruence class, to construct \(r=h_\ell-3\).  Start from \(\LL_\ell\) and delete
+\[
+d_1=(-(3a+1),a),\quad
+d_2=(a,-(3a+1)),\quad
+d_3=(2a,2a+1)
+\]
+from \(\HH_\ell\).  Their sum is \((-1,0)\), and their absolute-coordinate totals are
+\[
+6a+1,\qquad6a+2.
+\]
+Now increase by one the multiplicities of the already present directions
+\[
+(-1,0),\qquad(0,1),\qquad(0,-1).
+\]
+The multiplicity increment has vector sum \((-1,0)\).  Since deleting the three shell vectors changes the total sum by \((1,0)\), closure is restored.  The net decreases of the two absolute-coordinate totals are both \(6a\), so each span decreases by \(3a=\lfloor3\ell/4\rfloor\).  This gives the exact terminal construction.
+
+Now let \(\ell=4a+3\), \(a\ge0\).  Insert
+\[
+u_1=(-(3a+2),a+1),\quad
+u_2=(a+1,-(3a+2)),\quad
+u_3=(2a+1,2a+2)
+\]
+from \(\HH_\ell\).  Their sum is \((0,1)\), and their absolute-coordinate totals are
+\[
+6a+4,\qquad6a+5.
+\]
+Increase by one the multiplicities of
+\[
+(1,0),\qquad(-1,0),\qquad(0,-1).
+\]
+This adds vector \((0,-1)\) and variations \((2,1)\).  Thus closure holds and the final absolute-coordinate increments are both \(6a+6\), giving span increment
+\[
+3a+3=\left\lceil\frac{3\ell}{4}\right\rceil.
+\]
+The three shell directions occupy at most three rotation orbits, so for \(a\ge1\) this seed and unused complete orbits cover
+\[
+r=3,7,\ldots,h_\ell-9.
+\]
+
+For \(r=h_\ell-1\), start from \(\LL_\ell\), delete
+\[
+d_1=(-(4a+2),1),\quad
+d_2=(-(a+1),3a+2),\quad
+d_3=(3a+2,-(a+1))
+\]
+from \(\HH_\ell\), and insert
+\[
+p=(-(4a+3),-1)\in\HH_{\ell+1},\qquad
+q=(2a+2,2a+3)\in\HH_{\ell+2}.
+\]
+The deleted and inserted vector sums agree.  The direction count drops by one and each absolute-coordinate total drops by \(2a\), giving span reduction \(a=\lfloor\ell/4\rfloor\).
+
+For \(a\ge1\), the three deleted \(\HH_\ell\)-directions meet at most three shell orbits.  Since \(\ell\ge7\) is odd, the four residues
+\(1,2,\ell-1,\ell-2\) are distinct and coprime to \(\ell\), so \(\ph(\ell)\ge4\).  Hence an untouched complete shell orbit remains.  Removing one such orbit from the \(h_\ell-1\) construction gives \(r=h_\ell-5\) and decreases each span by a further \(\ell\).  The total reduction is
+\[
+a+\ell=5a+3=\left\lfloor\frac{5\ell}{4}\right\rfloor.
+\]
+Thus the two high residues are exact.
+
+When \(\ell=3\), the seed above gives \(r=3\).  For \(r=7=h_3-1\), the same terminal construction with \(a=0\) applies: delete
+\[
+(-2,1),\quad(-1,2),\quad(2,-1)
+\]
+and insert
+\[
+(-3,-1),\quad(2,3).
+\]
+It changes the direction count by \(-1\) and leaves the side unchanged, so \(D(A(3)-1)=S(3)=9\).
+\end{proof}
+
+\section{The six non-greedy families}\label{sec:exception}
+
+We now prove that the only failures of the greedy bound are the following six mutually exclusive conditions:
+\begin{align}
+\text{(E1)}\quad&
+\ell\ge4\text{ even},\quad r=2; \label{eq:E1}\\
+\text{(E2)}\quad&
+\ell\ge4\text{ even},\quad r=h_\ell-2; \label{eq:E2}\\
+\text{(E3)}\quad&
+\ell\equiv0\pmod4,\quad r\text{ odd}; \label{eq:E3}\\
+\text{(E4)}\quad&
+\ell\equiv3\pmod4,\quad \ell\ge7,\quad r=1; \label{eq:E4}\\
+\text{(E5)}\quad&
+\ell\equiv1\pmod4,\quad \ell\ge5,\quad r=h_\ell-1; \label{eq:E5}\\
+\text{(E6)}\quad&
+(\ell,r)=(6,5). \label{eq:E6}
+\end{align}
+
+\subsection{Analytic non-attainment of (E1)--(E5)}
+
+\begin{proposition}\label{prop:nonattain}
+In each of \textup{(E1)}--\textup{(E5)}, no polygon attains the greedy bound.
+\end{proposition}
+
+\begin{proof}
+For (E1), \(\ell\) is even and \(r=2\).  Here the defect is \(0\), so equality in Theorem~\ref{thm:greedy} would force unit multiplicities and exactly the support
+\(\LL_{\ell-1}\) plus two directions \(u,v\in\HH_\ell\).  Since \(\LL_{\ell-1}\) is balanced, \(u+v=0\), so \(v=-u\).  Equality of both coordinate spans with the square bound forces
+\[
+|u_1|=|u_2|=\frac{\ell}{2}.
+\]
+For \(\ell\ge4\), this vector is not primitive, a contradiction.
+
+For (E2), the defect is again \(0\).  Equality would use all of \(\LL_\ell\) except two directions \(u,v\in\HH_\ell\), with unit multiplicities.  Closure forces \(u+v=0\).  Since the target side is
+\[
+S(\ell)-\frac{\ell}{2},
+\]
+the removed opposite pair must reduce both spans by \(\ell/2\), again forcing
+\(|u_1|=|u_2|=\ell/2\), impossible for a primitive vector when \(\ell\ge4\).
+
+For (E3), the defect is \(0\).  Equality would force \(\LL_{\ell-1}\) plus exactly \(r\) unit directions from \(\HH_\ell\), and these \(r\) directions would have to sum to zero.  This contradicts Lemma~\ref{lem:parity}, because \(r\) is odd.
+
+For (E4), write \(\ell=4a+3\), \(a\ge1\).  The greedy support cost is
+\[
+C_0=4S(\ell-1)+\ell,
+\]
+while \(4G=C_0+1\).  Thus a hypothetical greedy-attaining polygon has weighted \(\ell_1\)-cost at most \(C_0+1\).  There are only three support possibilities.
+
+First, the greedy support itself can be used, with the single unit of surplus multiplicity placed on a direction of \(\HH_1\).  Closure would then require \(u+e=0\) for
+\(u\in\HH_\ell\) and \(e\in\HH_1\), impossible.
+
+Second, the unique shell-\(\ell\) direction can be replaced by one direction of \(\HH_{\ell+1}\).  With no multiplicity slack left, the new direction would have to sum to zero by itself, impossible.
+
+Third, one direction
+\(w\in\HH_{\ell-1}\) can be omitted and two directions \(u,v\in\HH_\ell\) inserted.  Then
+\[
+u+v=w.
+\]
+The support cost is now exactly \(4G\), so both coordinate spans equal \(G\).  Therefore, for each coordinate \(i\),
+\[
+|u_i|+|v_i|-|u_i+v_i|=2a+2.
+\]
+For real numbers \(p,q\), the left side equals \(0\) if \(pq\ge0\), and otherwise equals \(2\min(|p|,|q|)\).  Hence \(u_i,v_i\) have opposite signs and
+\[
+\min(|u_i|,|v_i|)=a+1
+\]
+for \(i=1,2\).  The same vector cannot be the smaller one in both coordinates, because then its \(\ell_1\)-length would be \(2a+2<4a+3\).  Thus, after swapping coordinates and \(u,v\),
+\[
+(|u_1|,|u_2|)=(a+1,3a+2),\qquad
+(|v_1|,|v_2|)=(3a+2,a+1).
+\]
+Since signs are opposite coordinatewise,
+\[
+(|w_1|,|w_2|)=(2a+1,2a+1),
+\]
+so \(w\) is not primitive.  Contradiction.
+
+For (E5), write \(\ell=4a+1\), \(a\ge1\), and regard the greedy support as the complete system
+\(\LL_\ell\) with one direction of \(\HH_\ell\) removed.  Again \(4G\) exceeds the greedy support cost by exactly \(1\).  The support possibilities within one unit are:
+
+\begin{enumerate}[label=(\roman*)]
+\item the greedy support plus one unit of multiplicity on \(\HH_1\);
+\item two directions \(u,v\in\HH_\ell\) removed and one
+\(z\in\HH_{\ell+1}\) inserted;
+\item one direction \(w\in\HH_{\ell-1}\) removed and the whole shell
+\(\HH_\ell\) retained.
+\end{enumerate}
+
+In (i), closure would require a shell-\(\ell\) vector to equal a unit-axis vector.  In (iii), closure would require \(w=0\).  Both are impossible.
+
+In (ii), closure gives \(z=u+v\).  Since the support cost is exactly \(4G\), both coordinate spans equal
+\[
+G=S(\ell)-a.
+\]
+Hence
+\[
+|u_i|+|v_i|-|u_i+v_i|=2a
+\]
+for \(i=1,2\).  As before, \(u_i,v_i\) have opposite signs and
+\(\min(|u_i|,|v_i|)=a\).  The minima must occur in different vectors, and therefore the absolute coordinate pairs are
+\[
+(a,3a+1),\qquad(3a+1,a).
+\]
+Consequently
+\[
+(|z_1|,|z_2|)=(2a+1,2a+1),
+\]
+contradicting the primitivity of \(z\).
+\end{proof}
+
+The support classifications used above follow because replacing a direction from
+\(\HH_j\), \(j\le\ell-2\), by an additional direction of shell at least \(\ell\) costs at least two units, while only one unit of total support-cost slack is available.
+
+\subsection{The finite exception \((6,5)\)}
+
+\begin{proposition}\label{prop:65}
+For \(k=A(5)+5=45\),
+\[
+G(k)=45,\qquad D(k)=46.
+\]
+\end{proposition}
+
+\begin{proof}
+The upper bound \(D(k)\le46\) is given in the next subsection.  We prove non-attainment of side \(45\).
+
+Suppose a \(45\)-edge polygon fits in a \(45\times45\) coordinate square.  By
+\eqref{eq:l1cost}, its weighted \(\ell_1\)-cost \(C\) satisfies
+\[
+C=2(W+H)\le180.
+\]
+The \(40\) directions in \(\HH_1\cup\cdots\cup\HH_5\) have total primitive cost
+\[
+4S(5)=148.
+\]
+Thus the cheapest \(45\) distinct primitive directions have cost
+\[
+148+5\cdot6=178.
+\]
+Since \(C=2(W+H)\) is even, only \(C=178\) or \(C=180\) need be considered.
+
+A support of primitive cost at most \(180\) can differ from
+\(\HH_1\cup\cdots\cup\HH_5\) plus five \(\HH_6\)-directions by at most two units of shell cost.  Exhausting that budget gives exactly the following support types:
+\begin{center}
+\begin{tabular}{c|l}
+primitive cost & support outside the unchanged part\\
+\hline
+178 & five \(\HH_6\) directions\\
+179 & four \(\HH_6\)+one \(\HH_7\), or omit one \(\HH_5\) and take six \(\HH_6\)\\
+180 & three \(\HH_6\)+two \(\HH_7\); four \(\HH_6\)+one \(\HH_8\);\\
+& omit one \(\HH_5\), then five \(\HH_6\)+one \(\HH_7\);\\
+& omit one \(\HH_4\), then six \(\HH_6\);\\
+& omit two \(\HH_5\), then seven \(\HH_6\).
+\end{tabular}
+\end{center}
+If the primitive support cost is \(178\) and \(C=180\), the multiplicity surplus \(2\) is either one extra \(\HH_2\) unit, two extra units on one \(\HH_1\) direction, or one extra unit on each of two \(\HH_1\) directions.  If the primitive support cost is \(179\), the only possible surplus is one \(\HH_1\) unit.  At primitive cost \(180\), there is no multiplicity surplus.
+
+The accompanying program
+\texttt{verifier\_P1\_round7\_l6\_r5\_exception.py}
+enumerates exactly these finite families, using only integer arithmetic.  For each candidate it checks the number of distinct directions, positive multiplicities, closure, and
+\(W,H\le45\).  It tests \(48616\) candidates and returns zero feasible cases.  Because the preceding cost argument proves that the listed support and multiplicity patterns are exhaustive, the computation is a finite proof of non-attainment.
+\end{proof}
+
+\subsection{Explicit \(G+1\) constructions}
+
+\begin{proposition}\label{prop:gplus1}
+Every exceptional pair \textup{(E1)}--\textup{(E6)} admits a polygon of side \(G+1\).
+\end{proposition}
+
+\begin{proof}
+For (E1), write \(\ell=2u\ge4\).  Starting from \(\LL_{\ell-1}\), insert
+\[
+\pm(u,u+1)\in\HH_{\ell+1}.
+\]
+The pair is primitive, closed, and increases the two spans by \(u\) and \(u+1\).  Thus the resulting side is
+\[
+S(\ell-1)+u+1=G+1.
+\]
+
+For (E2), start from \(\LL_\ell\), remove any complete orbit from \(\HH_\ell\), and insert the same opposite pair
+\(\pm(u,u+1)\in\HH_{\ell+1}\).  The direction count changes by \(-4+2=-2\), while the new side is
+\[
+S(\ell)-\ell+(u+1)
+=
+S(\ell)-u+1
+=
+G+1.
+\]
+
+For (E3), write \(\ell=4a\) and \(h=h_\ell=4\varphi(\ell)\).  We give four explicit endpoint seeds and then use complete unused \(90^\circ\)-orbits.
+
+First consider \(r\equiv1\pmod4\).  Starting from \(\LL_{\ell-1}\), delete the opposite pair
+\[
+\pm w,\qquad w=(a,3a-1)\in\HH_{\ell-1},
+\]
+and insert
+\[
+u_1=(-(2a+1),2a-1),\qquad
+u_2=(2a-1,2a+1),\qquad
+u_3=(1,-(4a-1)),
+\]
+all in \(\HH_\ell\).  These three inserted vectors have sum \((-1,1)\).  Increase by one the multiplicities of the already present axis directions
+\[
+(1,0),\qquad(0,-1).
+\]
+Their added vector is \((1,-1)\), so closure is restored.  The three shell vectors have absolute-coordinate totals
+\[
+4a+1,\qquad 8a-1,
+\]
+while the deleted opposite pair contributes
+\[
+2a,\qquad 6a-2.
+\]
+After the axis compensation the net variations are therefore
+\[
+\Delta_x=\Delta_y=2a+2.
+\]
+Hence the side increment is \(a+1=\ell/4+1\), exactly \(G+1\) for \(r=1\).  All displayed directions are primitive; in particular
+\(\gcd(a,3a-1)=1\) and \(\gcd(2a-1,2a+1)=1\).  Moreover \(u_1,u_2\) lie in one rotation orbit and \(u_3\) in a second.  Thus unused complete orbits extend this construction to
+\[
+r=1,5,\ldots,h-7.
+\]
+
+For the remaining value \(r=h-3\), start from the complete system \(\LL_\ell\).  We first describe a three-delete/two-insert core.  If \(a\) is even, delete
+\[
+d_1=(-(4a-1),1),\qquad
+d_2=(-(3a+1),-(a-1)),\qquad
+d_3=(a-1,3a+1)
+\]
+from \(\HH_\ell\), and insert
+\[
+p=(-4a,1),\qquad q=(-2a,2a+1)
+\]
+from \(\HH_{\ell+1}\).  If \(a\) is odd, delete
+\[
+d_1=(-(3a-2),a+2),\qquad
+d_2=(-(2a+1),-(2a-1)),\qquad
+d_3=(2a-1,-(2a+1))
+\]
+and insert
+\[
+p=(-(4a-1),2),\qquad q=(a,-(3a+1)).
+\]
+In both parity cases
+\[
+(d_1+d_2+d_3)-(p+q)=(-1,1),
+\]
+and the difference between deleted and inserted absolute-coordinate totals is
+\[
+(2a-1,2a-1).
+\]
+Now delete two further shell directions
+\[
+s_1=(2a+1,2a-1),\qquad
+s_2=(-(2a-1),-(2a+1)).
+\]
+They satisfy
+\[
+s_1+s_2=(2,-2),
+\qquad
+\sum_{j=1}^2|s_{j,1}|=
+\sum_{j=1}^2|s_{j,2}|=4a.
+\]
+The total deleted-minus-inserted vector is therefore \((1,-1)\).  Increasing by one the multiplicities of \((1,0)\) and \((0,-1)\) restores closure.  The final reduction of each absolute-coordinate total is
+\[
+(2a-1)+4a-1=6a-2,
+\]
+so each span decreases by \(3a-1\).  The direction count decreases by \(5-2=3\), and hence
+\[
+D(A(\ell)-3)\le S(\ell)-(3a-1)=G+1.
+\]
+All displayed vectors are primitive; the only parity-sensitive gcds are
+\[
+\gcd(3a+1,a-1)=\gcd(a-1,4)=1
+\]
+when \(a\) is even, and
+\[
+\gcd(3a-2,a+2)=\gcd(a+2,8)=1
+\]
+when \(a\) is odd.  The five deleted directions are pairwise distinct.
+
+Now consider \(r\equiv3\pmod4\).  For \(r=3\), use the same low-end construction as for \(r=1\), but before applying axis compensation also insert
+\[
+s_1=(2a+1,2a-1),\qquad
+s_2=(-(2a-1),-(2a+1)).
+\]
+The original three shell vectors sum to \((-1,1)\), while \(s_1+s_2=(2,-2)\); hence the five inserted shell vectors have total sum \((1,-1)\).  After deleting \(\pm w\), increase by one the multiplicities of \((-1,0)\) and \((0,1)\).  The net absolute-coordinate variations are
+\[
+(2a+1,2a+1)+(4a,4a)+(1,1)
+=(6a+2,6a+2),
+\]
+so the side increment is \(3a+1\), exactly \(G+1\) for \(r=3\).  For \(a>1\) these five shell directions meet at most three rotation orbits; for \(a=1\) they meet only two.  Consequently complete unused orbits extend the construction through
+\[
+r=h-9
+\]
+whenever this range is nonempty.
+
+It remains to treat \(r=h-1\) and \(r=h-5\).  Use the parity-dependent three-delete/two-insert core displayed above, but do not delete \(s_1,s_2\).  Since deleted minus inserted vector is \((-1,1)\), increase by one the multiplicities of \((-1,0)\) and \((0,1)\).  The final reduction of each absolute-coordinate total is
+\[
+(2a-1)-1=2a-2,
+\]
+so each span decreases by \(a-1\).  The direction count decreases by one, giving
+\[
+D(A(\ell)-1)\le S(\ell)-(a-1)=G+1.
+\]
+For \(\ell\ge8\), \(\varphi(\ell)\ge4\), while the three deleted shell directions meet at most three rotation orbits; hence one complete \(\HH_\ell\)-orbit is disjoint from them.  Deleting such an orbit as well gives \(r=h-5\) and decreases each span by a further \(\ell\), again exactly preserving the value \(G+1\).  For \(\ell=4\), the three deleted directions lie in one of the two shell orbits, so the same conclusion holds directly.
+
+Thus every odd \(r\) with \(\ell\equiv0\pmod4\) has an explicit construction of side \(G+1\).
+For (E4), write \(\ell=4a+3\), \(a\ge1\).  Proposition~\ref{prop:delta1} gives an exact \(r=5\) construction of side
+\[
+S(\ell-1)+5a+4.
+\]
+The low layers are intact in that construction.  Remove any complete orbit from
+\(\HH_{\ell-1}\).  The direction count drops by \(4\), so \(r\) becomes \(1\), and the side becomes
+\[
+S(\ell-1)+5a+4-(\ell-1)
+=
+S(\ell-1)+a+2
+=
+G+1.
+\]
+
+For (E5), write \(\ell=4a+1\), \(a\ge1\).  Proposition~\ref{prop:delta1} gives the exact \(r=h_\ell-5\) construction of side
+\[
+S(\ell)-(5a+1).
+\]
+That construction inserts only one direction from \(\HH_{\ell+1}\), hence occupies only one
+\(\HH_{\ell+1}\)-orbit.  Since \(\ph(\ell+1)\ge2\), choose another complete orbit in
+\(\HH_{\ell+1}\) and add it.  The direction count increases by \(4\), giving \(r=h_\ell-1\), while the side becomes
+\[
+S(\ell)-(5a+1)+(\ell+1)
+=
+S(\ell)-a+1
+=
+G+1.
+\]
+
+Finally, for (E6), the \(a=1\) seed in part (iii) of Proposition~\ref{prop:delta2} gives an exact \((\ell,r)=(6,1)\) polygon of side
+\[
+S(5)+\left\lceil\frac64\right\rceil=39.
+\]
+Adjoin one complete orbit from \(\HH_7\).  This adds four directions and side \(7\), producing \(r=5\) in side \(46=G+1\).
+\end{proof}
+
+\section{Exact minimum-diameter theorem}
+
+Define the exceptional indicator \(\E(\ell,r)\in\{0,1\}\) by
+\[
+\E(\ell,r)=1
+\]
+if and only if one of \textup{(E1)}--\textup{(E6)} holds, and set
+\(\E(\ell,r)=0\) otherwise.
+
+\begin{theorem}[Exact minimum diameter]\label{thm:exactD}
+Let
+\[
+k=A(\ell-1)+r,\qquad 0\le r<h_\ell.
+\]
+Then
+\begin{equation}\label{eq:exactD}
+\boxed{
+D(k)
+=
+S(\ell-1)
++
+\left\lceil\frac{r\ell}{4}\right\rceil
++
+\E(\ell,r).
+}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:greedy} gives the first two terms as a universal lower bound.
+Propositions~\ref{prop:even}, \ref{prop:delta1}, \ref{prop:delta2}, and
+\ref{prop:delta3} construct a polygon attaining that bound in every nonexceptional case.
+Propositions~\ref{prop:nonattain} and \ref{prop:65} prove that the greedy bound is impossible in every exceptional case, while Proposition~\ref{prop:gplus1} constructs side \(G+1\).  This proves \eqref{eq:exactD}.
+\end{proof}
+
+\section{Direct inversion: the exact formula for \(m(n)\)}
+
+We now convert Theorem~\ref{thm:exactD} into a direct expression for the original grid problem.
+
+\begin{theorem}[Exact maximal edge count]\label{thm:mn}
+Let \(n\ge2\), put \(N=n-1\), and let \(\ell\) be the unique integer satisfying
+\begin{equation}\label{eq:lchoose}
+S(\ell-1)\le N<S(\ell).
+\end{equation}
+Define
+\begin{equation}\label{eq:xrdK}
+x=N-S(\ell-1),\qquad
+r=\left\lfloor\frac{4x}{\ell}\right\rfloor,\qquad
+d=4x-r\ell,\qquad
+K=A(\ell-1)+r.
+\end{equation}
+Then
+\begin{equation}\label{eq:mnformula}
+\boxed{
+m(n)=K-\one_{\{d\le3\}}\E(\ell,r).
+}
+\end{equation}
+Equivalently,
+\[
+\boxed{
+m(n)
+=
+4\sum_{j=1}^{\ell-1}\ph(j)
++
+\left\lfloor
+\frac{4\left(n-1-\sum_{j=1}^{\ell-1}j\ph(j)\right)}{\ell}
+\right\rfloor
+-
+\one_{\{d\le3\}}\E(\ell,r),
+}
+\]
+where \(\ell,r,d\) are determined by \eqref{eq:lchoose}--\eqref{eq:xrdK}.
+\end{theorem}
+
+\begin{proof}
+Since
+\[
+r\ell=4x-d,
+\]
+we have
+\[
+\left\lceil\frac{r\ell}{4}\right\rceil
+=
+x-\left\lfloor\frac d4\right\rfloor.
+\]
+Therefore Theorem~\ref{thm:exactD} gives
+\begin{equation}\label{eq:DK}
+D(K)
+=
+N-\left\lfloor\frac d4\right\rfloor+\E(\ell,r).
+\end{equation}
+Thus \(K\) fails to fit in the \(N\times N\) coordinate square exactly when
+\[
+d\le3\quad\text{and}\quad \E(\ell,r)=1.
+\]
+
+Also
+\[
+(r+1)\ell>4x,
+\]
+so
+\[
+S(\ell-1)+\left\lceil\frac{(r+1)\ell}{4}\right\rceil\ge N+1.
+\]
+The greedy lower bound therefore implies \(D(K+1)>N\), including the boundary case
+\(r+1=h_\ell\).
+
+If \(K\) is exceptional and \(d\le3\), then \(D(K)=N+1\).  Every exceptional pair has
+\(\ell\ge4\), and hence
+\[
+G(K)-G(K-1)
+=
+\left\lceil\frac{r\ell}{4}\right\rceil
+-
+\left\lceil\frac{(r-1)\ell}{4}\right\rceil
+\ge1.
+\]
+Theorem~\ref{thm:exactD} gives \(D(K-1)\le G(K-1)+1\le G(K)=N\).
+Hence the maximum feasible edge count is \(K-1\) precisely in this case, and is \(K\) otherwise.  This is \eqref{eq:mnformula}.
+\end{proof}
+
+For reference, the first values are
+\[
+\begin{array}{c|cccccccccccccccc}
+n&2&3&4&5&6&7&8&9&10&11&12&13&14&15&16&17\\
+\hline
+m(n)&4&6&8&9&10&12&13&14&16&16&17&18&20&20&21&22.
+\end{array}
+\]
+In particular, the plateaux beginning at \(n=11\) reflect the non-greedy family
+\(\ell\equiv0\pmod4\) with odd \(r\).
+
+\begin{corollary}[Classical asymptotic scale]\label{cor:asymp}
+As \(n\to\infty\),
+\[
+m(n)
+=
+\frac{12}{(4\pi^2)^{1/3}}(n-1)^{2/3}
++
+O\!\left(n^{1/3}\log n\right).
+\]
+\end{corollary}
+
+\begin{proof}
+The standard totient estimates
+\[
+\sum_{j\le t}\ph(j)=\frac{3}{\pi^2}t^2+O(t\log t)
+\]
+and partial summation give
+\[
+\sum_{j\le t}j\ph(j)=\frac{2}{\pi^2}t^3+O(t^2\log t).
+\]
+Insert these into \eqref{eq:lchoose} and the formula in Theorem~\ref{thm:mn}.  The exceptional correction is bounded by \(1\).
+\end{proof}
+
+\section{Comparison with the classical construction theory}
+
+The classical solution developed a rich vocabulary of digital arcs, edge slopes, Minkowski sums and differences, and, for odd polygons, perfect basic \(b\)-tuples.  That theory is substantially more than a historical footnote: it established the exact problem, found the exceptional non-greedy cases, and provided general optimal constructions decades before the present work.
+
+The reconstruction above packages the same extremal phenomenon differently.  Its basic objects are the oriented primitive shells \(\HH_\ell\).  Full rotation orbits provide the four-edge ``bulk'' increment.  The residue modulo \(4\) is handled by a bounded local surgery, and the rounding quantity \(\delta\) records the exact amount of shell-cost freedom.  Lemma~\ref{lem:parity} explains structurally why odd edge counts cannot be closed inside a single shell.  Lemma~\ref{lem:defbudget} bounds the complexity of unit shell surgery, while Lemma~\ref{lem:axis} supplies a separate way to pay a small defect without changing the number of edge directions.  This makes the distinction between greedy and non-greedy cases visible directly at the level of primitive vectors.
+
+We emphasize again that Theorems~\ref{thm:exactD} and \ref{thm:mn} determine a classical extremal quantity.  The point of the present paper is the independent proof architecture and the compact direct inversion, not a claim that the extremal function itself was previously unknown.
+
+\section*{Acknowledgements}
+
+We are indebted to the mathematicians who developed the theory of optimal digital convex polygons.  In particular, the work of Klaus Voss and Reinhard Klette initiated the square-grid extremal problem in an early digital-geometry form, and the series of papers by Dragan M. Acketa, Joviša Žunić, and Snežana Matić-Kekić established the exact minimum-diameter theory, its constructions, and the exceptional non-greedy cases.  Their 1993 even-edge theorem, the 1994 almost-optimal construction, the 1995 odd construction by perfect basic \(b\)-tuples, the 1996 exact general construction, and the 1997 non-greedy optimality paper form the historical backbone of the subject.  We also acknowledge the much earlier work of Vojtěch Jarník on lattice points on convex curves, which provides the broader geometric-number-theory context.
+
+The present project began independently from the direct grid question and arrived at a primitive-shell formulation before the full historical literature was located.  Once that literature was found, we used it as a standard of attribution and as an external consistency check.  In particular, it revealed two even exceptional endpoint families that an intermediate project summary had mistakenly omitted.  We have corrected that error here rather than conceal it.  This episode materially improved the final statement and reinforced the importance of checking new derivations against prior work.
+
+We thank the authors of the classical papers for making clear that the exact extremal value belongs to an established line of digital geometry.  The contribution claimed here is deliberately narrower: a self-contained reconstruction based on shell parity, bounded shell exchange, and multiplicity compensation, together with an explicit inverse formula for \(m(n)\) and a transparent account of its six correction families.
+
+\begin{thebibliography}{99}
+
+\bibitem{Jarnik1926}
+V.~Jarník,
+\newblock Über die Gitterpunkte auf konvexen Kurven,
+\newblock \emph{Mathematische Zeitschrift} \textbf{24} (1926), 500--518.
+
+\bibitem{VossKlette1982}
+K.~Voss and R.~Klette,
+\newblock On the maximal number of edges of a convex digital polygon included into a square,
+\newblock \emph{Počítače a umelá inteligencia} \textbf{1} (1982), 549--558.
+
+\bibitem{Simpson1990}
+R.~J.~Simpson,
+\newblock Convex lattice polygons of minimum area,
+\newblock \emph{Bulletin of the Australian Mathematical Society} \textbf{42} (1990), 353--367.
+
+\bibitem{AcketaZunic1993}
+D.~M.~Acketa and J.~D.~Žunić,
+\newblock The minimal size of a square which includes a digital convex \(2k\)-gon,
+\newblock \emph{Bulletin of the Australian Mathematical Society} \textbf{48} (1993), 465--474,
+\newblock doi:10.1017/S0004972700015926.
+
+\bibitem{AcketaZunic1994}
+D.~M.~Acketa and J.~D.~Žunić,
+\newblock A simple construction of a digital convex \(n\)-gon with almost minimal diameter,
+\newblock \emph{Information Sciences} \textbf{77} (1994), 275--291,
+\newblock doi:10.1016/0020-0255(94)90005-1.
+
+\bibitem{AcketaZunic1995}
+D.~M.~Acketa and J.~D.~Žunić,
+\newblock On the maximal number of edges of convex digital polygons included into an \(m\times m\)-grid,
+\newblock \emph{Journal of Combinatorial Theory, Series A} \textbf{69} (1995), 358--368,
+\newblock doi:10.1016/0097-3165(95)90058-6.
+
+\bibitem{MaticKekicAcketa1995}
+S.~Matić-Kekić and D.~M.~Acketa,
+\newblock On a construction of digital convex \((2s+1)\)-gons of minimum diameter,
+\newblock \emph{Yugoslav Journal of Operations Research} \textbf{5} (1995), 39--51.
+
+\bibitem{MaticKekicAcketaZunic1996}
+S.~Matić-Kekić, D.~M.~Acketa, and J.~D.~Žunić,
+\newblock An exact construction of digital convex polygons with minimal diameter,
+\newblock \emph{Discrete Mathematics} \textbf{150} (1996), 303--313,
+\newblock doi:10.1016/0012-365X(95)00195-3.
+
+\bibitem{AcketaMaticKekic1997}
+D.~M.~Acketa and S.~Matić-Kekić,
+\newblock Non-greedy optimal digital convex polygons,
+\newblock \emph{Indian Journal of Pure and Applied Mathematics} \textbf{28}(4) (1997), 455--470.
+
+\end{thebibliography}
+
+\appendix
+\section{Certificate interface}
+
+The main text uses one computer-assisted statement only: Proposition~\ref{prop:65}.  The supplied file
+\[
+\texttt{verifier\_P1\_round7\_l6\_r5\_exception.py}
+\]
+requires only the Python standard library.  It reconstructs the shells \(\HH_1,\ldots,\HH_8\) from the definition of primitivity, verifies their expected cardinalities, enumerates every support pattern of primitive cost at most \(180\) listed in Proposition~\ref{prop:65}, exhausts the corresponding multiplicity surplus, and checks closure and the two coordinate-span bounds using exact integer arithmetic.  A successful run prints
+\[
+\texttt{PASS},\qquad
+\texttt{tested = 48616},\qquad
+\texttt{feasible = 0}.
+\]
+No floating-point optimization, random search, MILP solver, or unverified external data enters the certificate.
+
+\end{document}
