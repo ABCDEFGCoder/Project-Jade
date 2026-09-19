@@ -1,0 +1,1341 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!70!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{problem}[theorem]{Problem}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Deltaop}{\Delta}
+\newcommand{\ind}{\mathbf{1}}
+
+\title{\textbf{Extremal Multiplicity Profiles for Integer Horizontal Chords}\\
+\large Classification and Polynomial Realization}
+
+\author{Zixuan Ye \and GPT-6 Astra}
+
+\date{September 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Let \(F:\R\to\R\) be continuous.  For \(h>0\), write
+\[
+\Delta_hF(x)=F(x+h)-F(x),\qquad
+\nu_h(F)=\#\{x\in\R:\Delta_hF(x)=0\},
+\]
+where zeros are counted as distinct real points.  For an integer \(n\ge1\), put
+\[
+m_n(F)=\nu_n(F),\quad M(F)=\sum_{n\ge1}m_n(F).\]
+A 2025 problem from the final round of the All-Russian Mathematical Olympiad
+asks, for a prescribed chord of length \(2025\), for the least possible finite
+value of \(M(F)\); the official answer is \(4049\).
+
+We develop the equality theory for an arbitrary target \(N\).
+First, \(m_N(F)>0\) and \(M(F)<\infty\) imply
+\[
+M(F)\ge 2N-1.
+\]
+We then completely classify the multiplicity vectors at equality.  They are
+exactly the two families
+\[
+V_{N,r}=(4^r,2^{\,N-2r-1},0^r,1),
+\qquad 0\le r<N/2,
+\]
+and
+\[
+W_{N,r}=(4^r,3,2^{\,N-2r-3},1,0^r,1),
+\qquad r\ge0,\quad 2r+3\le N.
+\]
+Here \(a^k\) denotes \(k\) consecutive entries equal to \(a\).
+Consequently the number of extremal vectors is
+\[
+2\left\lceil\frac N2\right\rceil-1,
+\]
+equal to \(N\) for odd \(N\) and \(N-1\) for even \(N\).
+The transverse extremal vectors are precisely the \(V_{N,r}\).
+
+The realization problem is also solved completely.  We construct a
+two-parameter \(C^2\) model by prescribing three inverse branches and their
+horizontal separations, obtaining the exact real-length formula
+\[
+\nu_h
+=
+2\ind_{\{h<c\}}+2\ind_{\{h<e\}}
++\ind_{\{h=c\}}+\ind_{\{h=e\}}+\ind_{\{h=N\}},
+\qquad c+e=N.
+\]
+A positivity-preserving polynomialization, based on a fixed critical-point
+factor and two exact moment constraints, then shows that every \(V_{N,r}\)
+and every \(W_{N,r}\) is realizable by a polynomial with rational
+coefficients.  Thus the extremal support, the nontransverse multiplicity
+allocation, and polynomial existence are all determined for every target.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+A horizontal chord of a real-valued function is a horizontal line segment
+whose endpoints lie on the graph.  Equivalently, a chord of length \(h>0\)
+is a solution of
+\[
+F(x+h)=F(x).
+\]
+The classical horizontal-chord theory asks which \emph{lengths} occur.
+The universal chord theorem of L\'evy and the later theorem of Hopf are
+fundamental results in this direction; modern accounts include
+Oxtoby~\cite{Oxtoby1972}, Burns--Davidovich--Davis~\cite{BurnsDavidovichDavis2017},
+and Davis--Troubetzkoy~\cite{DavisTroubetzkoy2024}.  Recent work of
+Ciudin--Ionascu~\cite{CiudinIonascu2026} continues the study of the topology
+and isolated points of chord sets.
+
+The present problem is different.  We restrict attention to \emph{integer}
+lengths and ask not only whether a length occurs, but how many distinct
+chords of that length occur.  Thus the basic object is the multiplicity
+sequence
+\[
+(m_1(F),m_2(F),\ldots).
+\]
+This refinement was prompted directly by Problem 11.8 of the 2025 final
+round of the All-Russian Mathematical Olympiad, proposed by A.\,S.~Kuznetsov.
+For a continuous \(F:\R\to\R\) with finitely many integer horizontal chords
+and with at least one chord of length \(2025\), the problem asks for the
+smallest possible total number of chords.  The official solution proves
+that the answer is \(4049\)~\cite{VSO2025}.
+
+The first part of the olympiad argument extends naturally from \(2025\) to
+an arbitrary target \(N\), giving the sharp minimum \(2N-1\).  The purpose
+of this paper is to understand the much more rigid equality case.  Three
+questions drive the analysis:
+
+\begin{enumerate}[label=(\roman*)]
+\item Which integer lengths may be absent when \(M(F)=2N-1\)?
+\item Once the support is known, which multiplicities can actually occur
+without a transversality assumption?
+\item Can every admissible extremal vector be realized by a polynomial,
+uniformly in \(N\)?
+\end{enumerate}
+
+All three questions admit complete answers.  The missing lengths below
+\(N\) form a terminal interval.  Global compatibility among the difference
+functions then reduces the apparent local choices \((1,3),(2,2),(3,1)\)
+to a single possible exceptional pair, yielding the two families \(V\) and
+\(W\).  Finally, an inverse-branch construction realizes all of them at
+once, and a positive polynomial weight with two exact moments converts the
+construction into one with rational polynomial coefficients.
+
+\subsection{Relation to the existing literature}
+
+The distinction between chord \emph{support} and chord \emph{multiplicity}
+is important.  Hopf-type results characterize, or constrain, the set
+\[
+\mathcal H(F)=\{h>0:\nu_h(F)>0\},
+\]
+whereas the present work studies the cardinalities of the fibers
+\(\{x:F(x+h)=F(x)\}\) at integer \(h\), under a finite-total constraint.
+The papers cited above are therefore closely related background, but their
+principal object is different.
+
+The closest direct predecessor we located is the 2025 olympiad problem and
+its official solution, which proves the sharp total for the single target
+\(2025\) and contains the complementary-length mechanism used below.
+A literature search conducted through September 2026 located no published
+paper or arXiv preprint whose main object is the finite integer multiplicity
+sequence \(n\mapsto m_n(F)\), nor one containing the extremal \(V/W\)
+classification or the all-parameter polynomial realization theorem proved
+here.  This is a report of the search outcome, not a claim of absolute
+priority over all possible literature.
+
+\section{Definitions and elementary identities}
+
+\begin{definition}
+For a continuous function \(F:\R\to\R\) and \(h>0\), define
+\[
+\Delta_hF(x):=F(x+h)-F(x),
+\qquad
+\nu_h(F):=\#\{x\in\R:\Delta_hF(x)=0\}.
+\]
+If the zero set is infinite, we write \(\nu_h(F)=\infty\).
+For \(n\in\N\),
+\[
+m_n(F):=\nu_n(F),
+\qquad
+M(F):=\sum_{n\ge1}m_n(F)\in\N\cup\{\infty\}.
+\]
+\end{definition}
+
+\begin{definition}
+Fix \(N\in\N\).  We call \(F\) \emph{\(N\)-extremal} if
+\[
+m_N(F)>0,\qquad M(F)=2N-1.
+\]
+If \(F\in C^1(\R)\), we call it \emph{transverse below \(N\)} if every
+zero of \(\Delta_nF\) is simple for \(1\le n<N\).
+\end{definition}
+
+We repeatedly use the cocycle identities
+\begin{align}
+\Delta_{a+b}F(x)
+&=\Delta_aF(x)+\Delta_bF(x+a), \label{eq:cocycle}\\
+\Delta_nF(x)
+&=\sum_{j=0}^{n-1}\Delta_1F(x+j). \label{eq:unit-sum}
+\end{align}
+
+\begin{lemma}[Common tail orientation]\label{lem:tails}
+If \(M(F)<\infty\), then after replacing \(F\) by \(-F\), if necessary,
+\[
+\Delta_1F(x)>0
+\]
+for all sufficiently large \(|x|\).  Consequently, for every fixed
+\(n\ge1\), \(\Delta_nF(x)>0\) on both sufficiently remote tails.
+\end{lemma}
+
+\begin{proof}
+Since \(m_1(F)<\infty\), the continuous function
+\(g=\Delta_1F\) is nonzero and has a constant sign on each sufficiently
+remote tail.  If those two signs were opposite, then
+\eqref{eq:unit-sum} would give opposite tail signs for every
+\(\Delta_nF\).  The intermediate value theorem would then imply
+\(m_n(F)>0\) for every \(n\), contradicting \(M(F)<\infty\).
+Thus the two tail signs agree, and a global sign change of \(F\) makes
+them positive.  Equation~\eqref{eq:unit-sum} gives the assertion for
+each fixed \(n\).
+\end{proof}
+
+Two immediate consequences will be used without further comment:
+\[
+m_d(F)=0\Longrightarrow \Delta_dF>0,
+\qquad
+m_d(F)=1\Longrightarrow \Delta_dF\ge0,
+\tag{2.1}
+\]
+after the orientation of Lemma~\ref{lem:tails}.
+
+\section{The sharp total and equality constraints}
+
+\begin{theorem}[Complementary-length inequality]\label{thm:pair}
+Suppose \(M(F)<\infty\), \(m_N(F)>0\), and \(a,b\in\N\) satisfy
+\(a+b=N\).  Then
+\[
+m_a(F)+m_b(F)\ge4.
+\]
+\end{theorem}
+
+\begin{proof}
+Translate the variable and subtract a constant so that one target chord is
+\[
+F(0)=F(N)=0.
+\]
+Orient the tails by Lemma~\ref{lem:tails}.  Suppose, to the contrary, that
+\(m_a+m_b\le3\).  Interchanging \(a,b\), we may assume \(m_a\le1\).
+By \eqref{eq:unit-sum} and the positive tails, a negative value of
+\(\Delta_aF\) would force at least two zeros; hence
+\[
+\Delta_aF\ge0.
+\tag{3.1}
+\]
+
+If \(a=b\), then
+\[
+0=\Delta_NF(0)=\Delta_aF(0)+\Delta_aF(a),
+\]
+so both terms vanish, contradicting \(m_a\le1\).  Hence \(a\ne b\).
+
+Let \(q=N/\gcd(a,N)\).  For \(1\le j\le q-1\), let \(r_j\) be the
+representative of \(ja\bmod N\) in \(\{1,\ldots,N-1\}\).  Choose
+\[
+r_0=r_q=
+\begin{cases}
+0,&\Delta_aF(0)>0,\\
+N,&\Delta_aF(0)=0.
+\end{cases}
+\]
+Every step \(r_j\to r_{j+1}\) either increases by \(a\) or decreases by
+\(b=N-a\).  Put
+\[
+d_j:=F(r_{j+1})-F(r_j).
+\]
+An increasing step gives \(d_j=\Delta_aF(r_j)\ge0\).  At least one such
+step is strictly positive: it is the first step when \(r_0=0\), and the
+last step when \(r_0=N\), because in the latter case the unique possible
+zero of \(\Delta_aF\) is already at \(0\).
+
+Since
+\[
+\sum_{j=0}^{q-1}d_j=F(r_q)-F(r_0)=0,
+\]
+some decreasing step has \(d_j<0\).  If its landing point is \(t\), then
+\[
+\Delta_bF(t)>0,
+\qquad 0<t<a.
+\tag{3.2}\label{eq:3.2}
+\]
+On the other hand,
+\[
+\Delta_bF(0)=-\Delta_aF(b)\le0,
+\qquad
+\Delta_bF(a)=-\Delta_aF(0)\le0.
+\tag{3.3}\label{eq:3.3}
+\]
+If both values in \eqref{eq:3.3} are negative, then the positive tails,
+the two negative endpoint values, and \eqref{eq:3.2} force four zeros of
+\(\Delta_bF\).  If exactly one endpoint value is zero, then
+\(\Delta_bF\) has at least three zeros and \(\Delta_aF\) has at least one.
+Both endpoint values cannot vanish, for that would give two distinct
+zeros of \(\Delta_aF\).  In all cases \(m_a+m_b\ge4\), a contradiction.
+\end{proof}
+
+\begin{theorem}[Sharp total]\label{thm:sharp}
+If \(m_N(F)>0\) and \(M(F)<\infty\), then
+\[
+M(F)\ge 2N-1.
+\]
+The bound is sharp.
+\end{theorem}
+
+\begin{proof}
+Pair the lengths \(1,\ldots,N-1\) by \(a\leftrightarrow N-a\) and apply
+Theorem~\ref{thm:pair}.  For odd \(N\), the \((N-1)/2\) pairs contribute
+at least \(4\) each, and the target contributes at least \(1\).  For even
+\(N\), the unequal pairs contribute \(4\) each, while \(a=N/2\) contributes
+at least \(2\).  In both cases the total is at least \(2N-1\).
+
+For sharpness, let
+\[
+P_N(x)=x^3-\frac{N^2}{4}x.
+\]
+Then
+\[
+\frac{\Delta_nP_N(x)}{n}
+=
+3\left(x+\frac n2\right)^2+\frac{n^2-N^2}{4}.
+\]
+Thus \(m_n(P_N)=2\) for \(1\le n<N\), \(m_N(P_N)=1\), and
+\(m_n(P_N)=0\) for \(n>N\).  Hence \(M(P_N)=2N-1\).
+\end{proof}
+
+Therefore every \(N\)-extremal function satisfies
+\begin{equation}
+m_N=1,\qquad
+m_n=0\ \ (n>N),\qquad
+m_a+m_{N-a}=4\ \ (1\le a<N).
+\tag{E}\label{eq:E}
+\end{equation}
+
+\section{Missing lengths and terminal support}
+
+The missing lengths have an additive structure even before extremality.
+
+\begin{theorem}[Missing-length semigroup]\label{thm:semigroup}
+If \(M(F)<\infty\), then
+\[
+\Gamma(F):=\{0\}\cup\{n\in\N:m_n(F)=0\}
+\]
+is a numerical semigroup.
+\end{theorem}
+
+\begin{proof}
+Only additive closure requires proof.  If \(a,b\) are missing, then
+\(\Delta_aF\) and \(\Delta_bF\) never vanish and therefore each has a
+constant sign.  Their signs must agree, since
+\[
+\Delta_{ab}F(x)
+=
+\sum_{j=0}^{b-1}\Delta_aF(x+ja)
+=
+\sum_{j=0}^{a-1}\Delta_bF(x+jb)
+\]
+cannot simultaneously have opposite signs.  Hence
+\[
+\Delta_{a+b}F(x)=\Delta_aF(x)+\Delta_bF(x+a)
+\]
+never vanishes, so \(a+b\) is missing.  Since \(M(F)<\infty\), only
+finitely many positive integers occur, and \(\Gamma(F)\) is cofinite.
+\end{proof}
+
+For the equality case, much more is true.
+
+\begin{lemma}[Strict block propagation]\label{lem:strict-block}
+Assume \(F(0)=F(N)\), \(M(F)<\infty\), and let \(1\le d<N\) be missing.
+Write
+\[
+N=qd+s,\qquad 0\le s<d.
+\]
+Then \(s\ne0\).  If \(q\ge2\), then
+\[
+m_1(F)\ge2(q+1).
+\]
+\end{lemma}
+
+\begin{proof}
+Orient the tails positively and set \(g=\Delta_1F\),
+\(g_j=g(j)\).  Since \(\Delta_dF>0\), if \(s=0\) then
+\(\Delta_NF(0)\) is a sum of \(q\) positive \(d\)-blocks, impossible.
+Thus \(1\le s<d\).
+
+For \(t=0,\ldots,q\), let
+\[
+R_t=\{td,\ldots,td+s-1\}.
+\]
+The complement of \(R_t\) in \(\{0,\ldots,N-1\}\) is a disjoint union
+of \(q\) consecutive \(d\)-blocks, each of positive sum.  Since
+\(\sum_{j=0}^{N-1}g_j=0\), every \(R_t\) has negative sum.
+Between \(R_t\) and \(R_{t+1}\) lies
+\[
+G_t=\{td+s,\ldots,(t+1)d-1\},
+\qquad 0\le t<q.
+\]
+Because \(R_t\cup G_t\) is a positive \(d\)-block, \(G_t\) has positive
+sum.
+
+Choose one negative sample from each \(R_t\) and one positive sample from
+each \(G_t\).  These chosen signs alternate, beginning and ending
+negative.  Together with the positive tails, the intermediate value
+theorem forces \(2(q+1)\) distinct zeros of \(g\).
+\end{proof}
+
+\begin{lemma}[Weak gap filling]\label{lem:weak-gap}
+Assume \(F(0)=F(N)\), \(M(F)<\infty\), and the positive tail orientation.
+Let
+\[
+2\le k<s<N/2.
+\]
+Suppose
+\[
+m_1=4,\qquad
+m_{N-j}=0\ \ (1\le j<k),\qquad
+\Delta_{N-s}F\ge0.
+\]
+Then
+\[
+m_k\ge4.
+\]
+\end{lemma}
+
+\begin{proof}
+Put \(g=\Delta_1F\), \(g_j=g(j)\), and define
+\[
+P_u=\sum_{j=0}^{u-1}g_j,
+\qquad
+Q_u=\sum_{j=N-u}^{N-1}g_j.
+\]
+The target equation gives \(\sum_{j=0}^{N-1}g_j=0\).  If
+\(\Delta_{N-u}F\ge0\), evaluation at \(0\) and at \(u\) gives
+\[
+P_u\le0,\qquad Q_u\le0,
+\tag{4.1}\label{eq:PQweak}
+\]
+with strict inequalities when \(N-u\) is missing.  Hence
+\[
+P_j,Q_j<0\quad(1\le j<k),
+\qquad
+P_s,Q_s\le0.
+\tag{4.2}
+\]
+In particular \(g_0,g_{N-1}<0\).
+
+We claim \(P_k<0\).  Suppose \(P_k\ge0\).  Since \(P_{k-1}<0\),
+we have \(g_{k-1}>0\).  Also
+\[
+\sum_{j=s}^{N-1}g_j=-P_s\ge0,
+\]
+and \(g_{N-1}<0\), so some \(g_t>0\) with \(t\ge s\).
+The two positive samples \(g_{k-1}\) and \(g_t\), together with the
+negative endpoint samples and the positive tails, already account for
+the four zeros allowed by \(m_1=4\).  Therefore every sampled value
+between those two positive samples must itself be strictly positive;
+otherwise an additional zero or two additional sign changes would occur.
+Hence \(g_k,\ldots,g_{s-1}>0\), and
+\[
+P_s=P_k+\sum_{j=k}^{s-1}g_j>0,
+\]
+contradicting \eqref{eq:PQweak}.  Thus \(P_k<0\).  Reversing the sample
+order gives \(Q_k<0\).
+
+Now set
+\[
+T_j=\sum_{\ell=0}^{k-1}g_{j+\ell}
+=\Delta_kF(j),
+\qquad 0\le j\le N-k.
+\]
+Then
+\[
+T_0=P_k<0,\qquad T_{N-k}=Q_k<0.
+\]
+Counting the number of times each sample occurs in the sliding sums,
+\[
+\sum_{j=0}^{N-k}T_j
+=
+-\sum_{u=1}^{k-1}(P_u+Q_u)>0.
+\]
+Thus some interior \(T_j\) is positive.  Since \(\Delta_kF\) has positive
+tails, the sampled sign pattern negative--positive--negative forces four
+distinct zeros.  Hence \(m_k\ge4\).
+\end{proof}
+
+\begin{theorem}[Terminal support]\label{thm:terminal}
+Let \(F\) be \(N\)-extremal.  Then there is a unique integer
+\(r\) with \(0\le r<N/2\) such that
+\[
+\{1\le d<N:m_d=0\}
+=
+\{N-r,N-r+1,\ldots,N-1\}.
+\tag{4.3}\label{eq:terminal}
+\]
+The set on the right is empty when \(r=0\).
+\end{theorem}
+
+\begin{proof}
+Let \(A=\{1\le d<N:m_d=0\}\).  If \(d<N/2\) belongs to \(A\),
+Lemma~\ref{lem:strict-block} gives \(m_1\ge6\), contradicting
+\eqref{eq:E}.  The value \(d=N/2\) is also impossible, because a missing
+half-length would make \(\Delta_NF\) a sum of two positive half-length
+differences.  Therefore \(A\subset(N/2,N)\).
+
+If \(A=\varnothing\), take \(r=0\).  Otherwise choose \(d\in A\).
+Lemma~\ref{lem:strict-block}, now with \(q=1\), gives \(m_1\ge4\);
+hence \eqref{eq:E} forces
+\[
+m_1=4,\qquad m_{N-1}=0.
+\]
+Let \(\min A=N-r\).  Then \(1\le r<N/2\).
+We prove inductively that \(N-k\in A\) for \(1\le k\le r\).
+The case \(k=1\) is known.  If \(2\le k<r\) and
+\(N-j\in A\) for every \(j<k\), apply
+Lemma~\ref{lem:weak-gap} with \(s=r\).  Since \(N-r\) is missing,
+\(\Delta_{N-r}F>0\), so \(m_k\ge4\).  The equality
+\(m_k+m_{N-k}=4\) then gives \(m_{N-k}=0\).  Finally \(N-r\in A\)
+by definition.  Minimality of \(N-r\) excludes every other missing
+length below it.
+\end{proof}
+
+\section{Single zeros and the complete extremal classification}
+
+Terminal support still leaves a formal possibility: in a central
+complementary pair, equality in \eqref{eq:E} allows
+\[
+(1,3),\quad(2,2),\quad(3,1).
+\]
+The next lemma shows that a single zero is highly constrained.
+
+\begin{lemma}[Weak block propagation for a single zero]\label{lem:single}
+Assume \(F(0)=F(N)\), \(M(F)<\infty\), and \(m_d=1\) for some \(d<N\).
+
+\begin{enumerate}[label=(\alph*)]
+\item If \(d\mid N\), a contradiction follows.
+\item If \(q=\lfloor N/d\rfloor\ge2\), then
+\[
+m_1\ge2(q+1).
+\]
+\item If \(d>N/2\) and \(m_1\le3\), then
+\[
+d=N-1,\qquad m_1=3.
+\]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Orient the tails positively.  Since \(m_d=1\),
+\(\Delta_dF\ge0\).
+
+If \(N=qd\), the target identity is a sum of \(q\ge2\) nonnegative
+\(d\)-differences.  For the sum to vanish, all \(q\) terms must vanish
+at distinct starting points, contradicting \(m_d=1\).  This proves (a).
+
+For (b), write \(N=qd+s\), \(1\le s<d\), and repeat the block notation
+from Lemma~\ref{lem:strict-block}.  The complement of each remainder
+block \(R_t\) is a union of \(q\) nonnegative \(d\)-blocks.  At most one
+of those blocks can have zero sum, while \(q\ge2\), so the complement
+has strictly positive sum and \(R_t\) has strictly negative sum.
+Because \(R_t\cup G_t\) is a nonnegative \(d\)-block, \(G_t\) has
+strictly positive sum.  The same alternating sign argument yields
+\(m_1\ge2(q+1)\).
+
+For (c), write \(N=d+s\), \(1\le s<d\).  The two remainder blocks
+\[
+R_0=\{0,\ldots,s-1\},
+\qquad
+R_1=\{d,\ldots,N-1\}
+\]
+have nonpositive sums, and at least one has strictly negative sum;
+otherwise \(\Delta_dF\) would vanish at two distinct starting points.
+The middle block
+\[
+G=\{s,\ldots,d-1\}
+\]
+therefore has positive sum.  If both remainder blocks contain a negative
+sample, then negative--positive--negative, together with the positive
+tails, forces \(m_1\ge4\).  Thus, under \(m_1\le3\), one remainder block
+contains no negative sample.  Since its sum is nonpositive, all its
+\(s\) samples are zero.  The positive middle block and the negative
+other remainder block force two further zeros of \(\Delta_1F\), distinct
+from those \(s\) sampled zeros.  Hence \(m_1\ge s+2\).  Therefore
+\(s=1\) and \(m_1=3\), i.e. \(d=N-1\).
+\end{proof}
+
+\begin{corollary}\label{cor:single-upper}
+For an \(N\)-extremal function, a coordinate \(m_d=1\) with \(d<N\)
+can occur only for
+\[
+N/2<d<N.
+\]
+\end{corollary}
+
+\begin{proof}
+If \(d\le N/2\), either \(d\mid N\) or
+\(\lfloor N/d\rfloor\ge2\).  Lemma~\ref{lem:single} then contradicts
+\(m_1\le4\), which follows from \eqref{eq:E}.
+\end{proof}
+
+We can now state the main classification theorem.
+
+\begin{theorem}[Complete extremal multiplicity classification]
+\label{thm:classification}
+Let \(F:\R\to\R\) be continuous and \(N\)-extremal.
+Then its vector
+\[
+(m_1(F),\ldots,m_N(F))
+\]
+is exactly one of the following two forms:
+\[
+V_{N,r}
+=
+(4^r,2^{\,N-2r-1},0^r,1),
+\qquad 0\le r<N/2,
+\tag{5.1}\label{eq:V}
+\]
+or
+\[
+W_{N,r}
+=
+(4^r,3,2^{\,N-2r-3},1,0^r,1),
+\qquad r\ge0,\quad 2r+3\le N.
+\tag{5.2}\label{eq:W}
+\]
+\end{theorem}
+
+\begin{proof}
+Let \(r\) be given by Theorem~\ref{thm:terminal}.  The missing terminal
+block forces, by \eqref{eq:E},
+\[
+m_n=4\quad(1\le n\le r),
+\qquad
+m_n=0\quad(N-r\le n<N).
+\]
+Every central coordinate \(r<n<N-r\) is positive.  In a central
+complementary pair, the two multiplicities are positive integers summing
+to \(4\).  By Corollary~\ref{cor:single-upper}, the only possibilities,
+written in short-length/long-length order, are
+\[
+(2,2)\quad\text{or}\quad(3,1).
+\tag{5.3}
+\]
+
+First suppose \(r=0\).  If no single-zero coordinate occurs, every pair
+is \((2,2)\), giving \(V_{N,0}\).  If a single-zero coordinate occurs,
+Lemma~\ref{lem:single}(c) forces it to be \(N-1\) and forces
+\(m_1=3\).  Hence the unique exceptional pair is \((3,1)\), giving
+\(W_{N,0}\).
+
+Now suppose \(r\ge1\), so \(m_1=4\).  Assume a central long length
+\(d=N-s\) has \(m_d=1\).  Since \(d\) is central,
+\[
+r<s<N/2.
+\]
+If \(s\ge r+2\), choose \(k=r+1<s\).  The terminal support gives
+\(m_{N-j}=0\) for every \(1\le j<k\), while \(m_{N-s}=1\) gives
+\(\Delta_{N-s}F\ge0\).  Lemma~\ref{lem:weak-gap} yields
+\(m_{r+1}\ge4\), and then \eqref{eq:E} forces
+\[
+m_{N-r-1}=0,
+\]
+contradicting the fact that the missing block starts at \(N-r\).
+Therefore \(s=r+1\).  Thus at most one exceptional \((3,1)\) pair can
+occur, and it must be exactly
+\[
+(r+1,N-r-1).
+\]
+The two lengths are distinct precisely when \(2r+3\le N\).  This gives
+\(W_{N,r}\); otherwise all central pairs are \((2,2)\), giving
+\(V_{N,r}\).
+\end{proof}
+
+\begin{corollary}[Number of extremal vectors]\label{cor:count}
+The exact number of \(N\)-extremal multiplicity vectors is
+\[
+\left\lceil\frac N2\right\rceil
++
+\left\lfloor\frac{N-1}{2}\right\rfloor
+=
+2\left\lceil\frac N2\right\rceil-1.
+\]
+Thus it equals \(N\) when \(N\) is odd and \(N-1\) when \(N\) is even.
+\end{corollary}
+
+The theorem above proves necessity.  The rest of the paper proves that
+every listed vector is realizable, even polynomially.
+
+\section{An inverse-branch model with exact real chord counts}
+
+We first construct a \(C^2\) function whose \emph{entire real-length}
+chord count is explicit.
+
+Fix real numbers
+\[
+c,e\ge\frac12,\qquad c+e=N.
+\]
+Set
+\[
+\delta=\frac18,\qquad
+\alpha=\frac1{16},\qquad
+\gamma=\frac{\delta}{\sqrt3},
+\qquad
+v=c-\delta,\qquad w=c+\delta.
+\]
+For \(b\ge1/2\), define
+\[
+I_b(t)
+=
+\alpha\sqrt t
++\gamma\bigl(1-\sqrt{1-t}\bigr)
++\bigl(b-\delta-\alpha-\gamma\bigr)t,
+\qquad 0\le t\le1,
+\]
+and
+\[
+\theta(t)=1-\sqrt{1-t^{1/3}}.
+\]
+The coefficient \(b-\delta-\alpha-\gamma\) is positive, hence
+\(I_b\) is strictly increasing, with
+\[
+I_b(0)=0,\qquad I_b(1)=b-\delta.
+\]
+
+Define \(H_{N,c}:\R\to\R\) by
+\[
+H_{N,c}(x)=
+\begin{cases}
+-(x/\alpha)^2,
+&x\le0,\\[1mm]
+-I_c^{-1}(x),
+&0\le x\le v,\\[1mm]
+\operatorname{sgn}(x-c)
+\left(
+\dfrac{2|x-c|}{\delta}
+-\left(\dfrac{x-c}{\delta}\right)^2
+\right)^3,
+&v\le x\le w,\\[3mm]
+I_e^{-1}(N-x),
+&w\le x\le N,\\[1mm]
+((x-N)/\alpha)^2,
+&x\ge N.
+\end{cases}
+\tag{6.1}\label{eq:H}
+\]
+
+\begin{proposition}[Shape and regularity]\label{prop:Hshape}
+The function \(H_{N,c}\) is \(C^2\).  Its strict turning points are
+\[
+0,\quad v,\quad w,\quad N,
+\]
+and \(c\) is a horizontal inflection point on the increasing middle
+branch.  Moreover
+\[
+H(0)=H(c)=H(N)=0,\qquad
+H(v)=-1,\qquad H(w)=1,
+\]
+and
+\[
+H''(0)=-\frac2{\alpha^2},\quad
+H''(v)=\frac6{\delta^2},\quad
+H''(w)=-\frac6{\delta^2},\quad
+H''(N)=\frac2{\alpha^2}.
+\]
+Near \(c\),
+\[
+H(c+z)=\frac{8}{\delta^3}z^3+O(|z|^4).
+\]
+\end{proposition}
+
+\begin{proof}
+Monotonicity on the five branches is immediate from the definitions.
+Near \(t=0\),
+\[
+I_b(t)=\alpha\sqrt t+O(t),
+\]
+so inversion gives the same quadratic germ as the outer parabola.
+Near \(t=1\),
+\[
+I_b(t)=b-\delta-\gamma\sqrt{1-t}+O(1-t),
+\]
+hence inversion gives a quadratic germ with second derivative
+\(2/\gamma^2=6/\delta^2\), matching the middle branch at \(v\) and
+\(w\).  Finally the middle formula gives
+\[
+H(c+z)=8z^3/\delta^3+O(|z|^4),
+\]
+so the first two derivatives match at \(c\) as well.
+\end{proof}
+
+\begin{theorem}[Exact real-length chord count]\label{thm:real-count}
+For every real \(h>0\),
+\[
+\nu_h(H_{N,c})
+=
+2\ind_{\{h<c\}}
++
+2\ind_{\{h<e\}}
++
+\ind_{\{h=c\}}
++
+\ind_{\{h=e\}}
++
+\ind_{\{h=N\}}.
+\tag{6.2}\label{eq:real-count}
+\]
+The two indicators at \(c\) and \(e\) are counted separately when
+\(c=e\).  Every nonzero-height chord gives a simple zero of the
+corresponding difference function.  The zero-height chords are exactly
+\[
+(0,c),\qquad(c,N),\qquad(0,N),
+\]
+and they are strict quadratic tangencies of the relevant differences.
+\end{theorem}
+
+\begin{proof}
+Consider first a negative level \(-t\), \(0<t<1\).  Its three intersection
+points, from left to right, are
+\[
+x_1=-\alpha\sqrt t,\qquad
+x_2=I_c(t),\qquad
+x_3=c-\delta\theta(t).
+\]
+Their three pairwise distances are
+\begin{align*}
+D_1(t)&=I_c(t)+\alpha\sqrt t,\\
+D_2(t)&=c-\delta\theta(t)-I_c(t),\\
+D_3(t)&=c-\delta\theta(t)+\alpha\sqrt t.
+\end{align*}
+Put
+\[
+d_c=c-\delta+\alpha.
+\]
+Then \(D_1\) is strictly increasing from \(0\) to \(d_c\), while
+\(D_2\) is strictly decreasing from \(c\) to \(0\).
+For \(D_3\),
+\[
+\theta'(t)
+=
+\frac{1}{6t^{2/3}\sqrt{1-t^{1/3}}},
+\]
+and therefore
+\[
+2\sqrt t\,\delta\theta'(t)
+=
+\frac{\delta}
+{3\sqrt{t^{1/3}(1-t^{1/3})}}
+\ge\frac{2\delta}{3}
+>\alpha.
+\]
+Hence \(D_3\) is strictly decreasing from \(c\) to \(d_c\).
+
+It follows that each \(0<h<c\) occurs exactly twice as a negative-level
+distance.  At \(h=d_c\), the endpoint values of \(D_1\) and \(D_3\)
+represent the same chord, while \(D_2\) contributes one further chord,
+so the count remains two.  At \(h=c\), the only negative-side limit is
+the zero-level chord \((0,c)\).  No \(h>c\) occurs on a negative level.
+
+The positive-level picture is the reflection of the same calculation
+with \(c\) replaced by \(e\); it contributes two chords for \(0<h<e\),
+one zero-level chord at \(h=e\), and none for \(h>e\).  The only
+remaining zero-level chord is \((0,N)\).  This proves
+\eqref{eq:real-count}.
+
+For a nonzero level, a horizontal separation varying strictly with the
+level implies that the two endpoint derivatives are unequal, so the
+corresponding zero of \(\Delta_hH\) is simple.  At the merged level
+\(t=1\), one endpoint is a turning point and the other has nonzero
+derivative, so simplicity still holds.  For the zero-level chords,
+both first derivatives vanish, while
+\[
+(\Delta_cH)''(0)=\frac2{\alpha^2},\qquad
+(\Delta_eH)''(c)=\frac2{\alpha^2},\qquad
+(\Delta_NH)''(0)=\frac4{\alpha^2}.
+\]
+Thus all three are strict quadratic tangencies.
+\end{proof}
+
+\begin{corollary}[All extremal profiles in \(C^2\)]\label{cor:C2-realize}
+For
+\[
+c=N-r-\frac12,\qquad e=r+\frac12,
+\]
+the function \(H_{N,c}\) realizes \(V_{N,r}\).
+For
+\[
+c=N-r-1,\qquad e=r+1,
+\]
+with \(2r+3\le N\), it realizes \(W_{N,r}\).
+In the \(V\)-case, every zero below the target is simple.
+\end{corollary}
+
+\begin{proof}
+Insert the two parameter choices into \eqref{eq:real-count}.  In the
+\(V\)-case, neither \(c\) nor \(e\) is an integer.  In the \(W\)-case,
+the integer lengths \(e\) and \(c\) each acquire one quadratic tangency,
+which changes the adjacent pair from \((2,2)\) to \((3,1)\).
+\end{proof}
+
+\section{Polynomialization by a positive derivative weight}
+
+A naive uniform polynomial approximation of \(H_{N,c}\) is insufficient:
+it may split a quadratic tangency into two zeros, remove it, or create new
+long chords far from the approximation interval.  We instead preserve the
+critical-point geometry exactly.
+
+Assume from now on that \(N\in\N\) and that \(c,e=N-c\ge1/2\) are
+rational.  Let
+\[
+J=\left[-\frac14,N+\frac14\right]
+\]
+and define
+\[
+\Omega(x)
+=
+x(x-v)(x-c)^2(x-w)(x-N).
+\tag{7.1}\label{eq:Omega}
+\]
+By Proposition~\ref{prop:Hshape},
+\[
+U(x):=\frac{H'_{N,c}(x)}{\Omega(x)}
+\]
+extends continuously across the five zeros of \(\Omega\), and
+\[
+U(x)>0\qquad(x\in J).
+\]
+Moreover,
+\[
+\int_0^c\Omega(x)U(x)\,dx=0,
+\qquad
+\int_c^N\Omega(x)U(x)\,dx=0.
+\tag{7.2}\label{eq:moments}
+\]
+
+\begin{lemma}[Positive rational polynomial with two exact moments]
+\label{lem:positive-moment}
+There exist polynomials \(U_j\in\mathbb{Q}[x]\) such that
+\[
+U_j(x)>0\quad\text{for all }x\in\R,
+\qquad
+U_j\longrightarrow U\quad\text{uniformly on }J,
+\]
+and
+\[
+\int_0^c\Omega U_j=0,
+\qquad
+\int_c^N\Omega U_j=0.
+\tag{7.3}\label{eq:exact-moments}
+\]
+\end{lemma}
+
+\begin{proof}
+Define the linear map
+\[
+L(B)=
+\left(
+\int_0^c\Omega B,\,
+\int_c^N\Omega B
+\right).
+\]
+The sign of \(\Omega\) on the four intervals
+\[
+(0,v),\quad(v,c),\quad(c,w),\quad(w,N)
+\]
+is, respectively,
+\[
+-,\quad+,\quad+,\quad-.
+\]
+Choose four nonnegative continuous bump functions, one supported in each
+interval, normalized so that their \(L\)-vectors are
+\[
+(-1,0),\quad(1,0),\quad(0,1),\quad(0,-1).
+\]
+Approximate the square root of each bump uniformly on \(J\) by a rational
+polynomial \(h_i\).  For sufficiently accurate approximation, the four
+vectors
+\[
+z_i:=L(h_i^2)
+\]
+remain in the four corresponding quadrants, in cyclic order, with every
+adjacent angular gap strictly less than \(\pi\).  Hence the positive cones
+generated by adjacent pairs cover \(\R^2\).  Moreover there is a constant
+\(C\) such that any \(b\in\R^2\) can be written as
+\[
+b=\sum_i\lambda_i z_i,\qquad
+\lambda_i\ge0,\qquad
+\sum_i\lambda_i\le C\|b\|,
+\tag{7.4}\label{eq:7.4}
+\]
+using at most two adjacent generators.  If \(b\in\mathbb Q^2\), the
+coefficients \(\lambda_i\) may be chosen rational.
+
+Now approximate \(\sqrt U\) uniformly on \(J\) by
+\(p_j\in\mathbb Q[x]\), and choose rational \(\eta_j>0\) with
+\(\eta_j\to0\).  Put
+\[
+B_j=p_j^2+\eta_j.
+\]
+Then \(B_j>0\) on all of \(\R\), \(B_j\to U\) uniformly on \(J\), and,
+by \eqref{eq:moments},
+\[
+L(B_j)\to0.
+\]
+Since the endpoints and \(\Omega\) are rational, \(L(B_j)\in\mathbb Q^2\).
+Represent \(-L(B_j)\) as in \eqref{eq:7.4} and define
+\[
+U_j=B_j+\sum_i\lambda_{j,i}h_i^2.
+\]
+Then \(U_j\in\mathbb Q[x]\), \(U_j>0\) on all of \(\R\), and
+\(L(U_j)=0\).  The bound in \eqref{eq:7.4} gives
+\(\lambda_{j,i}\to0\), so \(U_j\to U\) uniformly on \(J\).
+\end{proof}
+
+\begin{theorem}[Polynomial realization]\label{thm:poly}
+Let \(N\in\N\), let \(c,e=N-c\ge1/2\) be rational, and let
+\(H_{N,c}\) be the function from \eqref{eq:H}.  Then there exists a
+polynomial \(P\in\mathbb Q[x]\) such that
+\[
+m_n(P)=m_n(H_{N,c})
+\qquad\text{for every integer }n\ge1.
+\]
+Every simple integer-difference zero of \(H_{N,c}\) remains simple for
+\(P\), and every integer zero-level tangency remains a double zero.
+\end{theorem}
+
+\begin{proof}
+Choose \(U_j\) from Lemma~\ref{lem:positive-moment} and define
+\[
+P_j(x)=\int_0^x\Omega(t)U_j(t)\,dt.
+\tag{7.5}\label{eq:Pj}
+\]
+Then \(P_j\in\mathbb Q[x]\) and the exact moments give
+\[
+P_j(0)=P_j(c)=P_j(N)=0.
+\tag{7.6}\label{eq:7.6}
+\]
+Also
+\[
+P_j'(x)=\Omega(x)U_j(x),
+\]
+so, because \(U_j>0\) on all of \(\R\), the complete real critical set
+of \(P_j\) is fixed exactly:
+\[
+0,\quad v,\quad c,\quad w,\quad N,
+\]
+with \(c\) a double zero of the derivative and the other four simple
+zeros.  Thus no additional real critical point can appear outside the
+approximation interval.
+
+Uniform convergence \(U_j\to U\) on \(J\) implies
+\[
+P_j\to H,\qquad P_j'\to H'
+\]
+uniformly on \(J\).  Since
+\[
+H\!\left(-\frac14\right)=-16,\qquad
+H(v)=-1,\qquad
+H(w)=1,\qquad
+H\!\left(N+\frac14\right)=16,
+\]
+for all sufficiently large \(j\),
+\[
+P_j\!\left(-\frac14\right)<-2<P_j(v)<0
+<P_j(w)<2<P_j\!\left(N+\frac14\right).
+\tag{7.7}
+\]
+The fixed derivative sign pattern now implies that every horizontal level
+having at least two intersections with the graph of \(P_j\) has all of its
+intersection points in \(J\).  Consequently every horizontal chord of
+\(P_j\) has both endpoints in \(J\).  Since
+\[
+|J|=N+\frac12<N+1,
+\]
+there are no integer chords of length \(n\ge N+1\).
+
+We next preserve the quadratic tangencies.  The functions \(U_j\) are
+uniformly bounded above and away from \(0\) on \(J\).  Since \(\Omega\)
+has simple zeros at \(0,N\) and a double zero at \(c\), there exist
+constants \(A,B,\varepsilon>0\), independent of sufficiently large \(j\),
+such that for \(|t|<\varepsilon\),
+\[
+-P_j(t)\ge At^2,\qquad
+P_j(N+t)\ge At^2,\qquad
+|P_j(c+t)|\le B|t|^3.
+\]
+Shrink \(\varepsilon\) so that \(B\varepsilon<A\).  Then, for
+\(0<|t|<\varepsilon\),
+\[
+\Delta_cP_j(t)>0,\qquad
+\Delta_eP_j(c+t)>0,\qquad
+\Delta_NP_j(t)>0.
+\tag{7.8}
+\]
+At the central points these differences vanish by \eqref{eq:7.6}.  Their
+second derivatives there are strictly positive:
+\[
+(\Delta_cP_j)''(0)=-P_j''(0)>0,
+\]
+\[
+(\Delta_eP_j)''(c)=P_j''(N)>0,
+\]
+\[
+(\Delta_NP_j)''(0)=P_j''(N)-P_j''(0)>0.
+\]
+Hence the relevant tangencies remain exactly double and do not split.
+
+It remains to control the other zeros.  For each integer \(1\le n\le N\),
+all possible chord endpoints lie in \(J\), so the starting point lies in
+the compact interval
+\[
+J_n=\left[-\frac14,N+\frac14-n\right].
+\]
+By Theorem~\ref{thm:real-count}, after removing the already treated
+tangency neighborhoods, every zero of \(\Delta_nH\) on \(J_n\) is simple
+and there are only finitely many.  Choose disjoint neighborhoods of those
+zeros on which \((\Delta_nH)'\) has a fixed nonzero sign.  The uniform
+\(C^1\)-convergence \(P_j\to H\) gives exactly one simple zero of
+\(\Delta_nP_j\) in each such neighborhood.  On the remaining compact set,
+\(|\Delta_nH|\) has a positive minimum, so uniform convergence prevents
+new zeros.  Since only finitely many integers \(1\le n\le N\) are involved,
+one sufficiently large \(j\) works simultaneously for all \(n\).
+Take \(P=P_j\).
+\end{proof}
+
+\begin{corollary}[Positive-factor form]\label{cor:factor}
+The realizing polynomial in Theorem~\ref{thm:poly} may be chosen in the
+form
+\[
+P(x)=x^2(x-N)^2(x-c)^3R(x),
+\]
+where \(R\in\mathbb Q[x]\) is strictly positive on \(\R\).
+\end{corollary}
+
+\begin{proof}
+The derivative sign pattern and \eqref{eq:7.6} show that the only real
+zeros of \(P\) are \(0,c,N\), with multiplicities \(2,3,2\), respectively.
+After dividing out those rational factors, the quotient has no real zero
+and is positive at one, hence every, real point.
+\end{proof}
+
+\section{Main theorem and transversality}
+
+We now combine necessity and realization.
+
+\begin{theorem}[Extremal classification and rational polynomial realization]
+\label{thm:main}
+Fix \(N\in\N\).  A nonnegative integer vector
+\[
+(a_1,\ldots,a_N)
+\]
+occurs as
+\[
+(m_1(F),\ldots,m_N(F))
+\]
+for a continuous \(N\)-extremal function \(F:\R\to\R\) if and only if
+it is one of the vectors \(V_{N,r}\) or \(W_{N,r}\) in
+\eqref{eq:V}--\eqref{eq:W}.  Every such vector is realizable by a
+polynomial in \(\mathbb Q[x]\).
+\end{theorem}
+
+\begin{proof}
+Necessity is Theorem~\ref{thm:classification}.
+For \(V_{N,r}\), choose
+\[
+c=N-r-\frac12,\qquad e=r+\frac12.
+\]
+For \(W_{N,r}\), choose
+\[
+c=N-r-1,\qquad e=r+1.
+\]
+Corollary~\ref{cor:C2-realize} gives the desired \(C^2\) counts, and
+Theorem~\ref{thm:poly} preserves all integer multiplicities in a rational
+polynomial.
+\end{proof}
+
+\begin{corollary}[Transverse classification]\label{cor:transverse}
+The transverse \(N\)-extremal vectors are exactly
+\[
+V_{N,r},\qquad 0\le r<N/2.
+\]
+In particular, there are exactly
+\[
+\left\lceil\frac N2\right\rceil
+\]
+transverse extremal vectors, and every one has a rational polynomial
+realization.
+\end{corollary}
+
+\begin{proof}
+Every \(V_{N,r}\) is realized by the construction with noninteger
+\(c,e\), so all zeros below \(N\) are simple.
+Conversely, after the positive tail orientation, every
+\(\Delta_nF\) has the same sign at both ends.  If all of its zeros are
+simple, their number is even.  Therefore an odd coordinate below \(N\)
+is impossible, excluding every \(W\)-vector.
+\end{proof}
+
+\section{What the classification changes}
+
+The main theorem replaces three weaker intermediate descriptions.
+
+First, the semigroup theorem records only which lengths may be absent.
+At extremality, Theorem~\ref{thm:terminal} collapses this arithmetic
+freedom to one integer \(r\): every missing support is a terminal block.
+
+Second, terminal support alone permits formal central allocations
+\[
+(1,3),\quad(2,2),\quad(3,1)
+\]
+in each complementary pair.  Theorem~\ref{thm:classification} shows that
+these choices are not independent.  Global compatibility among the
+difference functions allows at most one odd pair, and it must sit
+immediately next to the \((4,0)\) terminal band.
+
+Third, a finite list of explicit low-degree examples cannot settle
+existence for all \(N\).  The inverse-branch formula
+\eqref{eq:real-count} solves the realization problem before any polynomial
+is chosen: it prescribes the full continuum of chord lengths.  The
+polynomialization theorem then transfers the exact integer data while
+locking the critical-point geometry on the entire real line.  Thus no
+finite numerical verification is needed in the final classification.
+
+\section{Further problems}
+
+The extremal distinct-chord problem is now closed, but several natural
+questions remain.
+
+\begin{problem}[Minimum degree]
+Determine the least degree of a polynomial realizing each
+\(V_{N,r}\) and \(W_{N,r}\).
+\end{problem}
+
+\begin{problem}[Uniform degree bound]
+Does there exist an absolute integer \(D\) such that every extremal vector,
+for every target \(N\), has a polynomial realization of degree at most \(D\)?
+The existence proof in Theorem~\ref{thm:poly} gives finite degree for each
+parameter pair but no uniform bound.
+\end{problem}
+
+\begin{problem}[Realization spaces]
+For a fixed \(N\) and a fixed \(V\)- or \(W\)-profile, describe the topology
+and geometry of the realization space modulo translation and positive
+vertical scaling.  In particular, understand how a \(W\)-profile sits on
+the discriminant boundary between transverse \(V\)-type regions.
+\end{problem}
+
+\begin{problem}[Beyond the minimum]
+Suppose \(m_N>0\) but \(M(F)>2N-1\).  Determine sharp propagation laws
+between missing lengths and excess multiplicities, and classify the first
+few levels above the minimum.
+\end{problem}
+
+\section{Conclusion}
+
+For integer horizontal chords, the sharp total \(2N-1\) is only the first
+layer of the problem.  Equality exposes a rigid interaction between the
+additive structure of missing lengths and the zero structure of the
+difference functions \(\Delta_nF\).
+
+The complete picture is now simple.  Missing lengths form one terminal
+interval.  Every central complementary pair is balanced as \((2,2)\),
+except that one adjacent pair may degenerate to \((3,1)\).  These are
+exactly the \(V\)- and \(W\)-families, and no other extremal vector is
+possible.  Conversely, every one of these vectors is realized by a
+rational polynomial.
+
+The main constructive idea is to work in inverse-branch coordinates:
+horizontal chord multiplicity is then controlled by monotone separation
+functions rather than by solving a family of high-degree difference
+equations.  The subsequent factorization
+\[
+P'=\Omega U,\qquad U>0,
+\]
+with two exact moment conditions, preserves the branch geometry while
+moving into the algebraic category.  This combination of global
+difference constraints, inverse-branch geometry, and positive-weight
+polynomialization is the structural core of the classification.
+
+\begin{thebibliography}{99}
+
+\bibitem{Levy1934}
+P.~L\'evy,
+\newblock Sur une g\'en\'eralisation du th\'eor\`eme de Rolle,
+\newblock \emph{Comptes Rendus de l'Acad\'emie des Sciences, Paris}
+\textbf{198} (1934), 424--425.
+
+\bibitem{Hopf1937}
+H.~Hopf,
+\newblock \"Uber die Sehnen ebener Kontinuen und die Schleifen
+geschlossener Wege,
+\newblock \emph{Commentarii Mathematici Helvetici} \textbf{9}
+(1936/37), 303--319.
+
+\bibitem{Oxtoby1972}
+J.~C. Oxtoby,
+\newblock Horizontal chord theorems,
+\newblock \emph{American Mathematical Monthly} \textbf{79} (1972),
+468--475.
+\newblock \url{https://doi.org/10.1080/00029890.1972.11993068}.
+
+\bibitem{BurnsDavidovichDavis2017}
+K.~Burns, O.~Davidovich, and D.~Davis,
+\newblock Average pace and horizontal chords,
+\newblock \emph{Mathematical Intelligencer} \textbf{39}, no.~4
+(2017), 41--45.
+\newblock \url{https://doi.org/10.1007/s00283-017-9713-2}.
+
+\bibitem{DavisTroubetzkoy2024}
+D.~Davis and S.~Troubetzkoy,
+\newblock The horizontal chord set,
+\newblock \emph{American Mathematical Monthly} \textbf{131}, no.~6
+(2024), 519--525.
+\newblock \url{https://doi.org/10.1080/00029890.2024.2325862}.
+
+\bibitem{CiudinIonascu2026}
+I.~Ciudin and E.~J. Ionascu,
+\newblock Universal Chord Theorem and a Topological Analysis,
+\newblock arXiv:2601.14120, 2026.
+\newblock \url{https://arxiv.org/abs/2601.14120}.
+
+\bibitem{VSO2025}
+Central Subject-Methodological Commission in Mathematics,
+\newblock Materials for the final stage of the 51st All-Russian
+Mathematical Olympiad, second day, Problem 11.8 and official solution,
+\newblock Sirius, April 16--22, 2025.
+\newblock Problem proposed by A.\,S.~Kuznetsov.
+\newblock
+\url{https://olympiads.mccme.ru/vmo/2025/final/sol2.pdf}.
+
+\end{thebibliography}
+
+\end{document}

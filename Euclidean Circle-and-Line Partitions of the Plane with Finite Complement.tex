@@ -1,0 +1,876 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\Lcal}{\mathcal{L}}
+\newcommand{\ol}{\overline}
+\DeclareMathOperator{\dist}{dist}
+
+\title{\textbf{Euclidean Circle-and-Line Partitions of the Plane with Finite Complement}}
+\author{Zixuan Ye \and GPT-5.6 Sol}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $F\subset\R^2$ be finite. We classify all partitions of $\R^2\setminus F$ into pairwise disjoint complete Euclidean circles and complete affine lines. First, such a partition exists only when $|F|\le 2$; for $|F|=1,2$ the bound is sharp. More precisely, whenever line leaves are present they are parallel, and after a rigid motion their heights form either all of $\R$, a closed ray, or a compact interval. Every complementary circular region is either a once-punctured plane or a once-punctured open half-plane.
+
+We then classify the Euclidean circle decompositions of these two regions. If $p$ is the puncture, every such decomposition has a unique radius parametrization
+\[
+C_r=\partial B(c(r),r),\qquad r>0,
+\]
+where $c:(0,\infty)\to\R^2$ satisfies
+\[
+\lim_{r\downarrow0}c(r)=p,
+\qquad
+|c(s)-c(r)|<s-r\quad(0<r<s).
+\]
+Conversely, every such center curve produces a circle decomposition of
+\[
+K_c\setminus\{p\},
+\qquad
+K_c:=\bigcup_{r>0}B(c(r),r).
+\]
+The generated domain $K_c$ is necessarily either the whole plane or an open half-plane. Writing
+\[
+d(r):=r-|c(r)-p|,
+\]
+one has $K_c=\R^2$ exactly when $d(r)\to\infty$; if $d(r)\to\delta<\infty$, then $K_c$ is an open half-plane and $\dist(p,\partial K_c)=\delta$. This yields an explicit four-type classification of all finite-complement circle-and-line partitions. The only external surface-classification input is the circle-decomposition theorem of Moussong and Sim\'anyi.
+\end{abstract}
+
+\section{Introduction}
+
+A \emph{complete Euclidean circle} means a set of the form
+\[
+\partial B(c,r)=\{x\in\R^2:|x-c|=r\},\qquad r>0,
+\]
+and a \emph{complete line} means an entire affine line in $\R^2$. Given a finite set $F\subset\R^2$, we study partitions of $\R^2\setminus F$ whose members are complete Euclidean circles or complete lines.
+
+The problem lies at the intersection of elementary Euclidean geometry and the topology of decompositions of surfaces into circles. Moussong and Sim\'anyi proved that a connected surface admitting a decomposition into Jordan circles belongs to one of seven topological types; in particular, an orientable boundaryless such surface is either a torus or an open annulus \cite{MoussongSimanyi}. Their work also emphasizes that an arbitrary circle decomposition need not be a topological foliation, so no foliation regularity should be assumed a priori.
+
+A closely related question asking whether $\R^2$ minus finitely many points can be partitioned using circles alone appeared on Mathematics Stack Exchange in 2016; the discussion treated the two-puncture case and noted the Apollonius family as a ``near miss'' leaving one line uncovered \cite{MSECirclePartition}. Allowing lines therefore changes the problem in an essential way: two punctures become possible.
+
+Our first theorem settles the finite-complement existence question and determines the linear skeleton of every partition. Our second theorem gives a complete metric parametrization of each circular component. The resulting moduli space is infinite-dimensional: most decompositions are neither concentric nor coaxal. The strict nesting inequality naturally has a Lorentzian interpretation in the three-dimensional space of circles, closely related to the viewpoint used in modern treatments of the Tait--Kneser theorem \cite{BorJackmanTabachnikov}.
+
+Throughout, $B(c,r)$ denotes the open Euclidean disk with center $c$ and radius $r$.
+
+\section{Elementary geometry of disjoint circle leaves}
+
+We begin with two elementary facts that will be used repeatedly.
+
+\begin{lemma}[Nesting of intersecting disks]\label{lem:nesting}
+Let $C_1,C_2$ be two distinct Euclidean circles with disjoint circumferences, and let $D_1,D_2$ be their open disks. If $D_1\cap D_2\neq\varnothing$, then one of the closed disks is contained in the other open disk. In particular, if a point $p$ belongs to both $D_1$ and $D_2$, then the disks are strictly nested.
+
+If $D_i=B(c_i,r_i)$ and $\ol{D_1}\subset D_2$, then
+\[
+|c_2-c_1|+r_1<r_2.
+\]
+Hence $r_1<r_2$.
+\end{lemma}
+
+\begin{proof}
+Two disjoint Euclidean circumferences either bound disjoint disks or one circumference lies in the interior of the other disk. In the latter case compactness of the inner closed disk and positive separation of the two circumferences give strict containment of the closed inner disk in the outer open disk. The displayed inequality is the usual criterion for containment of one closed Euclidean disk in another open disk.
+\end{proof}
+
+\begin{lemma}[Every circle surrounds a missing point]\label{lem:puncture-inside}
+Let $F\subset\R^2$ be finite, and suppose that $\R^2\setminus F$ is partitioned into pairwise disjoint complete circles and complete lines. If $C$ is a circle leaf and $D(C)$ is its open disk, then
+\[
+D(C)\cap F\neq\varnothing.
+\]
+\end{lemma}
+
+\begin{proof}
+Assume for contradiction that $D(C_0)\cap F=\varnothing$, where $C_0$ has center $O_0$ and radius $r_0$. Since $O_0\notin F$, it lies on a leaf. That leaf cannot be a line: every complete line through an interior point of $D(C_0)$ exits the disk and therefore intersects $C_0$. Hence $O_0$ lies on another circle leaf $C_1$.
+
+The circles $C_0$ and $C_1$ are disjoint. Since $O_0\in C_1\cap D(C_0)$ and $D(C_0)$ is open, the disk $D(C_1)$ meets $D(C_0)$. Lemma~\ref{lem:nesting} then forces
+\[
+\ol{D(C_1)}\subset D(C_0).
+\]
+Let $O_1,r_1$ be the center and radius of $C_1$. Since $O_0\in C_1$, we have $|O_1-O_0|=r_1$, whereas strict containment gives
+\[
+|O_1-O_0|+r_1<r_0.
+\]
+Thus $2r_1<r_0$.
+
+Iterating, we obtain circle leaves $C_k$ with centers $O_k$, radii $r_k$, and
+\[
+\ol{D(C_{k+1})}\subset D(C_k),
+\qquad
+r_{k+1}<\frac12r_k.
+\]
+The nested compact disks $\ol{D(C_k)}$ have diameters tending to zero, so their intersection is a single point $q$. Moreover, $q\in D(C_k)$ for every $k$, because $\ol{D(C_{k+1})}\subset D(C_k)$. In particular $q\in D(C_0)$, so $q\notin F$.
+
+The leaf through $q$ cannot be a line, since a complete line through $q\in D(C_k)$ would intersect $C_k$. If the leaf through $q$ is a circle $A$ of positive radius, then $q\in A\cap D(C_k)$; since $D(C_k)$ is open, $D(A)$ meets $D(C_k)$. The circle $A$ is disjoint from $C_k$, so Lemma~\ref{lem:nesting} forces $\ol{D(A)}\subset D(C_k)$. Hence the diameter of $A$ is at most $2r_k$ for every $k$, impossible because $r_k\to0$. This contradiction proves the lemma.
+\end{proof}
+
+\section{The linear skeleton and the bound on the complement}
+
+We now study an arbitrary partition of $\R^2\setminus F$ into complete lines and circles, with $F$ finite.
+
+\subsection{The set of line heights}
+
+If two distinct complete lines in the plane are disjoint, they are parallel. Hence, whenever line leaves occur, after a rigid motion all of them have the form
+\[
+H_t:=\R\times\{t\}.
+\]
+Define
+\[
+S:=\{t\in\R:H_t\text{ is a line leaf}\}.
+\]
+
+\begin{lemma}\label{lem:Sclosed}
+If line leaves occur, then $S$ is closed in $\R$.
+\end{lemma}
+
+\begin{proof}
+Let $s_m\in S$ and $s_m\to s$. Suppose $s\notin S$. No term can then equal $s$. Passing to a subsequence and, if necessary, reflecting the vertical coordinate, we may assume $s_m>s$ for every $m$. Let
+\[
+q=(x,s)\in H_s\setminus F.
+\]
+Since $H_s$ is not a line leaf, $q$ lies on a circle leaf $C_q$. If the highest $y$-coordinate on $C_q$ were strictly larger than $s$, then for all sufficiently large $m$ the horizontal line $H_{s_m}$ would meet $C_q$, contrary to disjointness of the partition. Hence the highest point of $C_q$ is exactly $q$. Thus $C_q$ is tangent to $H_s$ at $q$ and its open disk lies in the half-plane $y<s$.
+
+Different points $q\in H_s\setminus F$ determine different circle leaves, since a circle below $H_s$ has only one highest point. Their open disks are pairwise disjoint. Indeed, if two such disks met, their disjoint circumferences would force one disk to be strictly nested in the other by Lemma~\ref{lem:nesting}; but the tangency point of the inner circle has height $s$, whereas every point of the outer open disk has height strictly less than $s$.
+
+Every nonempty open subset of $\R^2$ contains a point of $\mathbb Q^2$, so a pairwise disjoint family of nonempty open subsets of $\R^2$ is at most countable. On the other hand $H_s\setminus F$ is uncountable. This contradiction proves $s\in S$.
+\end{proof}
+
+Let $I$ be a connected component of $\R\setminus S$, and put
+\[
+U_I:=\R\times I,
+\qquad
+F_I:=F\cap U_I.
+\]
+Since $S$ is closed, $I$ is an open interval, possibly unbounded. Every point of $U_I\setminus F_I$ lies on a circle leaf. Moreover, every such circle is contained in $U_I$: if $a$ is a finite endpoint of $I$, then $a\in S$, so crossing the line $H_a$ would force an intersection with a line leaf.
+
+We shall use the following special case of the main theorem of Moussong and Sim\'anyi.
+
+\begin{theorem}[Moussong--Sim\'anyi \cite{MoussongSimanyi}]\label{thm:MS}
+Let $M$ be a connected orientable surface without boundary. If $M$ admits a partition into topological circles, then $M$ is homeomorphic either to a torus or to an open annulus $S^1\times\R$.
+\end{theorem}
+
+The theorem applies to arbitrary circle decompositions; no foliation hypothesis is required.
+
+\begin{proposition}\label{prop:onepuncturecomponent}
+Every connected component $I$ of $\R\setminus S$ contains exactly one point of $F$, in the sense that
+\[
+|F_I|=1.
+\]
+\end{proposition}
+
+\begin{proof}
+The surface $U_I\setminus F_I$ is connected, orientable, without boundary, noncompact, and partitioned into circles. By Theorem~\ref{thm:MS}, it is homeomorphic to the open annulus. Since $U_I\cong\R^2$, if $k:=|F_I|$ then $U_I\setminus F_I$ is homeomorphic to the plane with $k$ punctures. The latter deformation retracts onto a wedge of $k$ circles, so its fundamental group is the free group $F_k$. The open annulus has fundamental group $\Z=F_1$. Therefore $k=1$.
+\end{proof}
+
+Notice also that the $y$-coordinate of a point of $F$ cannot belong to $S$, since the corresponding line would pass through that missing point. Hence the components of $\R\setminus S$ account for all points of $F$.
+
+\subsection{Bounded circular strips are impossible}
+
+\begin{lemma}\label{lem:noboundedstrip}
+No connected component of $\R\setminus S$ is a bounded interval.
+\end{lemma}
+
+\begin{proof}
+Assume that $I=(a,b)$ is such a component, and write $w=b-a$. By Proposition~\ref{prop:onepuncturecomponent}, $U_I$ contains exactly one missing point, say $p$.
+
+Let $C$ be any circle leaf in $U_I$, with radius $r$. Since its entire circumference lies in the strip $a<y<b$, its closed disk also lies in that strip, and hence $2r<w$. By Lemma~\ref{lem:puncture-inside}, the disk contains a point of $F$; the only possibility is $p$. Thus for every $x\in C$,
+\[
+|x-p|<2r<w.
+\]
+Every point of $U_I\setminus\{p\}$ lies on some circle leaf, so
+\[
+U_I\setminus\{p\}\subset B(p,w),
+\]
+contradicting the horizontal unboundedness of $U_I$.
+\end{proof}
+
+\begin{theorem}[Finite-complement obstruction]\label{thm:bound}
+Let $F\subset\R^2$ be finite. If $\R^2\setminus F$ can be partitioned into pairwise disjoint complete Euclidean circles and complete affine lines, then
+\[
+|F|\le2.
+\]
+For $|F|=1$ and $|F|=2$ such partitions exist.
+\end{theorem}
+
+\begin{proof}
+First suppose line leaves occur. By Lemma~\ref{lem:Sclosed}, $S$ is closed. By Lemma~\ref{lem:noboundedstrip}, every connected component of $\R\setminus S$ is unbounded, so there are at most two such components. Proposition~\ref{prop:onepuncturecomponent} says that each contains exactly one point of $F$, and every point of $F$ lies in one of them. Hence $|F|\le2$.
+
+If no line leaf occurs, the whole surface $\R^2\setminus F$ is decomposed into circles. Theorem~\ref{thm:MS} and the same fundamental-group argument as above give $|F|=1$.
+
+For one missing point $p$, the concentric circles $\partial B(p,r)$, $r>0$, form a partition of $\R^2\setminus\{p\}$.
+
+For two distinct points $p_1,p_2$, define
+\[
+f(x):=\frac{|x-p_1|}{|x-p_2|},
+\qquad x\in\R^2\setminus\{p_1,p_2\}.
+\]
+The level sets $f^{-1}(\lambda)$, $\lambda>0$, partition the domain. For $\lambda=1$ the level set is the perpendicular bisector of $p_1p_2$, and for $\lambda\ne1$ it is an Apollonius circle. Thus the required partition exists.
+\end{proof}
+
+\begin{corollary}[Circle-only case]\label{cor:circleonly}
+For a finite set $F\subset\R^2$, the punctured plane $\R^2\setminus F$ admits a partition into Euclidean circles if and only if $|F|=1$.
+\end{corollary}
+
+\begin{proof}
+The necessity is the no-line case in Theorem~\ref{thm:bound}; the sufficiency is given by concentric circles.
+\end{proof}
+
+\section{Circle decompositions of a once-punctured plane or half-plane}
+
+The remaining geometry occurs in a domain $U$ which is either $\R^2$ or an open half-plane. We first record the local version of the disk-puncture argument needed in this setting; this is logically separate from Lemma~\ref{lem:puncture-inside}, whose hypothesis concerns a partition of the entire punctured plane by circles and lines.
+
+\begin{lemma}[Local disk-puncture lemma]\label{lem:localpuncture}
+Let $U$ be either $\R^2$ or an open half-plane, let $p\in U$, and suppose that $U\setminus\{p\}$ is partitioned into pairwise disjoint complete Euclidean circles, each contained in $U$. Then the open disk bounded by every leaf circle contains $p$.
+\end{lemma}
+
+\begin{proof}
+Assume that a leaf circle $C_0$ bounds an open disk $D_0$ with $p\notin D_0$. Because $U$ is convex and $C_0\subset U$, the closed disk $\ol{D_0}=\operatorname{conv}(C_0)$ is contained in $U$. Hence $D_0\subset U\setminus\{p\}$.
+
+Let $O_0,r_0$ be the center and radius of $C_0$. The point $O_0$ lies on another leaf circle $C_1$. Since $O_0\in C_1\cap D_0$ and $D_0$ is open, the disk $D(C_1)$ meets $D_0$. As $C_0,C_1$ are disjoint, Lemma~\ref{lem:nesting} implies
+\[
+\ol{D(C_1)}\subset D_0.
+\]
+Indeed, the opposite nesting is impossible because it would put the point $O_0\in C_1$ in the open disk bounded by $C_1$. If $O_1,r_1$ are the center and radius of $C_1$, then $|O_1-O_0|=r_1$ and strict containment gives
+\[
+|O_1-O_0|+r_1<r_0,
+\]
+so $2r_1<r_0$.
+
+Iterating this construction yields leaf circles $C_k$ with centers $O_k$ and radii $r_k$ such that
+\[
+\ol{D(C_{k+1})}\subset D(C_k),
+\qquad
+r_{k+1}<\frac12r_k.
+\]
+Their nested closed disks have diameters tending to zero, hence intersect in a single point $q$. Moreover $q\in D(C_k)$ for every $k$, and in particular $q\in D_0\subset U\setminus\{p\}$.
+
+Let $A$ be the leaf circle through $q$. Since $q\in A\cap D(C_k)$ and $A$ is disjoint from $C_k$, Lemma~\ref{lem:nesting} forces
+\[
+\ol{D(A)}\subset D(C_k)
+\]
+for every $k$: the reverse containment would place the boundary point $q\in A$ in the open disk $D(A)$. Thus the positive diameter of $A$ is at most $2r_k$ for every $k$, contradicting $r_k\to0$. Therefore every leaf disk contains $p$.
+\end{proof}
+
+Fix now $p\in U$, and suppose that $U\setminus\{p\}$ is partitioned into Euclidean circles. By Lemma~\ref{lem:localpuncture}, every leaf circle has $p$ in its open disk. Therefore all leaf disks are strictly nested by Lemma~\ref{lem:nesting}.
+
+Let $R\subset(0,\infty)$ denote the set of radii of the leaf circles. For each $r\in R$, there is at most one leaf of radius $r$: two distinct leaf disks both containing $p$ would be nested, and strict nesting forces distinct radii. We denote the center of the radius-$r$ leaf by $c(r)$.
+
+\subsection{The radius set is all of \texorpdfstring{$(0,\infty)$}{(0,infinity)}}
+
+\begin{lemma}\label{lem:endpointsR}
+One has
+\[
+\inf R=0,
+\qquad
+\sup R=\infty.
+\]
+\end{lemma}
+
+\begin{proof}
+The intersection of all leaf disks is exactly $\{p\}$. Indeed, $p$ belongs to every leaf disk, while any $x\in U\setminus\{p\}$ lies on its own leaf circumference and hence is not in the corresponding open disk.
+
+Suppose $\rho:=\inf R>0$. We distinguish two cases. If $\rho\in R$, then the radius-$\rho$ leaf disk $D_\rho$ is strictly contained in every leaf disk of larger radius. Hence
+\[
+D_\rho\subseteq\bigcap_{s\in R}D_s,
+\]
+contradicting that the intersection of all leaf disks is exactly $\{p\}$.
+
+Assume therefore that $\rho\notin R$. Choose $r_k\in R$ with $r_k\downarrow\rho$. The nesting inequality gives
+\[
+|c(r_k)-c(r_\ell)|<|r_k-r_\ell|,
+\]
+so the centers form a Cauchy sequence, say $c(r_k)\to c_*$. Passing to the limit in the same inequality yields
+\[
+|c(r_k)-c_*|\le r_k-\rho.
+\]
+Hence every point of $B(c_*,\rho)$ belongs to every $B(c(r_k),r_k)$. Given any leaf radius $s\in R$, the strict inequality $s>\rho$ and the convergence $r_k\downarrow\rho$ imply $r_k<s$ for all sufficiently large $k$. Strict nesting then puts $B(c_*,\rho)$ inside the radius-$s$ leaf disk as well. Thus $B(c_*,\rho)$ lies in the intersection of all leaf disks, again contradicting that this intersection is $\{p\}$. Hence $\inf R=0$.
+
+Suppose instead that $M:=\sup R<\infty$. Fix one leaf $(c_0,r_0)$. For any other leaf $(c,r)$, strict nesting gives
+\[
+|c-c_0|<|r-r_0|\le M+r_0.
+\]
+Thus all centers and all radii are bounded. The union of the leaf circumferences is then bounded, contradicting the fact that $U\setminus\{p\}$ is unbounded. Hence $\sup R=\infty$.
+\end{proof}
+
+\begin{lemma}\label{lem:Rclosed}
+The set $R$ is closed relative to $(0,\infty)$.
+\end{lemma}
+
+\begin{proof}
+Let $r_k\in R$ and $r_k\to r>0$. Write $c_k:=c(r_k)$. The inequality
+\[
+|c_k-c_\ell|<|r_k-r_\ell|
+\]
+shows that $c_k\to c_*$ for some $c_*$. Let
+\[
+C_*:=\partial B(c_*,r).
+\]
+We claim that $C_*$ is a leaf.
+
+First, $p$ lies strictly inside $C_*$. Choose $a\in R$ with $a<r$, possible by Lemma~\ref{lem:endpointsR}. For all sufficiently large $k$, $a<r_k$, so
+\[
+|c_k-c(a)|<r_k-a.
+\]
+Passing to the limit gives $|c_*-c(a)|\le r-a$, and therefore
+\[
+|p-c_*|\le |p-c(a)|+|c(a)-c_*|<a+(r-a)=r.
+\]
+Also, $C_*\subset\ol U$. If $U$ is a half-plane, $C_*$ can meet $\partial U$ in at most one point because its interior contains $p\in U$ and it cannot cross outside $\ol U$.
+
+Assume for contradiction that $C_*$ is not a leaf. If some $r_k=r$, then $r\in R$ and there is nothing to prove. Otherwise, after passing to a subsequence, we may suppose either $r_k\uparrow r$ or $r_k\downarrow r$. The set
+\[
+C_*\cap U\setminus\bigcup_k C_{r_k}
+\]
+is uncountable, since each $C_{r_k}$ meets $C_*$ in at most two points. Choose two distinct points $q_1,q_2$ from this set, and let $A_i$ be the leaf circle through $q_i$. Each $A_i$ surrounds $p$.
+
+Suppose first that $r_k\uparrow r$. For fixed $k$, letting $\ell\to\infty$ in
+\[
+|c_k-c_\ell|<r_\ell-r_k
+\]
+gives $|c_k-c_*|\le r-r_k$, hence $\ol{D_{r_k}}\subset\ol{D_*}$ for $D_*:=B(c_*,r)$. By our choice of $q_i$, the point $q_i$ is not on $C_{r_k}$; since it lies on $C_*$, it follows that $q_i\notin\ol{D_{r_k}}$. The disks of $A_i$ and $C_{r_k}$ both contain $p$, so nesting forces
+\[
+\ol{D_{r_k}}\subset D(A_i)
+\]
+for every $k$. Passing to the limit yields
+\[
+\ol{D_*}\subset\ol{D(A_i)}.
+\]
+Because $q_i$ lies on both boundaries, $A_i$ is internally tangent to $C_*$ at $q_i$ and lies outside $C_*$. In particular $A_1\ne A_2$: one Euclidean circle distinct from $C_*$ cannot be internally tangent to $C_*$ at two different points. If $R_i$ is the radius of $A_i$ and $u_i=(q_i-c_*)/r$, then $R_i>r$ and its center is
+\[
+c_*-(R_i-r)u_i.
+\]
+Since $q_1\ne q_2$, one has $u_1\ne u_2$, and consequently the distance between the two centers is strictly larger than
+\[
+|(R_1-r)-(R_2-r)|=|R_1-R_2|.
+\]
+Thus the two disks $D(A_1),D(A_2)$ cannot be nested. But both contain $p$ and their circumferences are disjoint leaf circles, contradicting Lemma~\ref{lem:nesting}.
+
+If $r_k\downarrow r$, then for fixed $k$, letting $\ell\to\infty$ in
+\[
+|c_k-c_\ell|<r_k-r_\ell
+\]
+gives $|c_k-c_*|\le r_k-r$, hence $\ol{D_*}\subset\ol{D_{r_k}}$. Since $q_i\notin C_{r_k}$, we have $q_i\in D_{r_k}$. Nesting now forces $\ol{D(A_i)}\subset D_{r_k}$ for every $k$. Passing to the limit shows that each $A_i$ lies inside $C_*$ and is internally tangent to it at $q_i$. Again $A_1\ne A_2$, since a circle distinct from $C_*$ cannot be internally tangent to $C_*$ at two different points. Writing $R_i<r$, the corresponding centers are
+\[
+c_*+(r-R_i)u_i,
+\]
+and again their mutual distance is strictly larger than $|R_1-R_2|$, contradicting nesting of the two leaf disks. Hence $C_*$ is a leaf and $r\in R$.
+\end{proof}
+
+\begin{proposition}\label{prop:Rall}
+The set of leaf radii is
+\[
+R=(0,\infty).
+\]
+Moreover, the center function $c:(0,\infty)\to\R^2$ satisfies
+\[
+|c(s)-c(r)|<s-r\qquad(0<r<s)
+\tag{4.1}\label{eq:strictcontract}
+\]
+and
+\[
+\lim_{r\downarrow0}c(r)=p.
+\tag{4.2}\label{eq:anchor}
+\]
+\end{proposition}
+
+\begin{proof}
+By Lemmas~\ref{lem:endpointsR} and \ref{lem:Rclosed}, it remains only to exclude gaps. If $(a,b)$ were a connected component of $(0,\infty)\setminus R$, then $a,b\in R$. The disk $D_a$ is strictly contained in $D_b$. Choose
+\[
+x\in D_b\setminus\ol{D_a}.
+\]
+The point $x$ lies on some leaf circle of radius $s$. Since all leaf disks contain $p$ and are nested, $s\le a$ would force the leaf circumference into $D_a$, whereas $s\ge b$ would force $x$ into the interior of its own leaf disk. Both are impossible. Hence $a<s<b$, contradicting the definition of the gap.
+
+Equation \eqref{eq:strictcontract} is precisely the strict disk-containment inequality from Lemma~\ref{lem:nesting}. Since $p\in B(c(r),r)$ for every $r$, we have $|c(r)-p|<r$, which immediately gives \eqref{eq:anchor}.
+\end{proof}
+
+\subsection{The converse construction}
+
+The preceding proposition suggests the correct intrinsic parameter.
+
+\begin{definition}\label{def:admissible}
+Fix $p\in\R^2$. An \emph{admissible center curve anchored at $p$} is a map
+\[
+c:(0,\infty)\to\R^2
+\]
+such that
+\[
+\lim_{r\downarrow0}c(r)=p
+\]
+and
+\[
+|c(s)-c(r)|<s-r\qquad(0<r<s).
+\tag{4.3}\label{eq:AC}
+\]
+For such a curve put
+\[
+D_r:=B(c(r),r),\qquad C_r:=\partial D_r,
+\qquad
+K_c:=\bigcup_{r>0}D_r.
+\]
+\end{definition}
+
+Condition \eqref{eq:AC} is equivalent to
+\[
+\ol{D_r}\subset D_s\qquad(0<r<s).
+\tag{4.4}\label{eq:nest}
+\]
+In particular, $c$ is $1$-Lipschitz on every compact subinterval of $(0,\infty)$ and extends continuously to $r=0$ by $c(0)=p$.
+
+\begin{theorem}[Admissible-curve parametrization]\label{thm:admissible}
+Let $c$ be an admissible center curve anchored at $p$. Then the circles
+\[
+\{C_r:r>0\}
+\]
+are pairwise disjoint and form a partition of
+\[
+K_c\setminus\{p\}.
+\]
+Conversely, every Euclidean circle decomposition of a once-punctured plane or once-punctured open half-plane arises uniquely in this way, with $r$ equal to the Euclidean radius of the leaf.
+\end{theorem}
+
+\begin{proof}
+The converse statement is Proposition~\ref{prop:Rall}, so it remains to prove the construction.
+
+The disks $D_r$ are strictly nested by \eqref{eq:nest}, hence $K_c$ is open and convex. We first show that $p\in D_r$ for every $r>0$. From the $1$-Lipschitz extension to $0$,
+\[
+|c(r)-p|\le r.
+\]
+If equality held for some $r$, then for any $0<s<r$,
+\[
+r=|c(r)-p|
+\le |c(r)-c(s)|+|c(s)-p|
+<(r-s)+s=r,
+\]
+a contradiction. Thus $|c(r)-p|<r$.
+
+Fix $x\in K_c\setminus\{p\}$ and define
+\[
+\Phi_x(r):=|x-c(r)|-r.
+\]
+The function $\Phi_x$ is continuous. If $s>r$, then
+\[
+\Phi_x(s)
+\le |x-c(r)|+|c(s)-c(r)|-s
+<|x-c(r)|-r
+=\Phi_x(r),
+\]
+so it is strictly decreasing. Moreover,
+\[
+\lim_{r\downarrow0}\Phi_x(r)=|x-p|>0.
+\]
+Since $x\in K_c$, some $R>0$ satisfies $x\in D_R$, so $\Phi_x(R)<0$. The intermediate value theorem therefore gives a unique $r_x>0$ such that $\Phi_x(r_x)=0$, equivalently $x\in C_{r_x}$. Thus the circles partition $K_c\setminus\{p\}$.
+
+Uniqueness of the center curve for a given decomposition follows because each positive radius occurs exactly once by Proposition~\ref{prop:Rall}.
+\end{proof}
+
+\begin{remark}\label{rem:product}
+The map
+\[
+\Psi:(0,\infty)\times S^1\longrightarrow K_c\setminus\{p\},
+\qquad
+\Psi(r,u)=c(r)+ru,
+\]
+is a homeomorphism. Indeed, Theorem~\ref{thm:admissible} makes it a continuous bijection. Let $\rho(x)$ denote the unique radius of the leaf through $x$. To see that $\rho$ is continuous, fix $x\in C_r$ and numbers $0<a<r<b$. Strict nesting gives
+\[
+x\notin\ol{D_a},\qquad x\in D_b.
+\]
+Hence some neighborhood $V$ of $x$ is disjoint from $\ol{D_a}$ and contained in $D_b$. If $y\in V$ lies on $C_{\rho(y)}$, then $\rho(y)\le a$ would imply $y\in\ol{D_a}$, while $\rho(y)\ge b$ would imply $y\in D_{\rho(y)}$, contradicting $y\in C_{\rho(y)}$. Thus
+\[
+a<\rho(y)<b
+\]
+throughout $V$, proving continuity of $\rho$. The inverse map is therefore
+\[
+x\longmapsto
+\left(\rho(x),\frac{x-c(\rho(x))}{\rho(x)}\right),
+\]
+which is continuous. Thus, although arbitrary circle decompositions of surfaces need not be foliations in general \cite{MoussongSimanyi}, these Euclidean decompositions have a global topological product parametrization.
+\end{remark}
+
+\section{The domain dichotomy}
+
+A priori, the increasing union $K_c$ of disks could be an arbitrary unbounded convex domain. The strict contraction condition rules this out completely.
+
+\begin{theorem}[Plane--half-plane dichotomy]\label{thm:dichotomy}
+For every admissible center curve $c$, the domain $K_c$ is either the entire plane or an open half-plane.
+\end{theorem}
+
+\begin{proof}
+Assume $K_c\ne\R^2$. Since $K_c$ is a nonempty open convex set, choose $q\in\partial K_c$ and a supporting line to $K_c$ at $q$. Let $\nu$ be the unit normal pointing into the supporting half-plane, so
+\[
+K_c\subset H:=\{x\in\R^2:\nu\cdot(x-q)>0\}.
+\]
+For every $r>0$, the compact circle $C_r$ is contained in $K_c$ because $C_r\subset D_s$ for every $s>r$. Hence
+\[
+\varepsilon(r):=\nu\cdot(c(r)-q)-r>0.
+\]
+If $s>r$, then
+\[
+\varepsilon(s)-\varepsilon(r)
+=\nu\cdot(c(s)-c(r))-(s-r)
+\le |c(s)-c(r)|-(s-r)<0.
+\]
+Thus $\varepsilon$ is strictly decreasing and has a limit $\varepsilon_\infty\ge0$. If $\varepsilon_\infty>0$, then every point of every $D_r$ has signed distance $>\varepsilon_\infty$ from the supporting line, contradicting $q\in\partial K_c$. Therefore
+\[
+\varepsilon(r)\downarrow0.
+\tag{5.1}\label{eq:epszero}
+\]
+
+Choose orthonormal coordinates with $q=0$ and $\nu=(0,1)$, and write
+\[
+c(r)=(a(r),r+\varepsilon(r)).
+\]
+For $r>R$, condition \eqref{eq:AC} gives
+\begin{align*}
+(a(r)-a(R))^2
+&+\bigl((r-R)-(\varepsilon(R)-\varepsilon(r))\bigr)^2
+<(r-R)^2.
+\end{align*}
+Consequently,
+\[
+|a(r)-a(R)|^2
+<2(r-R)(\varepsilon(R)-\varepsilon(r))
+\le 2r\varepsilon(R).
+\]
+For fixed $R$ this yields
+\[
+\limsup_{r\to\infty}\frac{|a(r)|}{\sqrt r}
+\le\sqrt{2\varepsilon(R)}.
+\]
+Letting $R\to\infty$ and using \eqref{eq:epszero}, we obtain
+\[
+a(r)=o(\sqrt r).
+\tag{5.2}\label{eq:atangential}
+\]
+
+Now take any $x=(u,v)\in H$, so $v>0$. A direct expansion gives
+\[
+|x-c(r)|^2-r^2
+=(u-a(r))^2-2r(v-\varepsilon(r))+(v-\varepsilon(r))^2.
+\]
+Dividing by $r$ and using \eqref{eq:epszero} and \eqref{eq:atangential}, the right-hand side tends to $-2v<0$. Hence $x\in D_r$ for all sufficiently large $r$. Thus $H\subset K_c$. The reverse inclusion was built into the supporting half-plane, so $K_c=H$.
+\end{proof}
+
+The two cases can be detected by a single monotone scalar quantity.
+
+\begin{theorem}[Escape-margin criterion]\label{thm:escape}
+Let $c$ be admissible and define
+\[
+d(r):=r-|c(r)-p|.
+\]
+Then $d(r)>0$ and $d$ is strictly increasing. Its limit
+\[
+\delta:=\lim_{r\to\infty}d(r)
+\]
+exists in $(0,\infty]$. Moreover,
+\[
+K_c=\R^2
+\quad\Longleftrightarrow\quad
+\delta=\infty.
+\]
+If $\delta<\infty$, then $K_c$ is an open half-plane and
+\[
+\dist(p,\partial K_c)=\delta.
+\]
+\end{theorem}
+
+\begin{proof}
+We already know $p\in D_r$, so $d(r)>0$. If $0<r<s$, then
+\[
+|c(s)-p|
+\le |c(s)-c(r)|+|c(r)-p|
+<(s-r)+|c(r)-p|,
+\]
+which is equivalent to $d(s)>d(r)$.
+
+Since $B(p,d(r))\subset D_r$, if $d(r)\to\infty$ then $K_c=\R^2$.
+Conversely, suppose $K_c=\R^2$. For any $R>0$, the compact disk $\ol{B(p,R)}$ is covered by the nested open family $\{D_r:r>0\}$. A finite subcover and nesting give some $r$ with
+\[
+\ol{B(p,R)}\subset D_r.
+\]
+The distance from $p$ to $\R^2\setminus D_r$ is exactly $d(r)$, so $d(r)>R$. Since $R$ is arbitrary, $d(r)\to\infty$.
+
+Finally suppose $\delta<\infty$. By Theorem~\ref{thm:dichotomy}, $K_c$ is an open half-plane. Let
+\[
+D:=\dist(p,\partial K_c).
+\]
+The inclusion $B(p,d(r))\subset K_c$ gives $d(r)\le D$, hence $\delta\le D$. Conversely, if $0<R<D$, then $\ol{B(p,R)}\subset K_c$. The same compactness-and-nesting argument gives some $r$ with $\ol{B(p,R)}\subset D_r$, hence $d(r)>R$. Therefore $\delta\ge R$ for every $R<D$, and so $\delta\ge D$. Thus $\delta=D$.
+\end{proof}
+
+\begin{proposition}[Asymptotics in the half-plane case]\label{prop:asymptotic}
+Assume $K_c$ is a half-plane. Let $\nu$ be its inward unit normal, let
+\[
+\delta=\dist(p,\partial K_c),
+\qquad
+q=p-\delta\nu\in\partial K_c,
+\]
+and let $\tau$ be a unit tangent vector to $\partial K_c$. Then
+\[
+\frac{c(r)-p}{|c(r)-p|}\longrightarrow\nu.
+\]
+Moreover, one can write
+\[
+c(r)=q+a(r)\tau+(r+\varepsilon(r))\nu,
+\]
+where
+\[
+\varepsilon(r)>0,
+\qquad
+\varepsilon(r)\to0,
+\qquad
+a(r)=o(\sqrt r).
+\]
+\end{proposition}
+
+\begin{proof}
+Since every circle $C_r$ is compactly contained in the half-plane,
+\[
+\nu\cdot(c(r)-p)+\delta-r>0,
+\]
+or equivalently
+\[
+r-\nu\cdot(c(r)-p)<\delta.
+\]
+On the other hand,
+\[
+d(r)=r-|c(r)-p|
+\le r-\nu\cdot(c(r)-p).
+\]
+Theorem~\ref{thm:escape} gives $d(r)\to\delta$, and hence
+\[
+r-\nu\cdot(c(r)-p)\to\delta.
+\]
+Subtracting the two quantities yields
+\[
+|c(r)-p|-\nu\cdot(c(r)-p)\to0.
+\]
+Since $|c(r)-p|=r-d(r)\to\infty$, division by $|c(r)-p|$ shows
+\[
+\nu\cdot\frac{c(r)-p}{|c(r)-p|}\to1,
+\]
+which implies the stated directional convergence.
+
+The representation follows by resolving $c(r)-q$ into the orthonormal basis $(\tau,\nu)$. The positivity and convergence of $\varepsilon$ are exactly the supporting-line calculation in the proof of Theorem~\ref{thm:dichotomy}, and the estimate $a(r)=o(\sqrt r)$ is equation \eqref{eq:atangential}.
+\end{proof}
+
+\begin{corollary}[Criterion for a prescribed half-plane]\label{cor:prescribedhalfplane}
+Let
+\[
+H=\{x\in\R^2:\nu\cdot(x-q)>0\},
+\]
+where $\nu$ is a unit vector, and let $p\in H$. For an admissible center curve $c$ anchored at $p$, define
+\[
+\varepsilon_H(r):=\nu\cdot(c(r)-q)-r.
+\]
+Then $K_c=H$ if and only if
+\[
+\varepsilon_H(r)>0\quad\text{for every }r>0,
+\qquad
+\varepsilon_H(r)\longrightarrow0\quad(r\to\infty).
+\]
+\end{corollary}
+
+\begin{proof}
+If $K_c=H$, every compact circle $C_r$ lies in $H$, so $\varepsilon_H(r)>0$; the supporting-line argument in the proof of Theorem~\ref{thm:dichotomy} gives $\varepsilon_H(r)\to0$.
+
+Conversely, assume the two displayed conditions. The inequality $\varepsilon_H(r)>0$ says precisely that $\ol{D_r}\subset H$ for every $r$, hence $K_c\subset H$. Therefore $K_c\ne\R^2$, so Theorem~\ref{thm:dichotomy} shows that $K_c$ is an open half-plane. Any open half-plane contained in $H$ must have boundary parallel to $\partial H$ and hence is of the form
+\[
+\{x:\nu\cdot(x-q)>\alpha\}
+\]
+for some $\alpha\ge0$. On the other hand,
+\[
+\inf_{x\in D_r}\nu\cdot(x-q)=\varepsilon_H(r),
+\]
+and therefore
+\[
+\inf_{x\in K_c}\nu\cdot(x-q)
+=\inf_{r>0}\varepsilon_H(r)=0.
+\]
+Thus $\alpha=0$, and $K_c=H$.
+\end{proof}
+
+\section{Complete classification for finite complement}
+
+We can now combine the linear skeleton with the admissible-curve theorem.
+
+\begin{theorem}[Global classification]\label{thm:global}
+Let $F\subset\R^2$ be finite, and suppose $\R^2\setminus F$ is partitioned into pairwise disjoint complete Euclidean circles and complete affine lines. Up to a Euclidean isometry, exactly one of the following four types occurs.
+
+\begin{enumerate}[label=\textup{(\Roman*)},leftmargin=2.4em]
+\item \textbf{No punctures.} $F=\varnothing$, there are no circle leaves, and the partition is
+\[
+\{\R\times\{t\}:t\in\R\}.
+\]
+
+\item \textbf{One puncture, pure circle type.} $F=\{p\}$ and there are no line leaves. The partition is
+\[
+\{\partial B(c(r),r):r>0\},
+\]
+where $c$ is an admissible center curve anchored at $p$ satisfying
+\[
+r-|c(r)-p|\longrightarrow\infty.
+\]
+Conversely every such curve gives such a partition.
+
+\item \textbf{One puncture, half-plane type.} For some $p=(p_1,p_2)$ with $p_2>0$,
+\[
+F=\{p\}.
+\]
+The line leaves are exactly
+\[
+\{\R\times\{t\}:t\le0\},
+\]
+and the upper half-plane $\{y>0\}\setminus\{p\}$ is partitioned by the circles of an admissible center curve $c=(c_1,c_2)$ anchored at $p$ which generates $\{y>0\}$. By Corollary~\ref{cor:prescribedhalfplane}, the latter condition is equivalent to
+\[
+c_2(r)-r>0\quad(r>0),
+\qquad
+c_2(r)-r\longrightarrow0.
+\]
+In particular, Theorem~\ref{thm:escape} gives
+\[
+r-|c(r)-p|\longrightarrow p_2=\dist(p,\{y=0\}).
+\]
+Conversely every admissible curve satisfying the two conditions from Corollary~\ref{cor:prescribedhalfplane}, together with the indicated lines, gives a partition.
+
+\item \textbf{Two punctures.} For some $w\ge0$,
+\[
+F=\{p_-,p_+\},
+\qquad
+p_-\in\{y<0\},
+\quad
+p_+\in\{y>w\}.
+\]
+The line leaves are exactly
+\[
+\{\R\times\{t\}:0\le t\le w\}.
+\]
+The lower half-plane $\{y<0\}\setminus\{p_-\}$ and the upper half-plane $\{y>w\}\setminus\{p_+\}$ are independently partitioned by admissible center curves generating those two half-planes. Equivalently, Corollary~\ref{cor:prescribedhalfplane} applies to each side with the appropriate inward unit normal. Conversely every such pair of curves, together with the indicated line leaves, gives a partition.
+\end{enumerate}
+
+No other finite-complement partition exists.
+\end{theorem}
+
+\begin{proof}
+If $F=\varnothing$, Lemma~\ref{lem:puncture-inside} rules out circle leaves. Any two line leaves are parallel, and covering the whole plane forces every parallel translate to occur. This is Type~(I).
+
+Assume now $|F|\ge1$. By Theorem~\ref{thm:bound}, $|F|\le2$.
+
+If $|F|=1$ and there are no lines, Theorem~\ref{thm:admissible} and Theorem~\ref{thm:escape} give Type~(II).
+
+Suppose line leaves occur. Use horizontal coordinates and the closed height set $S$. Proposition~\ref{prop:onepuncturecomponent} says that every component of $\R\setminus S$ contains exactly one puncture, while Lemma~\ref{lem:noboundedstrip} says that every such component is unbounded.
+
+If $|F|=1$, the complement $\R\setminus S$ therefore consists of exactly one unbounded interval. Since $S$ is nonempty and closed, after reflection and vertical translation we have
+\[
+S=(-\infty,0].
+\]
+The unique circular component is the open upper half-plane, and Theorems~\ref{thm:admissible} and \ref{thm:escape} give precisely Type~(III).
+
+If $|F|=2$, the complement $\R\setminus S$ consists of exactly two unbounded intervals. Thus for some $a\le b$,
+\[
+S=[a,b].
+\]
+After vertical translation write $a=0$ and $b=w\ge0$. Each of the two complementary half-planes contains exactly one puncture, and Theorems~\ref{thm:admissible} and \ref{thm:escape} independently classify its circle leaves. This is Type~(IV).
+
+The converse assertions follow directly from Theorem~\ref{thm:admissible}: the circular families partition their respective open regions, the horizontal lines partition the remaining closed line region, and the two parts are disjoint.
+\end{proof}
+
+\begin{remark}[The Apollonius family]\label{rem:apollonius}
+In Type~(IV), the case $w=0$ has a single line leaf separating the two circular half-planes. The standard construction obtained from the level sets
+\[
+\frac{|x-p_-|}{|x-p_+|}=\lambda
+\]
+is one highly symmetric example: the level $\lambda=1$ is the separating line and the remaining levels are Apollonius circles. Theorem~\ref{thm:global} shows that this example is far from unique.
+\end{remark}
+
+\section{Moduli and the Lorentzian circle space}
+
+The classification is functional rather than finite-dimensional. For example, fix a unit vector $e$, a point $p$, and $0<a<1$. The center curve
+\[
+c(r)=p+a(1-e^{-r})e
+\]
+is admissible, because it is differentiable with $|c'(r)|=ae^{-r}<1$, and
+\[
+r-|c(r)-p|\longrightarrow\infty.
+\]
+It therefore gives a nonconcentric circle decomposition of $\R^2\setminus\{p\}$.
+
+Similarly, let $q\in\R^2$, let $\nu$ be a unit vector, and let $\delta>0$. Put
+\[
+p=q+\delta\nu,
+\qquad
+c(r)=q+\bigl(r+\delta e^{-r/\delta}\bigr)\nu.
+\]
+Then $c(r)\to p$ as $r\downarrow0$ and
+\[
+|c'(r)|=1-e^{-r/\delta}<1.
+\]
+Moreover
+\[
+r-|c(r)-p|=\delta(1-e^{-r/\delta})\longrightarrow\delta.
+\]
+Hence this family partitions the half-plane
+\[
+\{x:\nu\cdot(x-q)>0\}
+\]
+minus the point $p$.
+
+There is also a useful Lorentzian reformulation. Encode a circle with center $c=(a,b)$ and radius $r$ by the point $(a,b,r)\in\R^{2,1}$, equipped with the quadratic form
+\[
+Q(\Delta c,\Delta r)=(\Delta r)^2-|\Delta c|^2.
+\]
+For $s>r$, the strict nesting condition is exactly
+\[
+Q(c(s)-c(r),s-r)>0
+\]
+with positive time orientation. Thus the graph
+\[
+\Gamma(r)=(c(r),r)
+\]
+has every forward chord timelike. Lorentzian geometry of the space of circles is also the mechanism behind a proof of the Tait--Kneser theorem in \cite{BorJackmanTabachnikov}; here it appears not for osculating circles of a prescribed plane curve, but as the intrinsic geometry of all nested circle decompositions considered above.
+
+\section{Concluding remarks}
+
+The finite-complement problem is rigid at the level of topology and domain geometry but flexible at the level of individual circle families. The topology forces at most two missing points and confines all straight leaves to a parallel line skeleton. The Euclidean geometry then forces every circular component to be either a once-punctured plane or a once-punctured half-plane. Inside such a component, however, the admissible center curve may vary through an infinite-dimensional family.
+
+Several natural extensions remain. One may classify admissible center curves modulo Euclidean similarities or M\"obius transformations, impose smooth or analytic regularity, replace the finite complement by a more general closed set, or ask for higher-dimensional analogues involving hyperspheres and hyperplanes.
+
+\begin{thebibliography}{9}
+
+\bibitem{BorJackmanTabachnikov}
+G.~Bor, C.~Jackman, and S.~Tabachnikov,
+\emph{Variations on the Tait--Kneser theorem},
+The Mathematical Intelligencer \textbf{43} (2021), no.~3, 8--14.
+\href{https://doi.org/10.1007/s00283-021-10119-0}{doi:10.1007/s00283-021-10119-0}.
+
+\bibitem{MoussongSimanyi}
+G.~Moussong and N.~Sim\'anyi,
+\emph{Circle decompositions of surfaces},
+Topology and its Applications \textbf{158} (2011), no.~3, 392--396.
+\href{https://doi.org/10.1016/j.topol.2010.11.015}{doi:10.1016/j.topol.2010.11.015}.
+
+\bibitem{MSECirclePartition}
+edubrovskiy,
+\emph{Partition of plane into disjoint circumferences},
+Mathematics Stack Exchange, question 1611211 (2016), with an answer by Evan Chen.
+\url{https://math.stackexchange.com/questions/1611211/partition-of-plane-into-disjoint-circumferences}.
+
+\end{thebibliography}
+
+\end{document}
