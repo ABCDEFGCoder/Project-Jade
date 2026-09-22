@@ -1,0 +1,1668 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\R}{\mathbb R}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\E}{\mathcal E}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\diam}{\operatorname{diam}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\conv}{\operatorname{conv}}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\Adm}{Q_{\mathrm{trig}}^{\mathrm{adm}}}
+
+\title{The Maximum Number of Sides in the Intersection of Two Unit Regular Polygons}
+\author{Zixuan Ye\\Beijing National Day School
+\and GPT-5.6 Sol\\OpenAI}
+\date{September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For integers $n,m\ge3$, let $K(n,m)$ be the largest possible number of sides of the intersection of a unit-side-length regular $n$-gon and a unit-side-length regular $m$-gon, under arbitrary rigid motions and with nonempty interior. This is the maximum-edge subproblem in Problem~93 of Kagey's open problem collection. We determine $K(n,m)$ exactly. Besides $K(n,n)=2n$, the low rows are
+\[
+K(3,m)=5\ (m>3),\qquad K(4,m)=7\ (m>4),\qquad K(5,m)=8\ (m>5).
+\]
+For $6\le n<m$, put $d=m-n$ and
+\[
+ c_q=\left\lfloor\frac{q(q-2)}2\right\rfloor\qquad(q\ge4).
+\]
+Then
+\[
+ K(n,m)=n+\max\Bigl(\{3\}\cup\{q\ge4:n\ge dc_q+\kappa_d(q)\}\Bigr),
+\]
+where
+\[
+\kappa_d(q)=
+\begin{cases}
+1,&d\ge4,\\
+1,&d=3,\ q=4,\\
+2,&d=3,\ q\ge5,\\
+2,&d=2,\\
+2,&d=1,\ q=4,\\
+3,&d=1,\ q\in\{5,6,7,8,10\},\\
+4,&d=1,\ q=9\text{ or }q\ge11.
+\end{cases}
+\]
+The proof has three parts. First, for $n\ge6$ a global crossing-index argument reduces every configuration with excess at least four to a positive branch and eliminates the possible gain-two endpoint defects without suppressing gap parameters. Second, a sparse-to-symmetric domination theorem shows that arbitrarily long gain-one excursions cannot improve on the centered alternating threshold; the converse is proved by a global realization argument, not by local interpolation alone. Third, the exact trigonometric threshold is integerized by a Peano-kernel argument. Only finitely many boundary signs remain; one exact rational-interval Python certificate supplies all required signs and retains several redundant boundary cross-checks.
+\end{abstract}
+
+\section{Introduction}
+
+Let $P_k$ be a regular $k$-gon of side length $1$. Peter Kagey's Problem~93 asks for the possible combinatorial classes of intersections of two unit regular polygons and, as a related question, asks for the largest number of sides that such an intersection can have \cite{Kagey93}. The present paper solves this maximum-edge problem.
+
+The intersection of two convex polygons is again convex and has at most the sum of the two numbers of sides; this elementary linear-complexity fact is standard in computational geometry \cite[Sec.~7.6]{ORourke}. What is nontrivial here is the rigidity imposed by equal side lengths and regularity. Those constraints force a sharp staircase law rather than the trivial upper bound $n+m$.
+
+We write
+\[
+K(n,m):=\max \#E\bigl(P_n\cap gP_m\bigr),
+\]
+where $g$ ranges over rigid motions for which the intersection has nonempty interior. Clearly
+\[
+K(n,m)=K(m,n).
+\]
+The main theorem is stated in Section~\ref{sec:mainformula}. The proof is organized as follows.
+
+\begin{enumerate}[label=(\roman*)]
+\item Sections~\ref{sec:basic}--\ref{sec:lowrows} establish source counting, the low-row upper bounds, and the diagonal case.
+\item Sections~\ref{sec:excursions}--\ref{sec:sparse} prove, for $n\ge6$, the global reduction from arbitrary configurations to exact even/odd symmetric trigonometric thresholds. Endpoint gaps are retained explicitly, and long gain-one excursions are never identified with single teeth.
+\item Section~\ref{sec:centered} proves global realizability of those thresholds and supplies the universal $+3$ construction, completing the rows $n=4,5$ as well.
+\item Sections~\ref{sec:integerization}--\ref{sec:finite} convert the thresholds into the integer staircase using a Peano kernel and one finite exact certificate.
+\end{enumerate}
+
+Support functions and elementary facts about convex polygons are used throughout; see Schneider \cite{Schneider} for standard background. All nonstandard ingredients required for the proof are established below.
+
+\section{Basic notation and source counting}\label{sec:basic}
+
+For $k\ge3$ set
+\[
+ R_k=\frac1{2\sin(\pi/k)},\qquad
+ \rho_k=\frac12\cot\frac{\pi}{k}.
+\]
+Thus $R_k$ and $\rho_k$ are the circumradius and inradius of the unit regular $k$-gon. We also write
+\[
+ u(\theta)=(\cos\theta,\sin\theta).
+\]
+
+\begin{lemma}[general position reduction]\label{lem:generalposition}
+The maximum $K(n,m)$ may be computed using configurations in which no vertex lies on the other polygonal boundary, no two supporting lines from the two polygons coincide, and all boundary intersections are transversal.
+\end{lemma}
+
+\begin{proof}
+Fix a configuration with nonempty interior. Choose one relative-interior point on each positive-length edge of the intersection. Each such point satisfies finitely many strict half-plane inequalities except possibly when the same supporting line is supplied by both polygons. A sufficiently small generic translation and rotation preserves all strict inequalities; in the coincident-support case, one of the two nearby supports still contributes a positive-length edge. Thus a generic perturbation produces at least as many positive-length intersection edges. Since the edge count is integer-valued and bounded by $n+m$, it suffices to prove upper bounds in general position and to construct lower-bound examples there.
+\end{proof}
+
+In general position let $A,B$ be two convex polygons and $Q=A\cap B$. Let $a$ be the number of vertices of $A$ in $\operatorname{int}B$, let $b$ be the number of vertices of $B$ in $\operatorname{int}A$, and let $c$ be the number of proper crossings of $\partial A$ and $\partial B$.
+
+\begin{lemma}[vertex--crossing identity]\label{lem:abc}
+\[
+\#E(Q)=a+b+c.
+\]
+\end{lemma}
+
+\begin{proof}
+Every vertex of $Q$ is uniquely of one of the following three types: a vertex of $A$ lying in $\operatorname{int}B$, a vertex of $B$ lying in $\operatorname{int}A$, or a transversal crossing of one edge of $A$ and one edge of $B$. Conversely every such point is a vertex of $Q$. A convex polygon has equal numbers of vertices and edges.
+\end{proof}
+
+\section{Low-row upper bounds and the diagonal}\label{sec:lowrows}
+
+We first isolate the rows that will not use the global compression argument.
+
+\subsection{A side-gap metric}
+
+Let $E_i,E_j$ be edges of a unit regular $m$-gon and put
+\[
+q(i,j)=\min\{|i-j|,m-|i-j|\}.
+\]
+
+\begin{lemma}[side-gap metric]\label{lem:sidegap}
+For $2\le q\le\lfloor m/2\rfloor$,
+\[
+\dist(E_i,E_j)=\frac{\sin((q-1)\pi/m)}{\sin(\pi/m)}.
+\]
+In particular, two nonadjacent edges are at distance at least $1$.
+\end{lemma}
+
+\begin{proof}
+By rotation take $E_i=E_0$ and $E_j=E_q$. Put $\theta=\pi/m$ and
+\[
+V_k=R_m(\cos2k\theta,\sin2k\theta).
+\]
+In the direction $w=(V_q-V_1)/|V_q-V_1|$, the projections of both edge directions are $\cos(q\theta)\ge0$. Hence the maximal projection on $E_0$ occurs at $V_1$ and the minimal projection on $E_q$ at $V_q$. Thus the distance equals $|V_q-V_1|$, which is the displayed chord length. The final assertion follows from $(q-1)\pi/m\in[\pi/m,\pi/2]$.
+\end{proof}
+
+\begin{lemma}[diameter-side clique principle]\label{lem:clique}
+Let $C$ be a compact convex set of diameter $D$. If two edges of a unit regular $m$-gon contribute positive-length edges to $C\cap P_m$ in general position, then their mutual distance is strictly less than $D$.
+\end{lemma}
+
+\begin{proof}
+Choose relative-interior points $x,y$ on the two contributed segments. They lie in $\operatorname{int}C$. Two interior points cannot realize the diameter of a convex body with nonempty interior, because the segment can be extended slightly at both ends while remaining in $C$. Hence $|x-y|<D$.
+\end{proof}
+
+For fixed $s\ge2$, the quantity
+\[
+d_s^{(N)}:=\frac{\sin(s\pi/N)}{\sin(\pi/N)}
+\]
+is strictly increasing in $N$ whenever $s\le N/2$. Indeed, differentiating its logarithm after putting $x=\pi/N$ reduces this to the strict decrease of $x\cot x$ on $(0,\pi)$.
+
+\subsection{The triangle row}
+
+\begin{theorem}\label{thm:triangle-row}
+\[
+K(3,m)=
+\begin{cases}
+6,&m=3,\\
+5,&m\ge4.
+\end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+A unit equilateral triangle has diameter $1$. Lemmas~\ref{lem:sidegap} and \ref{lem:clique} imply that for $m\ge4$ the contributing $P_m$-edges are pairwise adjacent, hence there are at most two; therefore $K(3,m)\le5$.
+
+For the lower bound, take the unit triangle with vertices
+\[
+(-1/2,0),\quad(1/2,0),\quad(0,\sqrt3/2)
+\]
+and put a vertex of $P_m$ at $O=(0,\sqrt3/2-1/4)$, with its interior-angle bisector pointing vertically downward. The half interior angle of $P_m$ is at least $\pi/4$, so the two bottom triangle vertices lie strictly inside that corner and the top vertex lies outside. The whole triangle lies in the open unit disk centered at $O$, whereas every nonincident edge of $P_m$ is at distance at least $1$ from $O$. Hence the vertex counts are $(a,b,c)=(2,1,2)$ and Lemma~\ref{lem:abc} gives $5$. For $m=3$, two concentric oppositely oriented equilateral triangles have a hexagonal intersection.
+\end{proof}
+
+\subsection{Square and pentagon upper bounds}
+
+For $m\ge6$, if two contributing $P_m$-edges have cyclic gap at least $3$, then their distance is at least
+\[
+2\cos(\pi/m)\ge\sqrt3.
+\]
+The unit square and unit regular pentagon have diameters $\sqrt2$ and $(1+\sqrt5)/2$, both strictly below $\sqrt3$. Thus, in either row, the contributing $P_m$-edge indices have pairwise cyclic distance at most $2$. A cyclic set of length $m\ge6$ with this property has at most three elements: if four existed and the four cyclic gaps were $d_1,\dots,d_4\ge1$, one opposite pair would force two consecutive gaps to be $1$, and the other opposite pair a third gap to be $1$; the remaining gap is $m-3\ge3$, a contradiction. Therefore
+\[
+K(4,m)\le7,\qquad K(5,m)\le8\qquad(m\ge6).
+\tag{3.1}
+\]
+
+The remaining square--pentagon upper bound is also analytic.
+
+\begin{lemma}\label{lem:square-pentagon}
+$K(4,5)\le7$.
+\end{lemma}
+
+\begin{proof}
+Let $v_0,\dots,v_4$ be the outward unit normals of the pentagon and put $\tau=(1+\sqrt5)/2$. Then
+\[
+v_0+v_1+\tau v_3=0.
+\]
+If the three corresponding pentagon support lines all met a unit square $Q$, then with $\rho_5$ the pentagon inradius,
+\[
+(2+\tau)\rho_5\le h_Q(v_0)+h_Q(v_1)+\tau h_Q(v_3).
+\]
+Put $w_0=v_0,w_1=v_1,w_3=\tau v_3$. Since $w_0+w_1+w_3=0$, for either coordinate direction $e$ of the square,
+\[
+\frac12\sum_i|w_i\cdot e|=\max_i|w_i\cdot e|.
+\]
+Optimizing over the square orientation therefore bounds the right side by
+\[
+M=\sqrt{1+\tau^2+2\tau\sin(\pi/5)}.
+\]
+Since $\sin^2(\pi/5)=(5-\sqrt5)/8<9/25$, hence $\sin(\pi/5)<3/5$,
+\[
+M^2<2+\frac{11}{5}\tau,
+\]
+whereas the exact identity $\rho_5^2=(5+2\sqrt5)/20$ gives
+\[
+((2+\tau)\rho_5)^2=\frac{7+11\tau}{4}
+>2+\frac{11}{5}\tau.
+\]
+Contradiction. Any four pentagon edges contain a rotated copy of the triple $\{0,1,3\}$, so at most three pentagon edges contribute.
+\end{proof}
+
+Thus $K(4,m)\le7$ for every $m\ge5$, and $K(5,m)\le8$ for every $m\ge6$. Their matching lower bounds will follow from the universal $+3$ constructions in Section~\ref{sec:centered}.
+
+\subsection{The diagonal}
+
+\begin{theorem}\label{thm:diagonal}
+For every $n\ge3$,
+\[
+K(n,n)=2n.
+\]
+\end{theorem}
+
+\begin{proof}
+The source-edge bound gives $K(n,n)\le2n$. Take two concentric unit regular $n$-gons and rotate one by a sufficiently small nonzero angle. Their $2n$ support normals strictly interlace and all supports have the same distance $\rho_n$ from the common center, so none of the $2n$ supporting half-planes is redundant. The intersection has $2n$ sides.
+\end{proof}
+
+\section{Excursions and the global index-gap theorem}\label{sec:excursions}
+
+From now until Section~\ref{sec:centered} assume
+\[
+6\le n<m.
+\]
+Set
+\[
+A=P_n,\qquad B=z+R_\varphi P_m,
+\qquad
+\alpha=\frac{2\pi}{n},\quad
+\beta=\frac{2\pi}{m},\quad
+\delta=\alpha-\beta>0.
+\]
+
+\begin{lemma}[radius separation]\label{lem:radiussep}
+For $5\le n<m$,
+\[
+\rho_m>R_n.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $\rho_k$ increases with $k$, it suffices to prove $\rho_{n+1}>R_n$. For $n=5$ this is equivalent to $7>3\sqrt5$. For $n\ge6$, put $x=\pi/n$, $y=\pi/(n+1)$, $u=x-y$. Then
+\[
+\sin x\cos y-\sin y=\sin u-2\sin^2(x/2)\sin y.
+\]
+Now $\sin u>u-u^3/6>5u/6$, while
+\[
+2\sin^2(x/2)\sin y<\frac{x^2y}{2}=u\frac{\pi^2}{2n}<\frac56u.
+\]
+Hence the difference is positive.
+\end{proof}
+
+If a $B$-edge with outward normal $v$ contributes to the intersection boundary, then its support line meets $A$, so
+\[
+\rho_m+z\cdot v\le h_A(v)\le R_n<\rho_m.
+\]
+Thus $z\cdot v<0$ and all contributing $B$-edge normals lie in one open semicircle. Cut the cyclic indices through its complementary arc and lift all relevant indices to integers. The $A$-indices are lifted simultaneously by the common boundary order. In particular, if two crossings lie on the same physical $A$-edge but on opposite sides of the chosen cyclic cut, their lifted $A$-indices differ by $n$ rather than by $0$; all index differences below are understood in this lifted sense.
+
+A component of $\partial B\cap\operatorname{int}A$ is called a \emph{$B$-inside excursion}. For excursion $E_i$, let $b_i$ be its number of interior $B$-vertices and let $s_i$ be the number of interior $A$-vertices on the replaced lifted $A$-arc between its two crossings (equivalently, the lifted $A$-edge index increment). Define
+\[
+g_i=b_i-s_i+2.
+\tag{4.1}
+\]
+As the excursion replaces $s_i-1$ complete $A$-edges by $b_i+1$ $B$-edge pieces,
+\[
+\#E(A\cap B)-n=\sum_i g_i.
+\tag{4.2}
+\]
+
+If a crossing $P$ lies on $A_i$ and $B_j$, write $k(P)=j-i$. The following is the global discrete separation estimate.
+
+\begin{theorem}[global index-gap theorem]\label{thm:indexgap}
+Let
+\[
+P\in A_i\cap B_j,\qquad Q\in A_{i+p}\cap B_{j+r}
+\]
+be crossings in their common lifted order. Then
+\[
+r\le p+1,
+\qquad k(Q)-k(P)\le1.
+\tag{4.3}
+\]
+\end{theorem}
+
+\begin{proof}
+The common translation makes the corresponding chord vectors in $A$ and in the untranslated $P_m$ equal, hence their lengths agree. Suppose $r\ge p+2$. If $p=0$, the two $A$-points lie strictly inside one unit edge and are less than $1$ apart, while the two $B$-edges are nonadjacent and have distance at least $1$ by Lemma~\ref{lem:sidegap}. If $1\le p$ and $p+1\le n/2$, the $A$-distance is at most $d_{p+1}^{(n)}$, whereas the $B$-distance is at least
+\[
+d_{r-1}^{(m)}\ge d_{p+1}^{(m)}>d_{p+1}^{(n)}.
+\]
+If $p+1>n/2$, let $s=\lfloor n/2\rfloor$. The $A$-distance is at most $d_s^{(n)}$. The active $B$-window is strictly shorter than a semicircle, so $r-1<m/2$; since $r-1>s$,
+\[
+d_{r-1}^{(m)}>d_s^{(m)}>d_s^{(n)}.
+\]
+Every case is contradictory.
+\end{proof}
+
+Let $P_i^-,P_i^+$ be the start and end crossings of $E_i$. Let the lifted difference ``$A$-normal angle minus $B$-normal angle'' be $-\ell_i<0$ at the start and $r_i>0$ at the end. Between $E_i$ and $E_{i+1}$ let the $A$- and $B$-edge index increments be $a_i,c_i$. Normal order gives
+\[
+r_i+\ell_{i+1}=c_i\beta-a_i\alpha>0,
+\]
+so $c_i\ge a_i+1$. Theorem~\ref{thm:indexgap} applied to the two gap crossings gives the reverse inequality, hence
+\[
+\boxed{c_i=a_i+1,\qquad r_i+\ell_{i+1}=\beta-a_i\delta\le\beta.}
+\tag{4.4}
+\]
+Across an excursion,
+\[
+k(P_i^+)-k(P_i^-)=b_i-s_i=g_i-2
+\]
+and
+\[
+\boxed{\ell_i+r_i=s_i\delta+(2-g_i)\beta.}
+\tag{4.5}
+\]
+For an internal excursion, applying Theorem~\ref{thm:indexgap} across the preceding gap, the excursion, and the following gap gives $g_i\le1$. The two adjacent copies of (4.4) give $\ell_i,r_i<\beta$; if $g_i\le0$, then (4.5) would give $\ell_i+r_i>2\beta$. Thus
+\[
+\boxed{g_i=1\quad(2\le i\le N-1).}
+\tag{4.6}
+\]
+If there are at least two excursions, the same discrepancy calculation from the first start to the second start, and symmetrically at the right end, gives
+\[
+g_1,g_N\le2.
+\tag{4.7}
+\]
+If there is only one excursion, (4.3) applied to its two endpoints gives $g_1\le3$.
+
+Consequently any configuration with excess $q\ge4$ contains, after deleting any nonpositive global endpoint excursions, a consecutive positive branch of total gain $G\ge q$. Its internal gains are all $1$ and its endpoint gains are $1$ or $2$. The remainder of the upper-bound proof eliminates the endpoint value $2$ and then treats arbitrarily long gain-one excursions.
+
+\section{Endpoint defects and sparse-to-symmetric domination}\label{sec:sparse}
+
+\subsection{Cut contraction}
+
+Along a fixed matching diagonal, let $\theta$ be the $B$-edge normal angle and let $\eta(\theta)$ be the matched $A$-vertex radial angle. Then $\eta'=\alpha/\beta$. The condition that this $A$-vertex lie strictly outside the matched $B$ half-plane is
+\[
+z\cdot u(\theta)<U(\theta),\qquad
+U(\theta)=R_n\cos(\eta(\theta)-\theta)-\rho_m.
+\]
+Whenever $\delta<\beta$,
+\[
+U''+U
+=R_n\left(1-\frac{\delta^2}{\beta^2}\right)\cos(\eta-\theta)-\rho_m
+<R_n-\rho_m<0.
+\]
+
+\begin{lemma}[cut contraction]\label{lem:cutcontraction}
+Assume $\delta<\beta$. Suppose two genuine cut inequalities on one matching diagonal hold at $\theta_0<\theta_1$ with $\theta_1-\theta_0<\pi$. Then every matched cut inequality at an intermediate angle also holds.
+\end{lemma}
+
+\begin{proof}
+Let $H(\theta)=z\cdot u(\theta)$, so $H''+H=0$, and put $W=U-H$. The endpoint values of $W$ are positive and $W''+W<0$. Subtract the harmonic interpolant with the same endpoint values. If the difference had a negative component $(a,b)$, then its negative $w>0$ there would satisfy $w''+w>0$ with zero endpoint values. Multiplication by $w$ and integration would yield
+\[
+\int_a^b(w')^2<\int_a^bw^2,
+\]
+contrary to the Dirichlet inequality
+\[
+\int_a^b(w')^2\ge\left(\frac{\pi}{b-a}\right)^2\int_a^bw^2>\int_a^bw^2
+\]
+because $b-a<\pi$.
+\end{proof}
+
+\subsection{Eliminating a gain-two endpoint}
+
+We need one elementary weighted sine inequality.
+
+\begin{lemma}\label{lem:weighted-sine}
+Let $R\ge1$, $w\ge0$, $0\le\xi\le1$, and $w+(R+1)\beta<\pi$. Then
+\[
+2\sin\beta\sum_{k=1}^{R}(k-1+\xi)\cos(w+k\beta)
+<(R+\xi)\sin(w+R\beta).
+\tag{5.1}
+\]
+\end{lemma}
+
+\begin{proof}
+Use $2\sin\beta\cos v=\sin(v+\beta)-\sin(v-\beta)$. If $U=w+(R+1)\beta$, right minus left becomes
+\[
+2\sum_{k=1}^{R}\sin(w+k\beta)+(\xi-1)\sin(w+\beta)+\xi\sin w-(R-1+\xi)\sin U.
+\]
+This is affine in $\xi$. Since $\sin t\ge (t/U)\sin U$ for $0\le t\le U$ by concavity, the value at $\xi=0$ is at least $R(w+\beta)\sin U/U>0$, while the value at $\xi=1$ is at least $(R+1)w\sin U/U\ge0$; if $w=0$, strict concavity makes the latter inequality strict. Hence the expression is positive throughout $[0,1]$.
+\end{proof}
+
+Consider a left endpoint excursion of gain $2$, ending at $A_i\cap B_j$. Put that crossing at the origin, take the $B_j$ normal angle to be $0$, and let the $A_i$ normal angle be $\gamma>0$. Let $x,y\in(0,1)$ be the remaining edge lengths from the crossing to the forward endpoints $v_{i+1},w_{j+1}$.
+
+Suppose a later start crossing occurs at $(A_{i+h-1},B_{j+h})$ with $h\ge2$. Its start angle is
+\[
+\gamma+(h-1)\delta-\beta<0,
+\]
+so
+\[
+\gamma<\beta-(h-1)\delta\le\beta-\delta.
+\tag{5.2}
+\]
+In particular $\delta<\beta$, and the two genuine cuts supplied by the endpoint core and this later start lie on the same matching diagonal, at least two levels apart. Lemma~\ref{lem:cutcontraction} is therefore applicable and gives the level-$2$ cut. Direct projection of the matched vertex against the $B_{j+2}$ support yields
+\[
+F:=x\sin(2\beta-\gamma)-y\sin2\beta-\sin\beta-\sin(\alpha-2\beta+\gamma)>0.
+\tag{5.3}
+\]
+Moreover (5.2) gives $2\beta-\alpha-\gamma=\beta-\delta-\gamma>0$, so the denominator hidden in this projection is positive; no sign reversal is being suppressed.
+
+Put
+\[
+R=\left\lceil\frac{\gamma}{\delta}\right\rceil,
+\qquad w=R\delta-\gamma\in[0,\delta),
+\qquad \xi=1-\frac{w}{\delta}\in(0,1],
+\]
+\[
+A_R=\sin(R\alpha),\qquad B_R=\sin(R\alpha-\gamma),
+\]
+and
+\[
+E_R=\sum_{k=1}^{R}\bigl[\sin(k\alpha)-\sin(k\beta+w)\bigr].
+\]
+The gain-two core itself gives the strict inside margin
+\[
+D:=E_R-xA_R+yB_R>0.
+\tag{5.4}
+\]
+Define
+\[
+\kappa=\frac{B_R}{\sin2\beta},\qquad
+P=\frac{\sin\gamma\,\sin(R\alpha+2\beta-\gamma)}{\sin2\beta},
+\]
+\[
+C_*=\sin\beta-\sin(\beta-\delta-\gamma).
+\]
+The elimination identity can be checked coefficient by coefficient. Since $\alpha=\beta+\delta$,
+\[
+\alpha-2\beta+\gamma=-(\beta-\delta-\gamma),
+\]
+so the constant part of $\kappa F+\kappa C_*$ cancels exactly. The $y$-coefficient is $-\kappa\sin2\beta=-B_R$, and the $x$-coefficient follows from
+\[
+\sin(R\alpha)\sin2\beta
+=\sin(R\alpha-\gamma)\sin(2\beta-\gamma)
+ +\sin\gamma\,\sin(R\alpha+2\beta-\gamma).
+\]
+Consequently
+\[
+\boxed{-D=\kappa F+xP+(\kappa C_*-E_R).}
+\tag{5.5}
+\]
+All displayed coefficients are positive. The level used in (5.4) lies inside the gain-two core, while the inferred level-$2$ cut lies later in the same active window; hence their $B$-index span gives $(R+2)\beta<\pi$. For the only nonobvious sine, put $\vartheta=R\beta+w=R\alpha-\gamma$. If $\delta\le\beta/2$, this integer inequality gives $\pi-(R+2)\beta\ge\beta/2>w$ (because $m/2$ is an integer or a half-integer); if $\delta>\beta/2$, then $R=1$ and $\beta<2\alpha/3$, so, since $n\ge6$, $\vartheta+2\beta<\alpha+2\beta<7\alpha/3\le7\pi/9$. Thus $P>0$.
+
+The summand in $E_R$ is the integral of $\cos$ over an interval of length $(k-1+\xi)\delta$. Concavity of $\sin$ gives
+\[
+E_R\le\delta\sum_{k=1}^{R}(k-1+\xi)\cos(w+k\beta).
+\]
+Moreover $\beta-\delta-\gamma>0$, so
+\[
+C_*=\int_{\beta-\delta-\gamma}^{\beta}\cos u\,du
+>(\delta+\gamma)\cos\beta
+=\delta(R+\xi)\cos\beta.
+\]
+Since $0\le w<\delta<\beta$ and $(R+2)\beta<\pi$, we also have $w+(R+1)\beta<\pi$, so all hypotheses of Lemma~\ref{lem:weighted-sine} are satisfied. That lemma gives $\kappa C_*>E_R$. Equation (5.5), together with $F>0$, would force $D<0$, contradicting (5.4).
+
+Hence a gain-two endpoint cannot be followed by two positive gain-one excursions. The reflected statement holds at the right endpoint. The same argument excludes $C+(g=1)+C$, because the start cut of the right core supplies the required later genuine cut.
+
+It remains to exclude two gain-two cores directly adjacent. If the complementary $A$-gap between them had increment $a\ge1$, the right-core start would already give $h=a+1\ge2$ and the preceding argument would apply. Thus necessarily $a=0$. Let the two relative angles be $\gamma>0$ and $-\phi<0$; then
+\[
+\gamma+\phi=\beta.
+\]
+Put
+\[
+R=\left\lceil\frac{\gamma}{\delta}\right\rceil,
+\quad
+Q=\left\lceil\frac{\phi}{\delta}\right\rceil,
+\quad k=R+Q.
+\]
+The active $B$-window gives $(k+1)\beta<\pi$. We also need $k\alpha\le\pi$. If instead $k\alpha>\pi$, then
+\[
+n\le2k-1,\qquad m\ge2k+3.
+\]
+Since $n\ge6$, this implies $k\ge4$. The ceiling definitions and $\gamma+\phi=\beta$ give $(k-2)\delta<\beta$, equivalently $n>(k-2)(m-n)$. Therefore
+\[
+(2k-1)(k-1)\ge n(k-1)>(k-2)m\ge(k-2)(2k+3),
+\]
+which reduces to $7>2k$, contradicting $k\ge4$. Hence $k\alpha\le\pi$.
+
+For $0<\theta<\beta$ and $R=\lceil\theta/\delta\rceil$ with $R\alpha<\pi$, define
+\[
+E_R(\theta)=\sum_{j=1}^{R}\bigl[\sin(j\alpha)-\sin(j\beta+R\delta-\theta)\bigr].
+\]
+Then
+\[
+\boxed{\frac{E_R(\theta)}{\sin(R\alpha)}<\frac{\theta}{\beta}.}
+\tag{5.6}
+\]
+Indeed, set $X_j=j\alpha$, $Y_j=j\beta+R\delta-\theta$ and $d_j=X_j-Y_j$. The intervals $[Y_j,X_j]$ lie at the right ends of the cells $[(j-1)\alpha,j\alpha]$, with $0<d_1<\cdots<d_R=\theta<\beta$. If
+\[
+c=\frac{\sum_jd_j}{R\alpha}
+=\frac{\theta-(R-1)\delta/2}{\alpha}
+\]
+and
+\[
+F(t)=|[0,t]\cap\cup_j[Y_j,X_j]|-ct,
+\]
+then $F(j\alpha)=-j(R-j)\delta/2\le0$; $F$ decreases on gaps and increases on selected intervals, so $F\le0$ and is not identically zero. Integration by parts gives
+\[
+E_R(\theta)-c\sin(R\alpha)
+=\int_0^{R\alpha}F(t)\sin t\,dt<0.
+\]
+Since $c\le\theta/\alpha<\theta/\beta$, (5.6) follows.
+
+Since $R,Q<k$ and $k\alpha\le\pi$, both applications satisfy the hypothesis $R\alpha,Q\alpha<\pi$ of (5.6). Applying (5.6) to the two cores gives normalized inside margins $h_R<\gamma/\beta$ and $h_Q<\phi/\beta$, hence $h_R+h_Q<1$. To record the remaining elimination explicitly, let $x,y$ be the two forward edge remainders at the common middle crossing. After reflecting and reversing the right core, its corresponding remainders are
+\[
+x'=1-x+y\frac{\sin\beta}{\sin\phi},\qquad
+y'=y\frac{\sin\gamma}{\sin\phi}.
+\]
+Divide the two strict core-margin inequalities by $\sin(R\alpha)$ and $\sin(Q\alpha)$ and add them. The $x$-terms cancel, and one obtains the necessary condition
+\[
+h_R+h_Q-1+y c_1>0,
+\tag{5.7}
+\]
+with
+\[
+c_1=-\sin\gamma\,[\cot(R\alpha)+\cot(Q\alpha)].
+\]
+Because $R\alpha,Q\alpha\in(0,\pi)$ and $(R+Q)\alpha=k\alpha\le\pi$,
+\[
+\cot(R\alpha)+\cot(Q\alpha)
+=\frac{\sin(k\alpha)}{\sin(R\alpha)\sin(Q\alpha)}\ge0.
+\]
+Thus $c_1\le0$, contradicting $h_R+h_Q<1$ and (5.7).
+
+We have proved:
+
+\begin{lemma}[endpoint-defect elimination]\label{lem:endpointdefect}
+Every positive excursion branch of total gain $G\ge4$ consists entirely of gain-one excursions; all its internal complementary gaps satisfy (4.4).
+\end{lemma}
+
+\subsection{Sparse gain-one branches}
+
+A gain-one excursion need not be a single tooth. Suppose such an excursion starts at $(A_i,B_j)$ and has $s$ interior $A$-vertices. Then it has $s-1$ interior $B$-vertices and ends at $(A_{i+s},B_{j+s-1})$. Because every complementary gap satisfies $c=a+1$, the starts of all excursions in a pure branch lie on one lifted index diagonal.
+
+Let the branch contain $q\ge4$ gain-one excursions. From the start-angle increments and (4.4),
+\[
+(q-2)\delta<\beta,
+\qquad
+(q-1)\beta<\pi.
+\tag{5.8}
+\]
+The first inequality follows because the start angles of excursions $2,\dots,q$ all lie in $(-\beta,0)$ and consecutive starts advance by $(s+a)\delta\ge\delta$; the second follows from the active $B$-semicircle. Since $q\ge4$, the first inequality in (5.8) implies $\delta<\beta$. Hence Lemma~\ref{lem:cutcontraction} is applicable to every contraction used in the remainder of this subsection.
+
+We now use only genuine endpoint events. Put $a=\pi/n$, $b=\pi/m$, $\varepsilon=a-b$.
+
+\paragraph{Phase centering.}
+Suppose two symmetric cut constraints occur at half-span $L/2$, where
+\[
+L\ge3,\qquad L\varepsilon<a,\qquad Lb<\frac\pi2,
+\]
+and the central phase is $|\psi|<b$. Positive sine interpolation of the two upper bounds gives
+\[
+M_L(\psi)=R_n\left[
+\cos^2\psi\frac{\cos(L\varepsilon)}{\cos(Lb)}
+-\sin^2\psi\frac{\sin(L\varepsilon)}{\sin(Lb)}
+\right]-\frac{\rho_m\cos\psi}{\cos(Lb)}.
+\tag{5.9}
+\]
+For either central outside lower bound used below, let $F=M_L-N$. Writing $x=\cos\psi$ gives
+\[
+F(0)-F(\psi)=(1-x)[A_L(1+x)+B],
+\]
+with
+\[
+A_L=R_n\frac{\sin(La)}{\sin(Lb)\cos(Lb)},
+\qquad B\ge R_m-\frac{\rho_m}{\cos(Lb)}.
+\]
+For the even central lower bound this is equality. For the odd one, the coefficient of $\cos\psi$ is $R_m\cos(S\varepsilon)/\cos(Sa)$; since $0\le S\varepsilon<Sa<\pi/2$, this coefficient is strictly larger than $R_m$, which proves the displayed lower bound for $B$. The bracket is positive. It is enough to prove
+\[
+\frac{\sin(La)}{\sin(Lb)}>
+\frac{\sin a\cos b}{\sin b(1+\cos b)}.
+\tag{5.10}
+\]
+The right side is $<a/(2b)<L/[2(L-1)]\le3/4$. For the first inequality, after using $\sin a<a$, it is enough to note
+\[
+2b<\tan b+\sin b;
+\]
+the difference vanishes at $b=0$ and has derivative $\sec^2b+\cos b-2>0$ for $0<b<\pi/2$. If $La\le\pi/2$, the left side exceeds $1$; if $La>\pi/2$, then $La<Lb+a<\pi/2+a$ and, since $n\ge6$, it exceeds $\cos a\ge\cos(\pi/6)>3/4$. Thus $F(\psi)>0$ implies $F(0)>0$.
+
+\paragraph{Even number of excursions.}
+Let $q=2r$ and $t=r-1/2$. By (5.8), $\delta<\beta$. Choose the first outside $B$-vertex in the central complementary gap. There are $r$ nonempty excursions on each side, so the nearest genuine outer cuts lie at least $t$ diagonal units away. Lemma~\ref{lem:cutcontraction} contracts them to the symmetric positions $\pm t$. The central outside vertex has phase $|\psi|<b$. Applying the phase-centering result with $L=q-1$ yields
+\[
+\boxed{
+\rho_n-R_m<
+\frac{R_n\cos(t\delta)-\rho_m}{\cos(t\beta)}.}
+\tag{5.11}
+\]
+
+\paragraph{Odd number of excursions.}
+Let $q=2r+1\ge5$ and let the central excursion have length $S\ge1$. Its adjacent gap bounds give $S\delta<\beta$. Also $S\alpha<\pi$: otherwise $S\ge n/2$ and $S\delta<\beta$ force $m-n=1$, while the first-to-last active $B$-index span is at least $S+q-2>m/2$, contradicting the active semicircle.
+
+Take the midpoint of the central excursion as coordinate $0$. The two genuine outside events adjacent to it lie at $\pm S/2$. If their midpoint phase is $\psi$, the start/end crossing orientations give
+\[
+\ell=b+S\varepsilon+\psi,\qquad r=b+S\varepsilon-\psi,
+\]
+so the internal-gap bounds $\ell,r<2b$ imply
+\[
+|\psi|+S\varepsilon<b.
+\]
+The extreme genuine cuts lie at distance at least
+\[
+T=r+\frac{S-1}{2}.
+\]
+Put $L=2T=q+S-2$. By (5.8), $\delta<\beta$, so Lemma~\ref{lem:cutcontraction} supplies symmetric outer cuts at $\pm T$. If the midpoint phase is $\psi$, adding the two central outside inequalities gives
+\[
+N_S(\psi)=
+\frac{\rho_n-R_m\cos\psi\cos(S\varepsilon)}{\cos(Sa)}
+<z\cdot u_0.
+\tag{5.12}
+\]
+The two outer cuts give $z\cdot u_0<M_L(\psi)$ with $M_L$ from (5.9). From the start of excursion $2$ to the start of excursion $q$, the accumulated index increment is at least $S+q-3=L-1$; both start angles lie in $(-2b,0)$. Hence $(L-1)\delta<2b$, equivalently $L\varepsilon<a$. The outer active $B$-normals are in one strict semicircle, so $L\beta<\pi$, equivalently $Lb<\pi/2$. Together with $|\psi|<b$, phase centering applies.
+
+It remains to show that a long central excursion cannot improve the centered margin. Put
+\[
+c=q-2,\qquad \eta=b/a,\qquad \lambda=1-\eta,
+\qquad y=Sa,\qquad x=cb+\eta y=Lb,
+\]
+and define
+\[
+\mathcal G(y)=
+\left[R_n\cos(c\varepsilon+\lambda y)-\rho_m\right]
+\frac{\cos y}{\cos x}-\rho_n+R_m\cos(\lambda y).
+\tag{5.13}
+\]
+This equals $\cos(Sa)[M_L(0)-N_S(0)]$. Differentiation gives
+\[
+\begin{aligned}
+\mathcal G'(y)
+={}&\frac{\cos y}{\cos x}\Bigl[-R_n\lambda\sin(c\varepsilon+\lambda y)\\
+&+\bigl(R_n\cos(c\varepsilon+\lambda y)-\rho_m\bigr)
+(\eta\tan x-\tan y)\Bigr]
+-R_m\lambda\sin(\lambda y).
+\end{aligned}
+\tag{5.14}
+\]
+The first and last terms are negative and the middle coefficient is negative by Lemma~\ref{lem:radiussep}. If $S'=y/a$ and $L'=c+S'$, then throughout the continuous contraction from $S$ to $1$,
+\[
+\eta>\frac{L'-1}{L'},
+\qquad
+\eta\frac{x}{y}=\eta^2\frac{L'}{S'}>
+\frac{(L'-1)^2}{L'(L'-c)}>1,
+\]
+where the last inequality is $(c-2)L'+1>0$. Since $\tan t/t$ is strictly increasing on $(0,\pi/2)$, $\eta\tan x>\tan y$. Hence $\mathcal G'(y)<0$. Therefore feasibility at $S\ge1$ implies feasibility at $S=1$, which is exactly
+\[
+\boxed{
+\frac{\rho_n-R_m\cos(\delta/2)}{\cos(\alpha/2)}<
+\frac{R_n\cos(r\delta)-\rho_m}{\cos(r\beta)}.}
+\tag{5.15}
+\]
+
+Thus every excess-$q\ge4$ configuration forces a symmetric threshold of length at least $q$: first pass to a positive branch of gain $G\ge q$, eliminate endpoint defects, and apply (5.11) or (5.15) to its $G$ gain-one excursions.
+
+\section{Global realization and the exact trigonometric formula}\label{sec:centered}
+
+The preceding argument gives necessary symmetric thresholds. We now prove that they are sufficient by constructing globally valid configurations; this step is separate from the local cut-contraction argument.
+
+Assume first
+\[
+6\le n<m<2n.
+\]
+Write $a=\pi/n$, $b=\pi/m$, $\varepsilon=a-b$ and retain $\alpha=2a$, $\beta=2b$, $\delta=2\varepsilon$.
+
+Define
+\[
+H_e=R_m-\rho_n,
+\qquad
+H_o=\rho_m-R_n+\frac12\tan a,
+\]
+\[
+\Phi_e(t)=R_n\cos(t\delta)+H_e\cos(t\beta)-\rho_m,
+\tag{6.1}
+\]
+\[
+\Phi_o(t)=R_n\cos(t\delta)+H_o\cos(t\beta)-\rho_m.
+\tag{6.2}
+\]
+Inequality (5.11) is precisely $\Phi_e(r-1/2)>0$, and (5.15) is precisely $\Phi_o(r)>0$.
+
+\subsection{The two centered contact configurations}
+
+For the even contact configuration, take the $A$-edge normals to be $u(\alpha i)$, the $B$-vertex radial directions to be $u(\beta j)$, and put the $B$-center at
+\[
+h_e e_1,\qquad h_e=\rho_n-R_m=-H_e.
+\]
+The central $B$-vertex touches the midpoint of the central $A$-edge.
+
+For the odd contact configuration, take the $A$-vertex radial directions to be $u(\alpha i)$ and the $B$-edge normals to be $u(\beta j)$. Put
+\[
+s_*=R_n-\frac12\tan a,
+\qquad h_o=s_*-\rho_m=-H_o.
+\]
+Then the endpoints $(s_*,\pm1/2)$ of the central $B$-edge lie on the two $A$-edges adjacent to the eastern $A$-vertex, strictly inside those edges.
+
+We must show that, apart from these prescribed contacts, every $B$-vertex is outside $A$.
+
+For $h=h_e$ or $h_o$, set
+\[
+W_h(x)=h\cos(\alpha x)+R_m\cos(\delta x)-\rho_n.
+\]
+A positive value means that the $B$-vertex indexed by $x$ is excluded by the matched $A$ support. Put $d=m-n$ and $\lambda=d/m<1/2$, so $\delta=\lambda\alpha$. Then
+\[
+W_h''+\alpha^2W_h=\alpha^2 f(x),
+\qquad
+f(x)=R_m(1-\lambda^2)\cos(\delta x)-\rho_n.
+\tag{6.3}
+\]
+Let $X_0=n/(2d)+1$. For $|x|\le X_0$,
+\[
+|\delta x|\le(1+\lambda)a.
+\]
+Since $\rho_t/t$ is strictly increasing (write $\rho_t/t=[x\cot x]/(2\pi)$ with $x=\pi/t$),
+\[
+R_m(1-\lambda^2)\cos(\delta x)
+\ge \rho_m(1-\lambda^2)
+\frac{\cos((1+\lambda)a)}{\cos((1-\lambda)a)}
+>\rho_n(1+\lambda)
+\frac{\cos((1+\lambda)a)}{\cos((1-\lambda)a)}.
+\]
+The last factor is $>1$. Indeed, for
+\[
+g(\lambda)=(1+\lambda)\frac{\cos((1+\lambda)a)}{\cos((1-\lambda)a)},
+\]
+we have $g(0)=1$ and
+\[
+(\log g)'=\frac1{1+\lambda}-a\bigl[\tan((1+\lambda)a)+\tan((1-\lambda)a)\bigr].
+\]
+For fixed $a$, the tangent sum is increasing in $\lambda$, because its derivative is
+\[
+a\bigl[\sec^2((1+\lambda)a)-\sec^2((1-\lambda)a)\bigr]\ge0;
+\]
+for fixed $\lambda$ it is increasing in $a$. Hence, using $a\le\pi/6$ and $0\le\lambda<1/2$,
+\[
+\tan((1+\lambda)a)+\tan((1-\lambda)a)
+<\tan\frac\pi4+\tan\frac\pi{12}=3-\sqrt3,
+\]
+and $1/(1+\lambda)>2/3$. Therefore
+\[
+(\log g)'>\frac23-\frac\pi6(3-\sqrt3)>0;
+\]
+for example $\pi<22/7$ and $\sqrt3>19/11$ verify the last positivity by exact rational comparison. Thus $f(x)>0$ on this range.
+
+Put $X=\min(X_0,n/2)$. In the even configuration, $W(0)=W'(0)=0$, and variation of constants gives
+\[
+W(x)=\alpha\int_0^x\sin(\alpha(x-u))f(u)\,du>0
+\qquad(0<x\le X).
+\]
+In the odd configuration, $W$ is even and $W(\pm1/2)=0$. Since $W'(0)=0$, variation of constants at $x=1/2$ gives
+\[
+0=W(0)\cos a+\alpha\int_0^{1/2}\sin(\alpha(1/2-u))f(u)\,du,
+\]
+so $W(0)<0$. Differentiating the same formula shows $W'(1/2)>0$ (both resulting terms are positive, since $a\le\pi/6$). Restarting the variation-of-constants formula at $1/2$ then gives $W(x)>0$ for $1/2<x\le X$, because $\alpha(x-1/2)<\pi$. In particular $W(0)=H_e-H_o<0$, so $H_o>H_e>0$.
+
+For the remaining vertices, write
+\[
+v(x)=-H e_1+R_m u(\beta x),\qquad H=H_e\text{ or }H_o.
+\]
+On $0\le x\le m/2$, $|v(x)|$ is strictly increasing. Moreover
+\[
+R_m>\frac{m}{2\pi},\qquad
+H\ge H_e=R_m-\rho_n>\frac{d}{2\pi},
+\]
+the latter because
+\[
+\rho_t'=\frac{\pi}{2t^2}\csc^2(\pi/t)>\frac1{2\pi}.
+\] If $x_*=0$ in the even case and $x_*=1/2$ in the odd case, then
+\[
+|v(X)|^2-|v(x_*)|^2
+=4R_mH\bigl[\sin^2(Xb)-\sin^2(x_*b)\bigr]
+>\frac{d}{\pi^2m}\left(4X^2-\frac{\pi^2}{4}\right)>\frac14.
+\tag{6.4}
+\]
+For $X=X_0$ the last inequality follows from $4(n/d+2)>12>\pi^2$; for $X=n/2$ it follows from $\pi^2<10$ and $d(4n^2-20)-10n>0$ for $n\ge6$. Since $R_n^2-\rho_n^2=1/4$, every vertex beyond $X$ lies outside the $A$ circumcircle. Hence all nonprescribed $B$-vertices are strictly outside $A$.
+
+The $A$-center lies in $\operatorname{int}B$ in both contact configurations. Move the $B$-center a sufficiently small distance in the positive $e_1$ direction. The prescribed contacts become strict outside vertices while all other strict inequalities remain strict.
+
+\begin{lemma}[unit-edge cap lemma]\label{lem:unitcap}
+Let $n\ge4$. Suppose the $A$-center lies in $\operatorname{int}B$, every $B$-vertex lies outside $A$, and the two polygons are in general position. Then every $B$-inside excursion cuts off exactly one $A$-vertex, so every $A$-edge retains a positive-length part.
+\end{lemma}
+
+\begin{proof}
+An excursion is a strict subsegment of a single unit $B$-edge, hence has length $<1$. The cut-off $A$-cap does not contain the center. If it contained at least two $A$-vertices, its two crossing points would lie on nonadjacent unit $A$-edges, whose distance is at least $1$ by Lemma~\ref{lem:sidegap}, impossible. If it contained no $A$-vertex, two noncollinear line segments would intersect twice, also impossible. Thus exactly one vertex is cut off. Maximal outside arcs of $\partial A$ alternate with the $B$-inside excursions, so every such outside arc contains exactly that one vertex. Consequently no complete $A$-edge belongs to an outside arc, and every $A$-edge retains a positive-length part.
+\end{proof}
+
+In the even contact configuration, direct scalar products show that the cut margin at half-integer $x$ is $\Phi_e(x)$; in the odd configuration, the cut margin at integer $x$ is $\Phi_o(x)$.  Both coefficients $H_e,H_o$ are positive: $H_e=R_m-\rho_n>0$, while $H_o>0$ follows from $\rho_m>R_n$ (Lemma~\ref{lem:radiussep}).  Hence for $j\in\{e,o\}$,
+\[
+\Phi_j'(t)=-R_n\delta\sin(t\delta)-H_j\beta\sin(t\beta)<0
+\qquad(0<t<m/4),
+\]
+because $0<t\delta<t\beta<\pi/2$.  Thus both margin functions are strictly decreasing on the whole range used below. Therefore:
+
+\begin{proposition}[sufficiency of the symmetric thresholds]\label{prop:sufficiency}
+For $6\le n<m<2n$:
+\begin{enumerate}[label=(\roman*)]
+\item if $q=2r\ge4$ and $\Phi_e(r-1/2)>0$, there is a configuration with at least $n+q$ sides;
+\item if $q=2r+1\ge5$ and $\Phi_o(r)>0$, there is a configuration with at least $n+q$ sides.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+In the even case the $q$ half-integer positions $-r+1/2,\ldots,r-1/2$ remain strict cuts after the small displacement. In the odd case the $q$ integer positions $-r,\ldots,r$ do. All $B$-vertices are outside $A$ and the $A$-center remains inside $B$, so Lemma~\ref{lem:unitcap} converts these cuts into $q$ distinct one-vertex caps. Hence the intersection has at least $n+q$ sides.
+\end{proof}
+
+Combining the upper reduction from Sections~\ref{sec:excursions}--\ref{sec:sparse} with Proposition~\ref{prop:sufficiency} gives the exact trigonometric upper/lower match for $n\ge6$ and $m<2n$.
+
+\subsection{The universal \texorpdfstring{$+3$}{+3} construction}
+
+We also need the baseline excess $3$.
+
+If $n<m<2n$, the odd margin at $t=1$ simplifies exactly to
+\[
+\Phi_o(1)=\frac{2\cos a-1}{2\cos a}\sin(2b-a)>0.
+\tag{6.5}
+\]
+For $n\ge6$, the same odd centered contact construction gives $q=3$. For $n=4,5$, use that odd configuration directly. Its two central $B$-vertices lie on the two $A$-edges adjacent to the eastern vertex, and $s_*=R_n-\tfrac12\tan a>0$, so the $A$-center lies strictly inside $B$. The first noncontact $B$-vertex has vertical coordinate $1/2+\cos2b>R_n$ (for $n=4$ use $1/2+\cos(2\pi/5)>3/4>R_4$; for $n=5$ use $1/2+\cos(\pi/3)=1>R_5$), and the distances of subsequent vertices from the $A$-center increase. Hence all noncentral $B$-vertices are outside $A$. A small displacement makes the two contact vertices strict as well, and Lemma~\ref{lem:unitcap} gives $n+3$ sides.
+
+If $m=2n$, put $a=\pi/n$. Orient $B$ so its edge normals are separated by $a$ and place its center at $-(R_n/\cos a)e_1$. The identity $\rho_{2n}=R_n+\rho_n$ shows that the central $B$-edge cuts the eastern $A$-vertex, while the two adjacent $B$ supports coincide with the two adjacent $A$ supports. Every other $B$ support is strictly redundant: for odd support index $j$ the support slack is
+\[
+R_n\left(1-\frac{\cos(ja)}{\cos a}\right),
+\]
+vanishing only at $j=\pm1$, and for nonzero even $j$ it is
+\[
+\frac{R_n}{\cos a}[\cos^2a-\cos(ja)]>0.
+\]
+Thus the initial intersection has $n+1$ distinct support lines, including two positive-length overlaps. Choose an interior point on each overlap. Rotate $B$ slightly and apply the unique small translation that keeps the two rotated $B$ supports through those two chosen points. The two overlaps split into four positive-length edges while all strict supports persist, giving $n+3$ sides.
+
+If $m>2n$, place the central $B$-edge with endpoints $(s,\pm1/2)$ and interior to its left, where $s$ is slightly below
+\[
+s_*=R_n-\frac12\tan a.
+\]
+The eastern $A$-vertex is then outside $B$, whereas all other $A$-vertices lie in the $B$ incircle. It suffices to check the two $A$-vertices adjacent to the eastern one. If $c=\cos a$ and
+\[
+t_*=(c-1/2)\tan a,
+\]
+the critical incircle radius is
+\[
+\rho_* =\frac{t_*^2+c^2}{2t_*},
+\]
+and direct simplification gives
+\[
+\rho_* -\rho_{2n}
+=\frac{(1-c)^2}{4c(2c-1)\sin a}.
+\]
+For $n=4$ this is $(\sqrt2-1)/4<1/8$. For $n\ge5$, rewrite it as
+\[
+\frac{\sin^3a}{4c(2c-1)(1+c)^2}
+<\frac5{144}<\frac18,
+\]
+using $c>4/5$ and $\sin a<3/5$. On the other hand $\rho_x'>1/(2\pi)>1/8$, so $\rho_m\ge\rho_{2n+1}>\rho_*$. Thus $n-1$ vertices of $A$ lie inside $B$, at least two $B$-vertices lie inside $A$, and the boundaries cross twice; Lemma~\ref{lem:abc} gives at least $n+3$ sides.
+
+We have therefore proved
+\[
+\boxed{K(n,m)\ge n+3\qquad(n\ge4,\ m>n).}
+\tag{6.6}
+\]
+Together with (3.1) and Lemma~\ref{lem:square-pentagon}, this completes the two low rows:
+\[
+\boxed{K(4,m)=7\ (m>4),\qquad K(5,m)=8\ (m>5).}
+\tag{6.7}
+\]
+
+\subsection{Exact trigonometric formula for \texorpdfstring{$n\ge6$}{n >= 6}}
+
+If $m\ge2n$, then $\delta\ge\beta$. Any positive branch of gain at least $4$ would, after endpoint elimination, contain at least four gain-one excursions, but (5.8) would require $(q-2)\delta<\beta$, impossible. Hence (6.6) gives
+\[
+K(n,m)=n+3\qquad(n\ge6,\ m\ge2n).
+\tag{6.8}
+\]
+
+If $n<m<2n$, define $\Adm(n,m)$ to be the largest $q\ge4$ satisfying the angular admissibility conditions and the corresponding strict even or odd threshold (5.11), (5.15). The necessity proved in Section~\ref{sec:sparse} and the sufficiency proved above give
+\[
+\boxed{K(n,m)=n+\max\{3,\Adm(n,m)\}.}
+\tag{6.9}
+\]
+This is the exact trigonometric formula that will now be integerized.
+
+\section{Integerization of the centered threshold}\label{sec:integerization}
+
+Set
+\[
+d=m-n\ge1,
+\qquad
+a=\frac\pi n,
+\qquad b=\frac\pi m,
+\qquad\varepsilon=a-b.
+\]
+Then
+\[
+\frac{\varepsilon}{b}=\frac dn.
+\]
+For $q\ge4$ define
+\[
+\boxed{c_q=\left\lfloor\frac{q(q-2)}2\right\rfloor.}\tag{7.1}
+\]
+Thus
+\[
+c_{2r}=2r(r-1),
+\qquad
+c_{2r+1}=2r^2-1.
+\]
+Put
+\[
+z=n-c_qd.
+\]
+
+\subsection{Exact sine sums}
+
+For $q=2r$, $s=q-1=2r-1$, clearing the positive denominators in the even threshold (5.11) gives
+\[
+S_{2r}=\sin(sb)+2\sum_{k=1}^{r-1}\sin(sb-2ka)-2\sum_{k=1}^{r-1}\sin(2kb)>0.\tag{7.2}
+\]
+For $q=2r+1$, $s=2r$, the odd threshold (5.15) becomes
+\[
+\begin{aligned}
+S_{2r+1}={}&\sin(sb)-\sin(s\varepsilon)
++2\sum_{j=1}^{r-1}\sin(2jb-2(r-j)\varepsilon)\\
+&-\sum_{j=1}^{r}\sin((2j-1)b-\varepsilon)
+-\sum_{j=1}^{r-1}\sin((2j+1)b+\varepsilon)>0.
+\end{aligned}\tag{7.3}
+\]
+Let
+\[
+\psi(t)=t-\sin t.
+\]
+In both parities the linear part of the corresponding sine sum is
+\[
+b-c_q\varepsilon=\frac{\varepsilon}{d}(n-c_qd)=\frac{\varepsilon}{d}z.
+\]
+Hence
+\[
+\boxed{S_q=\frac{\varepsilon}{d}z-\Psi_q,\qquad
+S_q>0\iff z>\Theta_q:=\frac d\varepsilon\Psi_q.}\tag{7.4}
+\]
+
+\subsection{Peano kernels}
+
+Since $\psi(0)=\psi'(0)=\psi''(0)=0$ and $\psi'''(t)=\cos t$,
+\[
+\psi(u)=\frac12\int_0^u(u-t)^2\cos t\,dt.
+\]
+Thus
+\[
+\Psi_q=\frac12\int K_q(t)\cos t\,dt.
+\]
+For even $q=2r$,
+\[
+K_{2r}(t)=(sb-t)_+^2+2\sum_{k=1}^{r-1}(sb-2ka-t)_+^2-2\sum_{k=1}^{r-1}(2kb-t)_+^2.\tag{7.5}
+\]
+For odd $q=2r+1$,
+\[
+\begin{aligned}
+K_{2r+1}(t)={}&(sb-t)_+^2-(s\varepsilon-t)_+^2\\
+&+2\sum_{j=1}^{r-1}(2jb-2(r-j)\varepsilon-t)_+^2\\
+&-\sum_{j=1}^{r}((2j-1)b-\varepsilon-t)_+^2\\
+&-\sum_{j=1}^{r-1}((2j+1)b+\varepsilon-t)_+^2.
+\end{aligned}\tag{7.6}
+\]
+
+\begin{lemma}[Peano-kernel positivity]\label{lem:peano}
+If
+\[
+\frac{\varepsilon}{b}\le\frac1{c_q},
+\]
+then $K_q(t)\ge0$ for all $t$.
+\end{lemma}
+
+\begin{proof}
+We record the finite computation because it is the key exact step. For $q=2r$, the knots in (7.5) interlace. The second derivative of $K$ alternates between $+2$ and $-2$ on successive knot intervals, so only minima in convex intervals need checking. If $p$ pairs of knots remain to the right of such an interval, its minimum is
+\[
+M_p^{\mathrm e}=\frac{2pb^2}{3}
+\left[3-4x(p^2-1)-2x^2(3p^3+4p^2-1)\right],
+\quad x=\varepsilon/b.
+\]
+For $p\ge1$ this bracket is strictly decreasing in both variables: its partial derivatives are
+\[
+-4(p^2-1)-4x(3p^3+4p^2-1)<0,
+\qquad
+-8xp-2x^2(9p^2+8p)<0.
+\]
+Hence its worst value occurs at $p=r-1$, $x=1/(2r(r-1))$, where it equals
+\[
+\frac{(2r-1)(r^2-r+1)}{2r(r-1)^2}>0.
+\]
+
+For $q=2r+1$, the curvature pattern is $-2,0,+2,-2,0,+2,\dots$. The convex-interval minimum with $p$ pairs remaining is
+\[
+M_p^{\mathrm o}=\frac{2pb^2}{3}
+\left[3-4x(p^2-1)-x^2(6p^3+8p^2+1)\right].
+\]
+Here too the bracket is strictly decreasing for $p\ge1$, since
+\[
+\partial_x B=-4(p^2-1)-2x(6p^3+8p^2+1)<0,
+\qquad
+\partial_p B=-8xp-x^2(18p^2+16p)<0.
+\]
+Therefore the worst case is $p=r-1$, $x=1/(2r^2-1)$, giving
+\[
+\frac{2r(2r^3+5r^2+r-5)}{(2r^2-1)^2}>0.
+\]
+Thus all local minima are nonnegative. The kernel is not identically zero: immediately to the left of its largest knot $sb$, only the term $(sb-t)_+^2$ survives. Hence $K_q$ is positive on a nonempty interval.
+\end{proof}
+
+\begin{theorem}[universal ratio obstruction]\label{thm:ratio}
+If a centered canonical $q$-chain with $q\ge4$ is feasible, then
+\[
+\boxed{n>dc_q.}\tag{7.7}
+\]
+\end{theorem}
+
+\begin{proof}
+Fix $b$ and suppose, toward a contradiction, that a centered canonical $q$-chain is feasible at some $\varepsilon\ge\varepsilon_0:=b/c_q$.  The half-circle admissibility condition $(q-1)\beta<\pi$ is independent of $\varepsilon$, and the normal-fan condition is
+\[
+(q-2)\varepsilon<b.
+\]
+Hence every $\varepsilon'\in[\varepsilon_0,\varepsilon]$ is angularly admissible as well.  In particular the support of $K_q$ at $\varepsilon_0$ lies in
+\[
+[0,T],\qquad T=(q-1)b<\frac\pi2.
+\]
+Lemma~\ref{lem:peano} gives $K_q\ge0$, and the kernel is positive on a nonempty interval; since $\cos t>0$ on $[0,T]$, we have $\Psi_q(\varepsilon_0)>0$.  The linear part in (7.4) vanishes at $\varepsilon_0$, so $S_q(\varepsilon_0)<0$.  It remains to prove that $S_q$ is strictly decreasing on the whole interval $[\varepsilon_0,\varepsilon]$.
+
+For even $q=2r$,
+\[
+\frac{\partial S_{2r}}{\partial\varepsilon}
+=-4\sum_{k=1}^{r-1}k\cos(sb-2k(b+\varepsilon)).
+\]
+Every displayed cosine is positive. Indeed the largest argument is $<sb<\pi/2$, while the smallest is
+\[
+sb-2(r-1)a=b-2(r-1)\varepsilon>0,
+\]
+the last inequality being equivalent to $(2r-1)\varepsilon<a$. Thus the derivative is strictly negative.
+
+For odd $q=2r+1$, differentiating (7.3) and pairing terms gives
+\[
+\begin{aligned}
+\frac{\partial S_{2r+1}}{\partial\varepsilon}
+={}&-s\cos(s\varepsilon)-4\sum_{j=1}^{r-1}(r-j)\cos P_j\\
+&+\cos(2rb-a)+2\sin a\sum_{j=1}^{r-1}\sin(2jb),
+\end{aligned}
+\]
+where $s=2r$ and $P_j=2jb-2(r-j)\varepsilon$. Here $0<P_j<\pi/2$: the upper bound follows from $rb<\pi/4$, and the lower bound from $(2r-1)\varepsilon<a$, which implies $2(r-1)\varepsilon<b$. Hence the middle sum is nonpositive and may be discarded in an upper bound.
+
+Since the standing scope is $n\ge6$, we have $a\le\pi/6$; together with $s\varepsilon<a$ this gives
+\[
+\cos(s\varepsilon)>\cos(\pi/6)=\frac{\sqrt3}{2}>\frac67.
+\]
+Also, using $\sin x<x$, $rb<\pi/4$, and
+\[
+2r\varepsilon<a=b+\varepsilon
+\quad\Longrightarrow\quad
+ a<\frac{2r}{2r-1}b,
+\]
+we obtain
+\[
+\begin{aligned}
+2\sin a\sum_{j=1}^{r-1}\sin(2jb)
+&<2a\sum_{j=1}^{r-1}2jb
+=2ab\,r(r-1)\\
+&<\frac{4r^2(r-1)}{2r-1}b^2
+<\frac{\pi^2(r-1)}{4(2r-1)}
+<\frac{\pi^2}{8}<\frac54<\frac{11}{7}.
+\end{aligned}
+\]
+Finally $\cos(2rb-a)\le1$. Since $s\ge4$, the derivative is therefore
+\[
+< -4\cdot\frac67+1+\frac{11}{7}=-\frac67<0.
+\]
+Thus $S_q(\varepsilon)<S_q(\varepsilon_0)<0$, contradicting feasibility.  Hence no feasible chain can satisfy $\varepsilon\ge b/c_q$. Since $\varepsilon/b=d/n$, this is (7.7).
+\end{proof}
+
+\subsection{Cubic shadows}
+
+Define the cubic shadow of the Peano-kernel correction by
+\[
+ C_q:=\frac12\int_0^\infty K_q(t)\,dt,
+ \qquad
+ \Theta_q^{(3)}:=\frac d\varepsilon C_q.
+\tag{7.8}
+\]
+Whenever \(\varepsilon/b\le1/c_q\), Lemma~\ref{lem:peano} gives
+\(K_q\ge0\), while \(\cos t\le1\); hence
+\[
+\Theta_q\le\Theta_q^{(3)}.
+\tag{7.9}
+\]
+Put
+\[
+ c=c_q,\qquad x=\frac\varepsilon b=\frac dn.
+\]
+Since $\int_0^u(u-t)^2\,dt=u^3/3$ and, with $x=\varepsilon/b=d/n$,
+\[
+b=\frac{\pi x}{d(1+x)},
+\]
+direct integration of the positive-part quadratics in (7.5)--(7.6), followed by collecting the signed cubic knot sums, gives
+\[
+\Theta_{2r}^{(3)}=\frac{\pi^2}{6d}f_{\mathrm e}(c,x),
+\qquad
+f_{\mathrm e}(c,x)=\frac{xP_{\mathrm e}(c,x)}{(1+x)^2},
+\tag{7.10}
+\]
+where
+\[
+P_{\mathrm e}(c,x)
+=3c+1-c(c-1)x+c(c+2)x^2-c^2x^3,
+\tag{7.11}
+\]
+and
+\[
+\Theta_{2r+1}^{(3)}=\frac{\pi^2}{6d}f_{\mathrm o}(c,x),
+\qquad
+f_{\mathrm o}(c,x)=\frac{xP_{\mathrm o}(c,x)}{(1+x)^2},
+\tag{7.12}
+\]
+with
+\[
+P_{\mathrm o}(c,x)
+=3c+4-(c^2-4)x+(c^2-3c-1)x^2-(c^2+4c+2)x^3.
+\tag{7.13}
+\]
+
+The lower-tail argument below needs monotonicity in \(x\), so we record it explicitly rather than infer it from an endpoint maximum.
+
+\begin{lemma}[monotonicity of the cubic shadows]\label{lem:shadowmono}
+For every \(c>1\), \(f_{\mathrm e}(c,x)\) is strictly increasing on
+\(0\le x\le1/c\).  For every \(c\ge7\),
+\(f_{\mathrm o}(c,x)\) is strictly increasing on the same interval.
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+(1+x)^3\frac{\partial f_{\mathrm e}}{\partial x}=N_{\mathrm e}(c,x).
+\]
+For \(y=cx\in[0,1]\), exact expansion gives
+\[
+\begin{aligned}
+c^2N_{\mathrm e}(c,y/c)
+={}&c^3(3-2y)+c^2(3y^2-y+1)\\
+&+cy(-3y^2+6y-1)+2y^3(1-y).
+\end{aligned}
+\tag{7.14}
+\]
+On \([0,1]\), the first term is at least \(c^3\); the quadratic \(3y^2-y+1\) is positive because its discriminant is \(-11\); moreover \(-3y^2+6y-1\ge-1\), and the last term is nonnegative.  Therefore
+\[
+c^2N_{\mathrm e}(c,y/c)>c^3-c>0
+\qquad(c>1).
+\]
+Thus \(f_{\mathrm e}\) is strictly increasing.
+
+Likewise, if
+\[
+(1+x)^3\frac{\partial f_{\mathrm o}}{\partial x}=N_{\mathrm o}(c,x),
+\]
+then
+\[
+\begin{aligned}
+c^4N_{\mathrm o}(c,y/c)
+={}&c^5(3-2y)+c^4(3y^2-3y+4)\\
+&+c^3(-3y^3-9y^2+4y)\\
+&-c^2(2y^4+19y^3+3y^2)-c(8y^4+9y^3)-4y^4.
+\end{aligned}
+\tag{7.15}
+\]
+For \(0\le y\le1\), this is bounded below by
+\[
+c^5-12c^3-24c^2-17c-4.
+\]
+If \(c\ge7\), then
+\[
+c^5-12c^3-24c^2-17c-4
+\ge37c^3-24c^2-17c-4>0,
+\]
+because \(c^2-12\ge37\) and, for \(c\ge7\), \(37c^3-24c^2-17c-4=c^2(37c-24)-17c-4\ge235c^2-17c-4>0\).
+Hence \(f_{\mathrm o}\) is strictly increasing for \(c\ge7\).
+\end{proof}
+
+Since even \(q\ge4\) has \(c\ge4\), Lemma~\ref{lem:shadowmono} gives
+\[
+f_{\mathrm e}(c,x)\le f_{\mathrm e}(c,1/c)
+=\frac{2c+1}{c+1}<2.
+\tag{7.16}
+\]
+For odd \(q\ge5\), \(c\ge7\), and similarly
+\[
+f_{\mathrm o}(c,x)\le f_{\mathrm o}(c,1/c)
+=\frac{(c-1)(c+2)(2c+1)}{c^2(c+1)}.
+\]
+Moreover
+\[
+\frac{21}{10}-f_{\mathrm o}(c,1/c)
+=\frac{c^3-9c^2+30c+20}{10c^2(c+1)}>0
+\qquad(c\ge7),
+\]
+because the numerator is positive at \(c=7\) and has derivative
+\(3((c-3)^2+1)>0\).  Consequently
+\[
+\boxed{\Theta_{2r}<\frac{\pi^2}{3d},\qquad
+\Theta_{2r+1}<\frac{7\pi^2}{20d}.}
+\tag{7.17}
+\]
+These inequalities already settle all \(d\ge4\).
+
+\begin{corollary}\label{cor:dge4}
+If $d\ge4$ and $q\ge4$, then a centered canonical $q$-chain is feasible if and only if
+\[
+ n>dc_q.
+\]
+\end{corollary}
+
+\begin{proof}
+Necessity is Theorem~\ref{thm:ratio}. Conversely, if $n>dc_q$ then $z\ge1$. By (7.17), $\Theta_q<1$ for $d\ge4$, so (7.4) gives $S_q>0$.  The angular conditions also hold: since $c_q\ge q-2$, one has $n>(q-2)d$ and therefore $m=n+d>(q-1)d$, which is equivalent to $(q-1)\delta<\alpha$; moreover
+\[
+m\ge d(c_q+1)+1>2(q-1)
+\]
+because $d\ge4$ and $c_q\ge q-2$.  Thus the centered chain is genuinely admissible.
+\end{proof}
+
+\section{The finite curvature corrections}\label{sec:finite}
+
+\begin{lemma}[rational bounds for $\pi$]\label{lem:pibounds}
+\[
+\frac{333}{106}<\pi<\frac{355}{113}.
+\]
+\end{lemma}
+\begin{proof}
+Machin's identity
+\[
+\frac\pi4=4\arctan\frac15-\arctan\frac1{239}
+\]
+follows from the tangent addition formula. For $0<x<1$ the alternating series
+\[
+\arctan x=x-\frac{x^3}{3}+\frac{x^5}{5}-\cdots
+\]
+has remainder bounded in magnitude by the first omitted term. Taking four terms for $x=1/5$ and one term for $x=1/239$, and performing the resulting rational comparisons, gives the displayed bounds. In particular $493/50<\pi^2<10$ and $\pi<22/7$.
+\end{proof}
+
+For \(d=1,2,3\) we also need a lower cubic shadow.  Assume a candidate
+chain is feasible.  Theorem~\ref{thm:ratio} gives \(n>dc_q\), hence
+\(x=d/n<1/c_q\); Lemma~\ref{lem:peano} therefore gives \(K_q\ge0\).
+Its angular admissibility gives
+\[
+T:=(q-1)b<\frac\pi2.
+\]
+The support of \(K_q\) is contained in \([0,T]\).  Since
+\(\cos T\le\cos t\le1\) on this interval,
+\[
+\boxed{
+\cos T\,\Theta_q^{(3)}\le\Theta_q\le\Theta_q^{(3)}.
+}
+\tag{8.1}
+\]
+This is the only lower-shadow estimate used below.  We use
+\(493/50<\pi^2<10\) from Lemma~\ref{lem:pibounds} and
+\(\cos u>1-u^2/2\) for \(0<u<\pi/2\).  Whenever a bound below replaces
+\(s\) by the first value in a tail, we use the elementary fact that
+\(s/(s^2+A)\) is strictly decreasing for \(s^2>A\), since its derivative is
+\((A-s^2)/(s^2+A)^2\).
+
+\paragraph{The case \(d=2\).}
+By (7.17), every \(z\ge2\) satisfies the strict sine threshold \(S_q>0\).  It remains to exclude \(z=1\)
+except at the finite boundary cases listed below.
+
+For odd \(q\ge5\), put \(s=q-1\ge4\).  Then
+\(c=(s^2-2)/2\), \(x=2/(s^2-1)\), and direct substitution gives
+\[
+f_{\mathrm o}(c,x)-2
+=
+\frac{s^2(s^4-16s^2+11)}
+{(s-1)^2(s+1)^2(s^2+1)^2}>0.
+\tag{8.2}
+\]
+Indeed, with \(t=s^2\ge16\),
+\(t^2-16t+11=t(t-16)+11>0\).  Moreover
+\[
+T=\frac{s\pi}{s^2+1},
+\qquad
+T^2<\frac{160}{289},
+\qquad
+\cos T>\frac{209}{289}>\frac7{10}.
+\]
+Hence (8.1) gives the strict rational lower bound
+\[
+\Theta_q>
+\frac7{10}\frac{493}{50}\frac{2}{12}
+=\frac{3451}{3000}>1.
+\tag{8.3}
+\]
+
+For even \(q\ge6\), \(s=q-1\ge5\), \(c=(s^2-1)/2\),
+and \(x=2/s^2\).  Here
+\[
+f_{\mathrm e}(c,x)-\frac95
+=
+\frac{s^8-11s^6-51s^4+10s^2-20}
+{5s^4(s^2+2)^2}>0.
+\tag{8.4}
+\]
+For \(s\ge5\), the numerator is at least
+\[
+s^4(14s^2-51)-20>0,
+\]
+because \(s^2-11\ge14\).  Also
+\[
+T=\frac{s\pi}{s^2+2},
+\qquad
+T^2<\frac{250}{729},
+\qquad
+\cos T>\frac{604}{729}>\frac45.
+\]
+Thus
+\[
+\Theta_q>
+\frac45\frac{493}{50}\frac1{12}\frac95
+=\frac{1479}{1250}>1.
+\tag{8.5}
+\]
+The only \(d=2\) boundary not covered analytically is \(q=4,z=1\).
+
+\paragraph{The case \(d=3\).}
+Again (7.17) gives \(S_q>0\) for every \(z\ge2\).  At \(z=1\), for odd
+\(q\ge7\) put \(s=q-1\ge6\).  Then
+\[
+f_{\mathrm o}(c,x)-2
+=
+\frac{4(27s^6-333s^4+222s^2-20)}
+{(3s^2-4)^2(3s^2+2)^2}>0.
+\tag{8.6}
+\]
+Indeed
+\[
+27s^6-333s^4+222s^2-20
+=s^4(27s^2-333)+222s^2-20>0
+\]
+for \(s\ge6\).  Furthermore
+\[
+T=\frac{2s\pi}{3s^2+2},
+\qquad
+T^2<\frac{72}{605},
+\qquad
+\cos T>\frac{569}{605}>\frac{47}{50},
+\]
+so
+\[
+\Theta_q>
+\frac{47}{50}\frac{493}{50}\frac2{18}
+=\frac{23171}{22500}>1.
+\tag{8.7}
+\]
+
+For even \(q\ge8\), \(s=q-1\ge7\),
+\[
+f_{\mathrm e}(c,x)-\frac{97}{50}
+=
+\frac{243s^8-10152s^6-23238s^4+22440s^2-11725}
+{50(3s^2-1)^2(3s^2+5)^2}>0.
+\tag{8.8}
+\]
+Since \(s^2\ge49\), the numerator is larger than
+\[
+s^4(1755s^2-23238)-11725>0.
+\]
+Also
+\[
+T=\frac{2s\pi}{3s^2+5},
+\qquad
+T^2<\frac{1960}{23104},
+\qquad
+\cos T>1-\frac{980}{23104}>\frac{19}{20}.
+\]
+Consequently
+\[
+\Theta_q>
+\frac{19}{20}\frac{493}{50}\frac1{18}\frac{97}{50}
+=\frac{908599}{900000}>1.
+\tag{8.9}
+\]
+Only \(q=4,5,6\) remain for \(d=3,z=1\).
+
+\paragraph{The case \(d=1\).}
+The upper shadow (7.17) gives \(S_q>0\) for every \(z\ge4\).  To rule out the
+lower layers on the infinite tail, assume \(z\le3\).  Theorem~\ref{thm:ratio}
+then gives \(1\le z\le3\).
+
+For even \(q\ge18\), let \(s=q-1\ge17\) and
+\(c=(s^2-1)/2\).  Since
+\[
+x=\frac1{c+z}\ge\frac1{c+3},
+\]
+Lemma~\ref{lem:shadowmono} gives
+\[
+f_{\mathrm e}(c,x)\ge f_{\mathrm e}\!\left(c,\frac1{c+3}\right).
+\]
+Direct substitution yields
+\[
+f_{\mathrm e}\!\left(c,\frac1{c+3}\right)-\frac{197}{100}
+=
+\frac{P_{\mathrm e,1}(s)}
+{100(s^2+5)^2(s^2+7)^2},
+\tag{8.10}
+\]
+where
+\[
+P_{\mathrm e,1}(s)
+=3s^8-728s^6-18958s^4-126280s^2-264725.
+\]
+For \(s^2\ge289\),
+\[
+\begin{aligned}
+P_{\mathrm e,1}(s)
+&\ge139s^6-18958s^4-126280s^2-264725\\
+&=s^4(139s^2-18958)-126280s^2-264725\\
+&\ge21213\cdot289\,s^2-126280s^2-264725>0.
+\end{aligned}
+\tag{8.11}
+\]
+Moreover, since \(m=c+z+1\ge c+2\),
+\[
+T\le\frac{2s\pi}{s^2+3},
+\qquad
+T^2<\frac{11560}{85264},
+\qquad
+\cos T>\frac{93}{100}.
+\]
+Hence
+\[
+\Theta_q>
+\frac{93}{100}\frac{493}{50}\frac1{6}\frac{197}{100}
+=\frac{3010751}{1000000}>3.
+\tag{8.12}
+\]
+
+For odd \(q\ge17\), let \(s=q-1\ge16\) and
+\(c=(s^2-2)/2\).  Again
+\(x\ge1/(c+3)\), and Lemma~\ref{lem:shadowmono} gives
+\[
+f_{\mathrm o}(c,x)\ge f_{\mathrm o}\!\left(c,\frac1{c+3}\right).
+\]
+Here
+\[
+f_{\mathrm o}\!\left(c,\frac1{c+3}\right)-\frac{99}{50}
+=
+\frac{P_{\mathrm o,1}(s)}
+{50(s^2+4)^2(s^2+6)^2},
+\tag{8.13}
+\]
+where
+\[
+P_{\mathrm o,1}(s)
+=s^8-180s^6-5652s^4-28720s^2-35424.
+\]
+For \(s^2\ge256\),
+\[
+\begin{aligned}
+P_{\mathrm o,1}(s)
+&\ge76s^6-5652s^4-28720s^2-35424\\
+&=s^4(76s^2-5652)-28720s^2-35424\\
+&\ge13804\cdot256\,s^2-28720s^2-35424>0.
+\end{aligned}
+\tag{8.14}
+\]
+Also
+\[
+T\le\frac{2s\pi}{s^2+2},
+\qquad
+T^2<\frac{10240}{66564},
+\qquad
+\cos T>\frac{923}{1000}.
+\]
+Therefore
+\[
+\Theta_q>
+\frac{923}{1000}\frac{493}{50}\frac1{6}\frac{99}{50}
+=\frac{15016287}{5000000}>3.
+\tag{8.15}
+\]
+Thus all \(d=1\) cases with \(q\ge17\) are decided analytically, and only
+\(4\le q\le16\) require finite checks within the standing scope \(n\ge6\).
+
+All finite signs not decided by the analytic tails in the range $n\ge6$ are certified by the accompanying script \path{integer_staircase_certificate.py}. There is one point at which the bookkeeping matters. For $d=1,q=4$ the asserted threshold is $z=2$, whereas the analytic upper-shadow argument proves feasibility only for $z\ge4$. Thus both $z=2$ and $z=3$ must be checked separately. The certificate does exactly this: it certifies
+\[
+ S_4(6,7)>0,\qquad S_4(7,8)>0,
+\]
+so no monotonicity in $z$ is being used. The layer $z=1$, namely $(n,m)=(5,6)$, is intentionally outside both the certificate and Theorem~\ref{thm:integerthreshold}, because the complete row $n=5$ was proved independently in Section~\ref{sec:centered}.
+
+More generally, the script contains an internal coverage audit. For $d=1$ and $4\le q\le16$ it requires every unresolved layer $z\in\{1,2,3\}$ with $n\ge6$, with the sign prescribed by the displayed threshold; when the threshold itself is $z=4$ it also retains the positive $z=4$ check as a redundant cross-audit. Together with the four small $d=2,3$ boundary cases, this gives $49$ certified signs. The program aborts if any required layer is missing, duplicated, assigned the wrong expected sign, or has an interval meeting zero.
+
+Every theorem-level arithmetic operation in the program uses exact \texttt{Fraction} arithmetic. It derives its own rational enclosure of $\pi$ from Machin's identity and alternating arctangent series, then encloses every sine term in (7.2)--(7.3) by alternating Taylor sums. There is no floating-point sign decision.
+
+The certified boundary signs yield the following theorem.
+
+\begin{theorem}[integer chain threshold]\label{thm:integerthreshold}
+Fix integers $n\ge6$, $d\ge1$, and $q\ge4$, and put $m=n+d$. A centered canonical $q$-chain for the pair $(n,m)$ is feasible if and only if
+\[
+ n\ge n_{\min}(d,q):=dc_q+\kappa_d(q),
+\]
+where
+\[
+\boxed{
+\kappa_d(q)=
+\begin{cases}
+1,&d\ge4,\\
+1,&d=3,\ q=4,\\
+2,&d=3,\ q\ge5,\\
+2,&d=2,\\
+2,&d=1,\ q=4,\\
+3,&d=1,\ q\in\{5,6,7,8,10\},\\
+4,&d=1,\ q=9\text{ or }q\ge11.
+\end{cases}}
+\tag{8.16}
+\]
+\end{theorem}
+
+\begin{proof}
+Theorem~\ref{thm:ratio} first gives the universal necessity \(z=n-dc_q\ge1\).
+For \(d\ge4\), Corollary~\ref{cor:dge4} already proves that \(z\ge1\) is necessary and sufficient, giving \(\kappa_d(q)=1\).
+
+For \(d=2\), (7.17) gives the strict sine inequality \(S_q>0\) whenever \(z\ge2\).  Equations (8.2)--(8.5) exclude \(z=1\) for all \(q\ge5\), and the certificate excludes the remaining case \(q=4,z=1\).  Hence the sine threshold is exactly \(z\ge2\).
+
+For \(d=3\), (7.17) likewise gives \(S_q>0\) for every \(z\ge2\).  Equations (8.6)--(8.9) exclude \(z=1\) for \(q\ge7\); the exact certificate gives \(z=1\) positive for \(q=4\) and negative for \(q=5,6\).  This is exactly the stated \(d=3\) row.
+
+For \(d=1\), (7.17) gives \(S_q>0\) for every \(z\ge4\), while (8.10)--(8.15) exclude every \(z\le3\) once \(q\ge17\).  The certificate checks every unresolved layer \(z\in\{1,2,3\}\) for \(4\le q\le16\), subject only to \(n\ge6\), and its mechanically audited sign ledger is precisely the \(d=1\) row displayed above.
+
+It remains only to verify the two angular admissibility conditions at every claimed positive threshold.  Since \(c_q\ge q-2\) and every displayed \(\kappa_d(q)\) is positive,
+\[
+n\ge dc_q+\kappa_d(q)>(q-2)d,
+\]
+so \(m=n+d>(q-1)d\), which is equivalent to \((q-1)\delta<\alpha\).  For the half-circle condition, if \(d=1,q=4\) then the threshold gives \(m\ge7>6=2(q-1)\).  If \(q\ge5\), then \(c_q>2q-4\), and hence already for \(d=1\)
+\[
+m\ge c_q+\kappa_1(q)+1>2(q-1);
+\]
+for \(d\ge2\) the left side only increases.  Thus \((q-1)\beta<\pi\) as well.  The strict sine threshold and both angular conditions are therefore equivalent to the stated integer threshold in every case.
+\end{proof}
+
+\section{The exact formula}\label{sec:mainformula}
+
+\begin{theorem}[complete formula for $K(n,m)$]\label{thm:main}
+Let $n,m\ge3$ and put $N=\min\{n,m\}$, $M=\max\{n,m\}$. Then:
+\begin{enumerate}[label=(\alph*)]
+\item If $N=M$, then $K(n,m)=2N$.
+\item If $N=3<M$, then $K(n,m)=5$.
+\item If $N=4<M$, then $K(n,m)=7$.
+\item If $N=5<M$, then $K(n,m)=8$.
+\item If $6\le N<M$, put $d=M-N$ and
+\[
+Q(N,d)=\max\Bigl(\{3\}\cup
+\{q\ge4:N\ge d\lfloor q(q-2)/2\rfloor+\kappa_d(q)\}\Bigr),
+\]
+where $\kappa_d(q)$ is given in Theorem~\ref{thm:integerthreshold}. Then
+\[
+\boxed{K(n,m)=N+Q(N,d).}
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Parts (a)--(d) are Theorems~\ref{thm:diagonal}, \ref{thm:triangle-row} and (6.7). For $N\ge6$, Section~\ref{sec:centered} reduces the maximum excess to the largest strict symmetric threshold, and Theorem~\ref{thm:integerthreshold} integerizes exactly that threshold.
+\end{proof}
+
+For a convenient generic inversion define
+\[
+\kappa(d)=
+\begin{cases}
+4,&d=1,\\
+2,&d=2,3,\\
+1,&d\ge4,
+\end{cases}
+\qquad
+H_d(N)=\left\lfloor\frac{N-\kappa(d)}d\right\rfloor,
+\]
+\[
+Q_0(N,d)=\max\left\{3,\left\lceil\sqrt{2H_d(N)+3}\right\rceil\right\}.
+\]
+Then $Q=Q_0$ except for
+\[
+(d,N,Q)=(3,13,4)
+\]
+and, for $d=1$,
+\[
+(N,Q)=(6,4),(7,4),(10,5),(15,6),(20,7),(27,8),(43,10).
+\]
+Indeed $c_q\le H$ is equivalent to $(q-1)^2<2H+3$.
+
+\begin{corollary}[fixed-diagonal asymptotics]
+For every fixed $d\ge1$,
+\[
+K(n,n+d)=n+\sqrt{\frac{2n}{d}}+O_d(1).
+\]
+\end{corollary}
+
+\begin{proof}
+The exact formula has $c_q=q^2/2+O(q)$ and a bounded correction $\kappa_d(q)$.
+\end{proof}
+
+\section{Certificate and reproducibility}
+
+Exactly one program is used in the theorem layer:
+\begin{center}
+\texttt{integer\_staircase\_certificate.py}.
+\end{center}
+It certifies $49$ finite boundary signs with $n\ge6$: all layers left open by the analytic tail estimates, plus seven deliberately redundant $z=4$ positive checks in the $d=1$ rows whose threshold is $4$. In particular, both $(d,q,z)=(1,4,2)$ and $(1,4,3)$ are certified positive; no unproved monotonicity in $z$ is used. The script also mechanically audits the finite-case ledger before evaluating any trigonometric sign. It derives a rigorous rational interval for $\pi$ internally from Machin's identity, evaluates all trigonometric quantities by outward rational interval arithmetic and alternating Taylor remainders, and aborts if a required case is missing or if any interval meets zero. All geometric reductions, endpoint-defect arguments, sparse-to-symmetric domination, global realizability, low-row results, and Peano-kernel positivity are analytic and do not depend on computation.
+
+Running
+\begin{verbatim}
+python integer_staircase_certificate.py
+\end{verbatim}
+prints \texttt{PASS} together with the number of certified signs and the smallest exact interval distance from zero.
+
+\section{Concluding remarks}
+
+The exact answer separates two levels of structure. The global geometry first reduces arbitrary intersections to the strict symmetric trigonometric thresholds (5.11) and (5.15); the Peano-kernel argument then shows that their finite integer content is governed by the quadratic skeleton
+\[
+c_q=\left\lfloor\frac{q(q-2)}2\right\rfloor
+\]
+plus the bounded correction $\kappa_d(q)$ of Theorem~\ref{thm:integerthreshold}. The exceptional boosts listed after Theorem~\ref{thm:main} are therefore genuine low-layer curvature effects rather than artifacts of numerical optimization.
+
+The larger classification question in Kagey's Problem~93 remains distinct: this paper determines the maximum possible number of sides, not all combinatorial intersection classes.
+
+\begin{thebibliography}{9}
+
+\bibitem{Kagey93}
+P.~Kagey,
+\newblock Problem 93,
+\newblock in \emph{Open problem collection}, related question 1: maximum number of sides in the intersection of two unit regular polygons,
+\newblock available at \url{https://peterkagey.com/problems/093/}, accessed September 21, 2026.
+
+\bibitem{ORourke}
+J.~O'Rourke,
+\newblock \emph{Computational Geometry in C},
+\newblock 2nd ed., Cambridge University Press, Cambridge, 1998;
+\newblock see Section~7.6 for convex-polygon intersection.
+
+\bibitem{Schneider}
+R.~Schneider,
+\newblock \emph{Convex Bodies: The Brunn--Minkowski Theory},
+\newblock 2nd expanded ed., Encyclopedia of Mathematics and its Applications, vol.~151,
+Cambridge University Press, Cambridge, 2014.
+\newblock \url{https://doi.org/10.1017/CBO9781139003858}.
+
+\end{thebibliography}
+
+\end{document}
